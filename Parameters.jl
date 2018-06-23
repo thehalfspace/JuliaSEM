@@ -82,17 +82,17 @@ cca = repmat([0.015], FaultNglob, 1)	#	Rate-state parameter 'a'
 ccb = repmat([0.020], FaultNglob, 1)	#	Rate-state parameter 'b'
 Vo 	= repmat([1e-6], FaultNglob, 1)		#	Reference velocity 'Vo'
 xLf = repmat([0.008/distN], FaultNglob, 1)#	Dc (Lc) = 8 mm
-FaultC = repmat([0], FaultNglob, 1)
-Vf1 = repmat([0], FaultNglob, 1)
-Vf2 = repmat([0], FaultNglob, 1)
-Vf 	= repmat([0], FaultNglob, 1)
-psi1= repmat([0], FaultNglob, 1)
-psi2= repmat([0], FaultNglob, 1)
-tau1= repmat([0], FaultNglob, 1)
-tau2= repmat([0], FaultNglob, 1)
-tau3= repmat([0], FaultNglob, 1)
-tauNR= repmat([0], FaultNglob, 1)
-tauAB= repmat([0], FaultNglob, 1)
+FaultC = zeros(FaultNglob, 1)
+Vf1 = zeros(FaultNglob, 1)
+Vf2 = zeros(FaultNglob, 1)
+Vf 	= zeros(FaultNglob, 1)
+psi1= zeros(FaultNglob, 1)
+psi2= zeros(FaultNglob, 1)
+tau1= zeros(FaultNglob, 1)
+tau2= zeros(FaultNglob, 1)
+tau3= zeros(FaultNglob, 1)
+tauNR= zeros(FaultNglob, 1)
+tauAB= zeros(FaultNglob, 1)
 
 #-----------------------
 #	Output Seismograms

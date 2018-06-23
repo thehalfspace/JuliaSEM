@@ -46,7 +46,6 @@ for ey = 1:NelY
 end
 
 
-
 #=
 # With single for loop
 
