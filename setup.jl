@@ -273,4 +273,6 @@ FltNI = deleteat!(temp1, iFlt)      # deletes the elements iFlt from the array t
 F = zeros(nglob,1)
 dPre = zeros(nglob,1)
 vPre = zeros(nglob,1)
-dnew = zeros(length(FltNI),1);
+dnew = zeros(length(FltNI),1)
+
+println("\nSetup Complete")

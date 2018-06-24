@@ -37,7 +37,7 @@ FaultNglob = NelX*(NGLL - 1) + 1
 #	Parameters of the time solver
 #---------------------------------
 yr2sec = 365*24*60*60
-Total_time = 20*yr2sec
+Total_time = 0.5*yr2sec
 CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
