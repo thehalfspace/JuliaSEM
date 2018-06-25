@@ -77,7 +77,7 @@ while t < 10#Total_time
             F[:] = 0
             F[iFlt] = dPre[iFlt] + v[iFlt]*dt
 
-            # Assign previous solution of the displacement field as initial guess
+            # Assign previous displacement field as initial guess
             dnew = d[FltNI]
 
             # Solve d = K^-1F by PCG
@@ -91,7 +91,32 @@ while t < 10#Total_time
             d[iFlt] = f[iFlt]
 
             # Compute on-fault stress
+            a[:] = 0
+            for eo = 1:Nel
+                ig = iglob[:,:,eo]
+                locall = d[ig]
 
+                # Gradients wrt local variables
+                d_xi = Ht*locall
+                d_eta = locall*H
+
+                # Element contribution
+                wloc = W[:,:,eo]
+                d_xi = wloc.*d_xi
+                d_xi = H*d_xi
+                d_eta = wloc.*d_eta
+                d_eta = d_eta*Ht
+                locall = coefint1*d_xi + coefint2*d_eta
+
+                # Assemble into global vector
+                a[ig] = a[ig] + locall
+            end
+
+            a[FltIglobBC] = 0
+            tau1 = -a[iFlt]./FltB
+            
+            # Compute slip-rates on-fault
+            for jF = 1:FaultNglob-NFBC 
         end
 
     end
