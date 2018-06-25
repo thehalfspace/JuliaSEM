@@ -4,6 +4,8 @@
 # alpha=1, beta=0, gamma=0.5      #
 ###################################
 
+include("PCG.jl")
+
 # Initially 1 = quasistatic; 2 = dynamic
 isolver = 1
 
@@ -26,7 +28,7 @@ for e = 1:Nel
     Kdiag[ig] = Kdiag[ig] + Klocdiag[:,:]
 end
 
-diagKnew - Kdiag[FltNI]
+diagKnew = Kdiag[FltNI]
 
 
 v[:] = v[:] - 0.5*Vpl
@@ -46,6 +48,8 @@ flag = 0
 event_iter1 = 1
 event_iter2 = 1
 
+
+# Preallocate variables with unknown size
 time_ = [0]
 
 #...........................
@@ -71,6 +75,22 @@ while t < 10#Total_time
             
             # Compute the forcing term
             F[:] = 0
+            F[iFlt] = dPre[iFlt] + v[iFlt]*dt
+
+            # Assign previous solution of the displacement field as initial guess
+            dnew = d[FltNI]
+
+            # Solve d = K^-1F by PCG
+            dnew = PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt, FltNI,
+                          H, Ht, iglob, Nel, nglob, W)
+            
+            # update displacement on the medium
+            d[FltNI] = dnew
+
+            # make d = F on the fault
+            d[iFlt] = f[iFlt]
+
+            # Compute on-fault stress
 
         end
 

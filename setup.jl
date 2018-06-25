@@ -265,14 +265,20 @@ println("Average node spacing = ", LX/distN/(FaultNglob-1))
 
 
 # Find nodes that do not belong to fault
-temp1 = Int.(linspace(1,nglob,nglob))
-FltNI = deleteat!(temp1, iFlt)      # deletes the elements iFlt from the array temp1
-
+FltNI = deleteat!(collect(1:nglob), iFlt) 
 
 # Some more initializations
+r = zeros(nglob,1)
+beta_ = zeros(nglob,1)
+alpha_ = zeros(nglob,1)
+p = zeros(nglob, 1)
+
 F = zeros(nglob,1)
 dPre = zeros(nglob,1)
 vPre = zeros(nglob,1)
+dd = zeros(nglob,1)
+dacum = zeros(nglob,1)
+
 dnew = zeros(length(FltNI),1)
 
 println("\nSetup Complete")
