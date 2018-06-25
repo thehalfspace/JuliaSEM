@@ -5,6 +5,7 @@
 ###################################
 
 include("PCG.jl")
+include("otherFunctions.jl")
 
 # Initially 1 = quasistatic; 2 = dynamic
 isolver = 1
@@ -117,7 +118,25 @@ while t < 10#Total_time
             
             # Compute slip-rates on-fault
             for jF = 1:FaultNglob-NFBC 
+
+                j = jF - 1 + NFBC
+                psi[j], psi1[j] = IDS(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j])
+
+                tauAB[j] = tau1[j] + tauo[j]
+                fa = tauAB[j]/(Seff[j]*cca[j])
+                help = -(fo[j] + ccb[j]*psi1[j])/cca[j]
+                help1 = exp(help + fa)
+                help2 = exp(help - fa)
+                Vf1[j] = Vo[j]*(help1 - help2) 
+            end
         end
+
+        psi = psi1
+        tau = tau1
+        tau[iFBC] = 0
+        Vf1[iFBC] = Vpl
+
+        # Start at line 720
 
     end
 
