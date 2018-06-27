@@ -57,7 +57,7 @@ time_ = [0]
 # START OF THE TIME LOOP
 #...........................
 
-while t < 10#Total_time
+while t < 10 #Total_time
     it = it + 1
     t = t + 1#dt
 
@@ -83,13 +83,13 @@ while t < 10#Total_time
 
             # Solve d = K^-1F by PCG
             dnew = PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt, FltNI,
-                          H, Ht, iglob, Nel, nglob, W)
+                          H, Ht, iglob, Nel, nglob, W, a)
             
             # update displacement on the medium
             d[FltNI] = dnew
 
             # make d = F on the fault
-            d[iFlt] = f[iFlt]
+            d[iFlt] = F[iFlt]
 
             # Compute on-fault stress
             a[:] = 0
@@ -136,10 +136,39 @@ while t < 10#Total_time
         tau[iFBC] = 0
         Vf1[iFBC] = Vpl
 
-        # Start at line 720
         v[iFlt] = 0.5*(Vf1 - Vpl)
         v[FltNI] = (d[FltNI] - dPre[FltNI])/dt
+
+        RHS = a
+        RHS[iFlt] = RHS[iFlt] - FltB.*tau
+        RMS = sqrt(sum(RHS.^2)/length(RHS))./maximum(abs.(RHS))
+        
+        # Line 731: P_MA: Omitted
+        a[:] = 0
+        d[FltIglobBC] = 0
+        v[FltIglobBC] = 0
+
+        
+        # If isolver != 1, or max slip rate is < 10^-2 m/s
+    else
+
+        dPre = d
+        vPre = v
+
+        # Update
+        d = d + dt*v + (half_dt^2)*a
+
+        # Prediction
+        v = v + half_dt*a
+        a[:] = 0
+
+
+        # Internal forces -K*d[t+1] stored in global array 'a'
+        for eo = 1:Nel
+
 
     end
 
 end
+
+

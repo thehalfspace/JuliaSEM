@@ -7,10 +7,10 @@
 
 
 function PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt,
-             FltNI, H, Ht, iglob, Nel, nglob, W)
+             FltNI, H, Ht, iglob, Nel, nglob, W, a)
     
     
-    #a[nglob,:] = 0
+    a[nglob,:] = 0
     dd[nglob,:] = 0
     p[nglob,:] = 0
     

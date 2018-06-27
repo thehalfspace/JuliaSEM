@@ -23,7 +23,7 @@ include("FindNearestNode.jl")#	Nearest node
 #...............
 iglob, x, y = MeshBox(LX, LY, NelX, NelY, NGLL)
 x = x-LX		#	For halfspace
-nglob = length(x);
+const nglob = length(x);
 
 
 #..................

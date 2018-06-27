@@ -8,37 +8,37 @@
 #----------------
 #	Domain Size:
 #----------------
-distN = 1000	#	km to m conversion
-Nsize = 2
-LX = Nsize*24e3/distN	#	Length of Horizontal dimension of box	
-LY = Nsize*15e3/distN	#	Length of Vertical dimension of box
+const distN = 1000	#	km to m conversion
+const Nsize = 2
+const LX = Nsize*24e3/distN	#	Length of Horizontal dimension of box	
+const LY = Nsize*15e3/distN	#	Length of Vertical dimension of box
 
-NelX = 15	#	No. of elements in X
-NelY = 10	#	No. of elements in Y
+const NelX = 15*Nsize	#	No. of elements in X
+const NelY = 10*Nsize 	#	No. of elements in Y
 
-NelX = NelX*Nsize
-NelY = NelY*Nsize
+#NelX = NelX*Nsize
+#NelY = NelY*Nsize
 
-dxe = LX/NelX #	Size of one element along X
-dye = LY/NelY #	Size of one element along Y
+const dxe = LX/NelX #	Size of one element along X
+const dye = LY/NelY #	Size of one element along Y
 
-Nel = NelX*NelY # Total no. of elements
+const Nel = NelX*NelY # Total no. of elements
 
 
 #----------------
 #	No. of nodes
 #----------------
-P = 4		#	Lagrange polynomial degree
-NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
+const P = 4		#	Lagrange polynomial degree
+const NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
 
-FaultNglob = NelX*(NGLL - 1) + 1
+const FaultNglob = NelX*(NGLL - 1) + 1
 
 #---------------------------------
 #	Parameters of the time solver
 #---------------------------------
-yr2sec = 365*24*60*60
-Total_time = 0.5*yr2sec
-CFL = 0.6	#	Courant stability number
+const yr2sec = 365*24*60*60
+const Total_time = 0.5*yr2sec
+const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
 
@@ -46,42 +46,42 @@ dt = Inf	#	Timestep: set later
 #	Jacobian for the global -> local 
 #	coordinate conversion
 #------------------------------------
-dx_dxi = 0.5*dxe
-dy_deta = 0.5*dye
-jac = dx_dxi*dy_deta
-coefint1 = jac/dx_dxi^2
-coefint2 = jac/dy_deta^2
+const x_dxi = 0.5*dxe
+const dy_deta = 0.5*dye
+const jac = dx_dxi*dy_deta
+const coefint1 = jac/dx_dxi^2
+const coefint2 = jac/dy_deta^2
 
 #-------------------------------------
 #	Physical properties of the medium
 #	(Modify them when assembling Mass
 #	 and Stiffness matrices )
 #-------------------------------------
-rho1 = 2670
-vs1 = 3464
-rho2 = 2500
-vs2 = 0.6*vs1
+const rho1 = 2670
+const vs1 = 3464
+const rho2 = 2500
+const vs2 = 0.6*vs1
 ETA = 0
 
 rho = zeros(NGLL, NGLL)
 mu = zeros(NGLL, NGLL)
 
 # Low velocity layer dimensions
-ThickX = 0
-ThickY = 0
+const ThickX = 0
+const ThickY = 0
 
 
 #--------------------------
 # Earthquake parameters
 #--------------------------
-Vpl = 35e-3/yr2sec	#	Plate loading
+const Vpl = 35e-3/yr2sec	#	Plate loading
 
 Seff= repmat([50e6], FaultNglob, 1)		#	Effective normal stress
 fo 	= repmat([0.6], FaultNglob, 1)		#	Reference friction coefficient
 cca = repmat([0.015], FaultNglob, 1)	#	Rate-state parameter 'a'
 ccb = repmat([0.020], FaultNglob, 1)	#	Rate-state parameter 'b'
-Vo 	= repmat([1e-6], FaultNglob, 1)		#	Reference velocity 'Vo'
-xLf = repmat([0.008/distN], FaultNglob, 1)#	Dc (Lc) = 8 mm
+const Vo 	= repmat([1e-6], FaultNglob, 1)		#	Reference velocity 'Vo'
+const xLf = repmat([0.008/distN], FaultNglob, 1)#	Dc (Lc) = 8 mm
 FaultC = zeros(FaultNglob, 1)
 Vf1 = zeros(FaultNglob, 1)
 Vf2 = zeros(FaultNglob, 1)
