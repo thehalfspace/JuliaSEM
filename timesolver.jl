@@ -165,6 +165,34 @@ while t < 10 #Total_time
 
         # Internal forces -K*d[t+1] stored in global array 'a'
         for eo = 1:Nel
+            
+            # Switch to local element representation
+            ig = iglob[:,:,eo]
+            isETA = eo<=Nel_ETA
+            if isETA
+                locall = d[ig] + eta.*v[ig]
+            else
+                locall = d[ig]
+            end
+            # Gradients wrt local variables
+            d_xi = Ht*locall
+            d_eta = locall*H
+        
+            # Element contribution to the internal forces
+            locall = coefint1*H*(W[:,:,eo].*d_xi) + 
+                    coefint2*(W[:,:,eo].*d_eta)*Ht
+
+            # Assemble into global vector
+            a[ig] = a[ig] + locall
+        end
+
+        a[FltIglobBC] = 0
+
+        # Absorbing boundaries
+        a[iBcL] = a[iBcL] - BcLC.*v[iBcL]
+        a[iBcT] = a[iBcT] - BcTC.*v[iBcT]
+
+        # Start at line 782
 
 
     end

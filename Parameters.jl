@@ -46,7 +46,7 @@ dt = Inf	#	Timestep: set later
 #	Jacobian for the global -> local 
 #	coordinate conversion
 #------------------------------------
-const x_dxi = 0.5*dxe
+const dx_dxi = 0.5*dxe
 const dy_deta = 0.5*dye
 const jac = dx_dxi*dy_deta
 const coefint1 = jac/dx_dxi^2
