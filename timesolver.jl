@@ -137,6 +137,8 @@ while t < 10#Total_time
         Vf1[iFBC] = Vpl
 
         # Start at line 720
+        v[iFlt] = 0.5*(Vf1 - Vpl)
+        v[FltNI] = (d[FltNI] - dPre[FltNI])/dt
 
     end
 
