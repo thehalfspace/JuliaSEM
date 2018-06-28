@@ -192,7 +192,23 @@ while t < 10 #Total_time
         a[iBcL] = a[iBcL] - BcLC.*v[iBcL]
         a[iBcT] = a[iBcT] - BcTC.*v[iBcT]
 
-        # Start at line 782
+        # Fault Boundary Condition: Rate and State
+        FltVfree = 2*v[iFlt] + 2*half_dt*a[iFlt]./M[iFlt]
+        Vf = 2*vPre[iFlt] + Vpl
+
+        for jF = 1:FaultNglob-NFBC
+
+            j = jF - 1 + NFBC
+            psi[j], psi1[j] = IDS(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j])
+
+            Vf1[j], tau1[j] = NRsearch(fo[j], Vo[j], cca[j], ccb[j],Seff[j],
+                                      tauNR[j], tauo[j], psi1[j], FltZ[j], FltVfree[j])
+        
+            if Vf[j] > 1e10 || isnan(Vf[j]) == 1 || isnan(tau1[j]) == 1
+                println("NR SEARCH FAILED!")
+                return
+            end
+        end
 
 
     end
