@@ -41,6 +41,8 @@ const Total_time = 0.1*yr2sec
 const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
+const IDstate = 1
+
 
 #------------------------------------
 #	Jacobian for the global -> local 

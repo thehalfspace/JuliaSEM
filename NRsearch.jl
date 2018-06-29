@@ -28,7 +28,8 @@ function NRsearch(fo, Vo, cca, ccb, Seff, tau, tauo, psi, FltZ, FltVfree)
         tau = tau + delta
         k = k + 1
 
-        if abs(delta) > 1e10 || k == 100
+        if abs(delta) > 1e10 || k == 1000
+            println(k)
             error("NR search fails to converge")
         end
     end

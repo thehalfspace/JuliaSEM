@@ -5,6 +5,8 @@
 ###################################
 
 include("PCG.jl")
+include("dtevol.jl")
+include("NRsearch.jl")
 include("otherFunctions.jl")
 
 # Initially 1 = quasistatic; 2 = dynamic
@@ -42,6 +44,7 @@ FltIglobBC = iFlt[iFBC] # Fault boundary
 
 v[FltIglobBC] = 0
 
+idelevne = 0
 
 
 # Output sliprate at the start of every cycle
@@ -276,7 +279,7 @@ while t < Total_time
         #### Line 861: Omitting P_Ma
         
         LHS = M.*a
-        RMS = sqrt(sum.((RHS - LHS).^2)/length(RHS))./max(abs(RHS))
+        RMS = sqrt.(sum.((RHS - LHS).^2)/length(RHS))./maximum(abs.(RHS))
 
     end # of isolver if loop
     
@@ -321,7 +324,7 @@ while t < Total_time
         end
 
     else
-        idelevne = 0
+        global idelevne = 0
     end
 
     #-----

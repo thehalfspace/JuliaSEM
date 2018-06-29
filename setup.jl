@@ -170,12 +170,16 @@ tau = zeros(FaultNglob, 1)
 psi = tauo./(Seff.*ccb) - fo./ccb - (cca./ccb).*log.(2*v[iFlt]./Vo)
 psi0 = psi
 
+Nel_ETA = 0
 # Kelvin-Voigt Viscosity
 if ETA !=0
 	Nel_ETA = NelX
 	x1 = 0.5*(1 + xgll')
 	eta_taper = exp.(-pi*x1.^2)
 	eta = ETA*dt * repmat([eta_taper], NGLL, 1)
+
+else
+    Nel_ETA = 0
 end
 
 
