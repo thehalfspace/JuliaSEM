@@ -192,7 +192,7 @@ while t < 10 #Total_time
         a[iBcL] = a[iBcL] - BcLC.*v[iBcL]
         a[iBcT] = a[iBcT] - BcTC.*v[iBcT]
 
-        # Fault Boundary Condition: Rate and State
+        ###### Fault Boundary Condition: Rate and State #############
         FltVfree = 2*v[iFlt] + 2*half_dt*a[iFlt]./M[iFlt]
         Vf = 2*vPre[iFlt] + Vpl
 
@@ -236,13 +236,49 @@ while t < 10 #Total_time
                 end
             end
 
-            # Start at line 836
+            # NRsearch 2nd loop
+            Vf2[j], tau2[j] = NRsearch(fo[j], Vo[j], cca[j], ccb[j],Seff[j],
+                                      tau1[j], tauo[j], psi2[j], FltZ[j], FltVfree[j])
+
         end
+        
+        tau = tau2 - tauo
+        tau[iFBC] = 0
+        psi = psi2
+        KD = a
+        a[iFlt] = a[iFlt] - FltB.*tau
+        ########## End of fault boundary condition ############## 
 
 
+        RHS = a
 
+        # Solve for a_new
+        a = a./M
+        
+        # Correction
+        v = v + half_dt*a
 
-    end
+        v[FltIglobBC] = 0
+        a[FltIglobBC] = 0
+
+        #### Line 861: Omitting P_Ma
+        
+        LHS = M.*a
+        RMS = sqrt(sum.((RHS - LHS).^2)/length(RHS))./max(abs(RHS))
+
+    end # of isolver if loop
+    
+    Vfmax = 2*maximum(v[iFlt]) + Vpl
+
+    #----
+    # Output variables at different depths for every timestep
+    # Omitted the part of code from line 871 - 890, because I 
+    # want to output only certain variables each timestep
+    #----
+
+    # Output stress, slip, sliprate on fault every certain interval
+    # line 891
+
 
 end
 
