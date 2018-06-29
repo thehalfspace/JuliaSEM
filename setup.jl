@@ -93,7 +93,6 @@ M[iBcT] = M[iBcT] + half_dt*BcTC
 
 # Dynamic fault at bottom boundary
 FltB, iFlt = BoundaryMatrix(wgll, NelX, NelY, iglob, dx_dxi, 1, 'B') # impedance = 1
-FltNglob = NelX*(NGLL - 1) + 1
 
 FltZ = M[iFlt]./FltB /half_dt * 0.5
 FltX = x[iFlt]

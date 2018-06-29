@@ -9,7 +9,7 @@ for ey = 1:NelY
 		 ig = iglob[:,:,e]
 
 		 # Properties of heterogeneous medium
-         if ex*dxe >= ThickX & ey*dye <= ThickY
+         if ex*dxe >= ThickX && ey*dye <= ThickY
             rho[:,:] = rho2
             mu[:,:] = rho2*vs2^2
         else

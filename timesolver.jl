@@ -23,8 +23,8 @@ for e = 1:Nel
     for k =  1:NGLL
         for j = 1:NGLL
             Klocdiag[k,j] = Klocdiag[k,j] + 
-                            sum(coefint1*H[k,:]'.*(wloc[:,j].*Ht[:,k])
-                            + coefint2*(wloc[k,:].*H[j,:])'.*Ht[:,j])
+                            sum( coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
+                            + coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
         end
     end
 
@@ -44,7 +44,7 @@ FltIglobBC = iFlt[iFBC] # Fault boundary
 
 v[FltIglobBC] = 0
 
-idelevne = 0
+#idelevne = 0
 
 
 # Output sliprate at the start of every cycle

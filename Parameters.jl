@@ -8,7 +8,7 @@
 #----------------
 #	Domain Size:
 #----------------
-const distN = 1000	#	km to m conversion
+const distN = 1	#	km to m conversion
 const Nsize = 2
 const LX = Nsize*24e3/distN	#	Length of Horizontal dimension of box	
 const LY = Nsize*15e3/distN	#	Length of Vertical dimension of box
