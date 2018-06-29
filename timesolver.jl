@@ -51,17 +51,29 @@ event_iter2 = 1
 
 
 # Preallocate variables with unknown size
-time_ = [0]
+time_ = zeros(1e5)
+
+delfsec = zeros(FaultNglob, 1e4)
+Vfsec = zeros(FaultNglob, 1e4)
+Tausec = zeros(FaultNglob, 1e4)
+
+delf5yr = zeros(FaultNglob, 1e4)
+Vf5yr = zeros(FaultNglob, 1e4)
+Tau5yr = zeros(FaultNglob, 1e4)
+
+Stress = zeros(FaultNglob, 1e5)
+SlipVel = zeros(FaultNglob, 1e5)
+Slip = zeros(FaultNglob, 1e5)
 
 #...........................
 # START OF THE TIME LOOP
 #...........................
 
-while t < 10 #Total_time
+while t < Total_time
     it = it + 1
-    t = t + 1#dt
+    t = t + dt
 
-    time_ = push!(time_,t) 
+    time_[it] = t 
 
 
     if isolver == 1
@@ -277,9 +289,83 @@ while t < 10 #Total_time
     #----
 
     # Output stress, slip, sliprate on fault every certain interval
-    # line 891
+    if t>tvsx
+        ntvsx = ntvsx + 1
+        
+        delf5yr[:,ntvsx] = 2*d[iFlt] + Vpl*t
+        Vf5yr[:,ntvsx] = 2*v[iFlt] + Vpl
+        Tau5yr[:,ntvsx] = (tau + tauo)./1e6
+        
+        tvsx = tvsx + tvsxinc
+    end
+    
+    if Vfmax > Vevne 
+        if idelevne == 0
+            nevne = nevne + 1
+            idelevne = 2
+            tevneb = t
+            tevne = tevneinc
+
+            delfsec[:,nevne] = 2*d[iFlt] + Vpl*t
+            Vfsec[:,nevne] = 2*v[iFlt] + Vpl
+            Tausec[:,nevne] = (tau + tauo)./1e6
+        end
+        if idelevne == 1 && (t - tevneb) > tevne
+            nevne = nevne + 1
+            
+            delfsec[:,nevne] = 2*d[iFlt] + Vpl*t
+            Vfsec[:,nevne] = 2*v[iFlt] + Vpl
+            Tausec[:,nevne] = (tau + tauo)./1e6
+
+            tevne = tevne + tevneinc
+        end
+
+    else
+        idelevne = 0
+    end
+
+    #-----
+    # Output stress and slip before and after events
+    # Omitting lines 920-934
+    #-----
+
+    # Output timestep info on screen
+    if mod(it,100) == 0
+        @printf("Time (yr) = %1.5g", t/yr2sec)
+    end
+    
+    # Determine quasi-static or dynamic regime based on max-slip velocity
+    if isolver == 1 && Vfmax < 5e-3 || isolver == 2 && Vfmax < 2e-3
+        isolver = 1
+    else
+        isolver = 2
+    end
+
+    # Some variables for each timestep
+    Stress[:,it] = (tau + tauo)./1e6
+    SlipVel[:,it] = 2*v[iFlt] + Vpl
+    Slip[:,it] = 2*d[iFlt] + Vpl*t
+    
+    # Compute next timestep dt
+    dt = dtevol(dt, dtmax, dtmin, dtincf, XiLf, FaultNglob, NFBC, SlipVel[:,it], isolver)
 
 
-end
+end # End of time loop
 
+# Remove zeros from preallocated vectors
+time_ = time_[1:it]
+
+delfsec = delfsec[:, 1:nevne]
+Vfsec = Vfsec[:,1:nevne]
+Tausec = Tausec[:,1:nevne]
+
+delf5yr = delf5yr[:,1:ntvsx]
+Vf5yr = Vf5yr[:,1:ntvsx]
+Tau5yr = Tau5yr[:,1:ntvsx]
+
+Stress = Stress[:,1:it]
+SlipVel = SlipVel[:,1:it]
+Slip = Slip[:,1:it]
+
+println("Simulation Complete")
 
