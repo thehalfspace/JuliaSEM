@@ -1,8 +1,6 @@
-###############################################
-#                                             #
-# SOME OTHER FUNCTIONS DEFINED FOR NEATNESS   #
-#                                             #
-###############################################
+#########################
+# SOME OTHER FUNCTIONS
+#########################
 
 function IDS(psi, psi1, dt, Vo, xLf, Vf, IDstate = 2)
     #= compute slip-rates on fault based on different
@@ -29,6 +27,6 @@ function IDS(psi, psi1, dt, Vo, xLf, Vf, IDstate = 2)
         end
     end
 
-    return psi, psi1
+    return psi1
 
 end

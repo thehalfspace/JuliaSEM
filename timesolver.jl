@@ -120,7 +120,7 @@ while t < 10 #Total_time
             for jF = 1:FaultNglob-NFBC 
 
                 j = jF - 1 + NFBC
-                psi[j], psi1[j] = IDS(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j])
+                psi1[j] = IDS(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j])
 
                 tauAB[j] = tau1[j] + tauo[j]
                 fa = tauAB[j]/(Seff[j]*cca[j])
@@ -199,16 +199,47 @@ while t < 10 #Total_time
         for jF = 1:FaultNglob-NFBC
 
             j = jF - 1 + NFBC
-            psi[j], psi1[j] = IDS(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j])
+            psi1[j] = IDS(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j])
 
             Vf1[j], tau1[j] = NRsearch(fo[j], Vo[j], cca[j], ccb[j],Seff[j],
                                       tauNR[j], tauo[j], psi1[j], FltZ[j], FltVfree[j])
         
             if Vf[j] > 1e10 || isnan(Vf[j]) == 1 || isnan(tau1[j]) == 1
-                println("NR SEARCH FAILED!")
+                error("NR SEARCH FAILED!")
                 return
             end
+             
+            if IDstate == 1
+                psi2[j] = psi[j] + 0.5*dt*( (Vo[j]/xLf[j])*exp(-psi[j]) 
+                                            - abs(Vf[j])/xLf[j] 
+                                            + (Vo[j]/xLf[j])*exp(-psi1[j]) 
+                                            - abs(Vf1[j])/xLf[j] )
+
+            elseif IDstate == 2
+                VdtL = 0.5*abs(Vf1[j] + Vf[j])*dt/xLf[j]
+                if VdtL < 1e-6
+                    psi2[j] = log( exp(psi[j]-VdtL) + Vo[j]*dt/xLf[j] -
+                                  0.5*Vo[j]*0.5*abs(Vf1[j] + Vf[j])*dt*dt/(xLf[j]^2))
+                else
+                    psi2[j] = log(exp(psi[j]-VdtL) + 
+                                  (Vo[j]/(0.5*abs(Vf[j] + Vf1[j])))*(1-exp(-VdtL)))
+                end
+
+            elseif IDstate == 3
+                psi2[j] = exp(-0.5*abs(Vf[j] + Vf1[j])*dt/xLf[j]) * 
+                                log(0.5*abs(Vf[j] + Vf1[j])/Vo[j]) + 
+                                exp(-0.5*abs(Vf[j] + Vf1[j])*dt/xLf[j])*psi[j] 
+                                + log(Vo[j]/(-0.5*abs(Vf[j] + Vf1[j])) )
+
+                if ~any(imag(psi1)) == 0
+                    return
+                end
+            end
+
+            # Start at line 836
         end
+
+
 
 
     end
