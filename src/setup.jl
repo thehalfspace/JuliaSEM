@@ -5,7 +5,7 @@
 #										#
 #	Prithvi Thakur						#
 #	Adapted from Kaneko et al. (2011)	#
-#	and J.P. Ampuero matlab exercises	#
+#	and J.P. Ampuero's SEMLAB       	#
 #########################################
 
 #.................................
