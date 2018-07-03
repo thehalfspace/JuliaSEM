@@ -86,7 +86,7 @@ impedance = rho1*vs1
 BcTC, iBcT = BoundaryMatrix(wgll, NelX, NelY, iglob, dx_dxi, impedance, 'T')
 
 # Mass matrix at boundaries
-Mq = M
+Mq = M[:]
 M[iBcL] = M[iBcL] + half_dt*BcLC
 M[iBcT] = M[iBcT] + half_dt*BcTC
 
@@ -167,7 +167,7 @@ tauo[tau_depth4] = Int1D(tP4, tP5, FltX[tau_depth4])
 tau = zeros(FaultNglob, 1)
 
 psi = tauo./(Seff.*ccb) - fo./ccb - (cca./ccb).*log.(2*v[iFlt]./Vo)
-psi0 = psi
+psi0 = psi[:]
 
 Nel_ETA = 0
 # Kelvin-Voigt Viscosity
@@ -284,8 +284,6 @@ dacum = zeros(nglob,1)
 
 dnew = zeros(length(FltNI),1)
 
-println("\nSetup Complete")
-
 
 ################################
 # Time solver variables
@@ -352,3 +350,6 @@ Tau5yr = zeros(FaultNglob, 1e4)
 Stress = zeros(FaultNglob, 1e5)
 SlipVel = zeros(FaultNglob, 1e5)
 Slip = zeros(FaultNglob, 1e5)
+
+
+println("\nSetup Complete")

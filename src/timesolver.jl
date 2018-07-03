@@ -24,11 +24,11 @@ while it < 100
 
     if isolver == 1
 
-        vPre = v
-        dPre = d
+        vPre = v[:]
+        dPre = d[:]
 
         Vf0 = 2*v[iFlt] + Vpl
-        Vf = Vf0
+        Vf = Vf0[:]
 
         for p1 = 1:2
             
@@ -87,17 +87,22 @@ while it < 100
                 help2 = exp(help - fa)
                 Vf1[j] = Vo[j]*(help1 - help2) 
             end
+            
+            Vf1[iFBC] = Vpl
+            Vf = (Vf0 + Vf1)/2
+            v[iFlt] = 0.5*(Vf - Vpl)
+
         end
 
-        psi = psi1
-        tau = tau1
+        psi = psi1[:]
+        tau = tau1[:]
         tau[iFBC] = 0
         Vf1[iFBC] = Vpl
 
         v[iFlt] = 0.5*(Vf1 - Vpl)
         v[FltNI] = (d[FltNI] - dPre[FltNI])/dt
 
-        RHS = a
+        RHS = a[:]
         RHS[iFlt] = RHS[iFlt] - FltB.*tau
         RMS = sqrt(sum(RHS.^2)/length(RHS))./maximum(abs.(RHS))
         
@@ -110,8 +115,8 @@ while it < 100
         # If isolver != 1, or max slip rate is < 10^-2 m/s
     else
 
-        dPre = d
-        vPre = v
+        dPre = d[:]
+        vPre = v[:]
 
         # Update
         d = d + dt*v + (half_dt^2)*a
@@ -136,12 +141,17 @@ while it < 100
             d_xi = Ht*locall
             d_eta = locall*H
         
-            # Element contribution to the internal forces
-            locall = coefint1*H*(W[:,:,eo].*d_xi) + 
-                    coefint2*(W[:,:,eo].*d_eta)*Ht
+
+             # Element contribution
+            wloc = W[:,:,eo]
+            d_xi = wloc.*d_xi
+            d_xi = H*d_xi
+            d_eta = wloc.*d_eta
+            d_eta = d_eta*Ht
+            locall = coefint1*d_xi + coefint2*d_eta
 
             # Assemble into global vector
-            a[ig] = a[ig] + locall
+            a[ig] = a[ig] - locall
         end
 
         a[FltIglobBC] = 0
@@ -202,13 +212,13 @@ while it < 100
         
         tau = tau2 - tauo
         tau[iFBC] = 0
-        psi = psi2
-        KD = a
+        psi = psi2[:]
+        KD = a[:]
         a[iFlt] = a[iFlt] - FltB.*tau
         ########## End of fault boundary condition ############## 
 
 
-        RHS = a
+        RHS = a[:]
 
         # Solve for a_new
         a = a./M
@@ -276,8 +286,8 @@ while it < 100
     #-----
 
     # Output timestep info on screen
-    if mod(it,100) == 0
-        @printf("Time (yr) = %1.5g", t/yr2sec)
+    if mod(it,20) == 0
+        @printf("\nTime (yr) = %1.5g", t/yr2sec)
     end
     
     # Determine quasi-static or dynamic regime based on max-slip velocity
