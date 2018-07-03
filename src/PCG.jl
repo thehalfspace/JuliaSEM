@@ -7,12 +7,12 @@
 
 
 function PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt,
-             FltNI, H, Ht, iglob, Nel, nglob, W, a)
+             FltNI, H, Ht, iglob, Nel, nglob, W)
     
     
-    a[nglob,:] = 0
-    dd[nglob,:] = 0
-    p[nglob,:] = 0
+    a = zeros(nglob)
+    dd = zeros(nglob)
+    p = zeros(nglob)
     
     a = element_computation(Nel, iglob, F, H, Ht, coefint1, coefint2, W)
     Fnew = -a[FltNI]

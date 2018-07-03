@@ -285,3 +285,70 @@ dacum = zeros(nglob,1)
 dnew = zeros(length(FltNI),1)
 
 println("\nSetup Complete")
+
+
+################################
+# Time solver variables
+################################
+
+# Initially 1 = quasistatic; 2 = dynamic
+isolver = 1
+
+# Compute the diagonal of K
+Kdiag = zeros(nglob,1)
+Klocdiag = zeros(NGLL, NGLL)
+for e = 1:Nel
+    ig = iglob[:,:,e]
+    wloc = W[:,:,e]
+    Klocdiag[:,:] = 0
+
+    for k =  1:NGLL
+        for j = 1:NGLL
+            Klocdiag[k,j] = Klocdiag[k,j] + 
+                            sum( coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
+                            + coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
+        end
+    end
+
+    Kdiag[ig] = Kdiag[ig] + Klocdiag[:,:]
+end
+
+diagKnew = Kdiag[FltNI]
+
+
+v[:] = v[:] - 0.5*Vpl
+Vf = 2*v[iFlt]
+const iFBC = find(abs.(FltX) .> 24e3/distN)
+const NFBC = length(iFBC)
+Vf[iFBC] = 0
+
+# Fault boundary: indices where fault within 24 km
+fbc = reshape(iglob[:,1,:], length(iglob[:,1,:]),1)
+idx = find(fbc .== find(x .== -24e3)[1] - 1)[1]
+const FltIglobBC = fbc[1:idx]
+
+v[FltIglobBC] = 0
+
+#idelevne = 0
+
+
+# Output sliprate at the start of every cycle
+flag = 0
+event_iter1 = 1
+event_iter2 = 1
+
+
+# Preallocate variables with unknown size
+time_ = zeros(1e5)
+
+delfsec = zeros(FaultNglob, 1e4)
+Vfsec = zeros(FaultNglob, 1e4)
+Tausec = zeros(FaultNglob, 1e4)
+
+delf5yr = zeros(FaultNglob, 1e4)
+Vf5yr = zeros(FaultNglob, 1e4)
+Tau5yr = zeros(FaultNglob, 1e4)
+
+Stress = zeros(FaultNglob, 1e5)
+SlipVel = zeros(FaultNglob, 1e5)
+Slip = zeros(FaultNglob, 1e5)

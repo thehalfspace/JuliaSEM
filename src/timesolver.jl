@@ -9,70 +9,13 @@ include("dtevol.jl")
 include("NRsearch.jl")
 include("otherFunctions.jl")
 
-# Initially 1 = quasistatic; 2 = dynamic
-isolver = 1
-
-# Compute the diagonal of K
-Kdiag = zeros(nglob,1)
-Klocdiag = zeros(NGLL, NGLL)
-for e = 1:Nel
-    ig = iglob[:,:,e]
-    wloc = W[:,:,e]
-    Klocdiag[:,:] = 0
-
-    for k =  1:NGLL
-        for j = 1:NGLL
-            Klocdiag[k,j] = Klocdiag[k,j] + 
-                            sum( coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
-                            + coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
-        end
-    end
-
-    Kdiag[ig] = Kdiag[ig] + Klocdiag[:,:]
-end
-
-diagKnew = Kdiag[FltNI]
-
-
-v[:] = v[:] - 0.5*Vpl
-Vf = 2*v[iFlt]
-iFBC = find(abs.(FltX) .> 24e3/distN)
-NFBC = length(iFBC)
-Vf[iFBC] = 0
-
-FltIglobBC = iFlt[iFBC] # Fault boundary
-
-v[FltIglobBC] = 0
-
-#idelevne = 0
-
-
-# Output sliprate at the start of every cycle
-flag = 0
-event_iter1 = 1
-event_iter2 = 1
-
-
-# Preallocate variables with unknown size
-time_ = zeros(1e5)
-
-delfsec = zeros(FaultNglob, 1e4)
-Vfsec = zeros(FaultNglob, 1e4)
-Tausec = zeros(FaultNglob, 1e4)
-
-delf5yr = zeros(FaultNglob, 1e4)
-Vf5yr = zeros(FaultNglob, 1e4)
-Tau5yr = zeros(FaultNglob, 1e4)
-
-Stress = zeros(FaultNglob, 1e5)
-SlipVel = zeros(FaultNglob, 1e5)
-Slip = zeros(FaultNglob, 1e5)
+temp = [0.0]
 
 #...........................
 # START OF THE TIME LOOP
 #...........................
 
-while t < Total_time
+while it < 100
     it = it + 1
     t = t + dt
 
@@ -98,7 +41,7 @@ while t < Total_time
 
             # Solve d = K^-1F by PCG
             dnew = PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt, FltNI,
-                          H, Ht, iglob, Nel, nglob, W, a)
+                          H, Ht, iglob, Nel, nglob, W)
             
             # update displacement on the medium
             d[FltNI] = dnew
@@ -348,6 +291,8 @@ while t < Total_time
     Stress[:,it] = (tau + tauo)./1e6
     SlipVel[:,it] = 2*v[iFlt] + Vpl
     Slip[:,it] = 2*d[iFlt] + Vpl*t
+
+    temp = push!(temp,Vf[121])
     
     # Compute next timestep dt
     dt = dtevol(dt, dtmax, dtmin, dtincf, XiLf, FaultNglob, NFBC, SlipVel[:,it], isolver)
