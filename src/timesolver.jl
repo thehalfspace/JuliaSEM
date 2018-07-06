@@ -15,7 +15,7 @@ temp = [0.0]
 # START OF THE TIME LOOP
 #...........................
 
-while it < 100
+while it < 17
     it = it + 1
     t = t + dt
 
@@ -78,7 +78,7 @@ while it < 100
             for jF = 1:FaultNglob-NFBC 
 
                 j = jF - 1 + NFBC
-                psi1[j] = IDS(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j])
+                psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-6)
 
                 tauAB[j] = tau1[j] + tauo[j]
                 fa = tauAB[j]/(Seff[j]*cca[j])
@@ -141,8 +141,7 @@ while it < 100
             d_xi = Ht*locall
             d_eta = locall*H
         
-
-             # Element contribution
+            # Element contribution
             wloc = W[:,:,eo]
             d_xi = wloc.*d_xi
             d_xi = H*d_xi
@@ -167,7 +166,7 @@ while it < 100
         for jF = 1:FaultNglob-NFBC
 
             j = jF - 1 + NFBC
-            psi1[j] = IDS(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j])
+            psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-5)
 
             Vf1[j], tau1[j] = NRsearch(fo[j], Vo[j], cca[j], ccb[j],Seff[j],
                                       tauNR[j], tauo[j], psi1[j], FltZ[j], FltVfree[j])
@@ -199,9 +198,6 @@ while it < 100
                                 exp(-0.5*abs(Vf[j] + Vf1[j])*dt/xLf[j])*psi[j] 
                                 + log(Vo[j]/(-0.5*abs(Vf[j] + Vf1[j])) )
 
-                if ~any(imag(psi1)) == 0
-                    return
-                end
             end
 
             # NRsearch 2nd loop
@@ -325,5 +321,4 @@ Stress = Stress[:,1:it]
 SlipVel = SlipVel[:,1:it]
 Slip = Slip[:,1:it]
 
-println("Simulation Complete")
-
+println("\nSimulation Complete")

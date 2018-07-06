@@ -2,7 +2,7 @@
 # SOME OTHER FUNCTIONS
 #########################
 
-function IDS(psi, psi1, dt, Vo, xLf, Vf, IDstate = 2)
+function IDS(psi, dt, Vo, xLf, Vf, cnd, IDstate = 2)
     #= compute slip-rates on fault based on different
        formulations =#
 
@@ -11,7 +11,7 @@ function IDS(psi, psi1, dt, Vo, xLf, Vf, IDstate = 2)
 
     elseif IDstate == 2
         VdtL = abs(Vf)*dt/xLf
-        if VdtL < 1e-6
+        if VdtL < cnd
             psi1 = log( exp(psi-VdtL) + Vo*dt/xLf -
                         0.5*Vo*abs(Vf)*dt*dt/(xLf^2))
         else
