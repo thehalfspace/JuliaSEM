@@ -7,7 +7,7 @@
 include("PCG.jl")
 include("dtevol.jl")
 include("NRsearch.jl")
-include("otherFunctions.jl")
+#include("otherFunctions.jl")
 
 temp = [0.0]
 
@@ -15,7 +15,7 @@ temp = [0.0]
 # START OF THE TIME LOOP
 #...........................
 
-while it < 17
+while it < 50
     it = it + 1
     t = t + dt
 

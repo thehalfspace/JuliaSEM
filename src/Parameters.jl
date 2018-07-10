@@ -41,7 +41,7 @@ const Total_time = 0.1*yr2sec
 const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
-const IDstate = 1
+const IDstate = 2
 
 
 #------------------------------------
@@ -79,6 +79,7 @@ const ThickY = 0
 const Vpl = 35e-3/yr2sec	#	Plate loading
 
 Seff= repmat([50e6], FaultNglob, 1)		#	Effective normal stress
+tauo = repmat([22.5e6], FaultNglob, 1)  #   Initial shear stress
 fo 	= repmat([0.6], FaultNglob, 1)		#	Reference friction coefficient
 cca = repmat([0.015], FaultNglob, 1)	#	Rate-state parameter 'a'
 ccb = repmat([0.020], FaultNglob, 1)	#	Rate-state parameter 'b'
