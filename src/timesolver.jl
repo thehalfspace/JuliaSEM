@@ -15,7 +15,7 @@ temp = [0.0]
 # START OF THE TIME LOOP
 #...........................
 
-while it < 50
+while it < 1 # 17
     it = it + 1
     t = t + dt
 
@@ -214,7 +214,7 @@ while it < 50
         ########## End of fault boundary condition ############## 
 
 
-        RHS = a[:]
+        #RHS = a[:]
 
         # Solve for a_new
         a = a./M
@@ -227,8 +227,8 @@ while it < 50
 
         #### Line 861: Omitting P_Ma
         
-        LHS = M.*a
-        RMS = sqrt.(sum.((RHS - LHS).^2)/length(RHS))./maximum(abs.(RHS))
+        #LHS = M.*a
+        #RMS = sqrt.(sum.((RHS - LHS).^2)/length(RHS))./maximum(abs.(RHS))
 
     end # of isolver if loop
     

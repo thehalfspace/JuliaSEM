@@ -64,10 +64,10 @@ if ETA != 0
 end
 
 # Initialize kinematic field: global arrays
-d = zeros(nglob, 1)
-v = zeros(nglob, 1)
+global d = zeros(nglob, 1)
+global v = zeros(nglob, 1)
 v[:,:] = 0.5e-3
-a = zeros(nglob,1)
+global a = zeros(nglob,1)
 
 
 

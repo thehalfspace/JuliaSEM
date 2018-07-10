@@ -9,36 +9,37 @@
 function PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt,
              FltNI, H, Ht, iglob, Nel, nglob, W)
     
+    #global a 
+    a_local = zeros(nglob)
+    dd_local = zeros(nglob)
+    p_local = zeros(nglob)
     
-    a = zeros(nglob)
-    dd = zeros(nglob)
-    p = zeros(nglob)
-    
-    a = element_computation(Nel, iglob, F, H, Ht, coefint1, coefint2, W)
-    Fnew = -a[FltNI]
+    a_local = element_computation(Nel, iglob, F, H, Ht, coefint1, coefint2, W, a_local)
+    Fnew = -a_local[FltNI]
 
-    dd[FltNI] = dnew
-    dd[iFlt] = 0
+    dd_local[FltNI] = dnew
+    dd_local[iFlt] = 0
 
-    a[:] = 0
+    a_local[:] = 0
     
-    a = element_computation(Nel, iglob, dd, H, Ht, coefint1, coefint2, W)
-    anew = a[FltNI]
+    a_local = element_computation(Nel, iglob, dd_local, H, Ht, coefint1, coefint2, W, a_local)
+    anew = a_local[FltNI]
 
     # Initial residue
     rnew = Fnew - anew
     znew = rnew./diagKnew
     pnew = znew
-    p[:] = 0
-    p[FltNI] = pnew
+    p_local[:] = 0
+    p_local[FltNI] = pnew
 
     for n = 1:4000
         anew[:] = 0
-        a[:] = 0
+        a_local[:] = 0
         
-        a = element_computation(Nel, iglob, p, H, Ht, coefint1, coefint2, W)
+        a_local = element_computation(Nel, iglob, p_local, H, Ht, coefint1, coefint2, W, a_local)
 
-        anew = a[FltNI]
+        anew = a_local[FltNI]
+
         alpha_ = znew'*rnew/(pnew'*anew)
         dnew = dnew + alpha_*pnew
         rold = rnew
@@ -47,14 +48,15 @@ function PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt,
         znew = rnew./diagKnew
         beta_ = znew'*rnew/(zold'*rold)
         pnew = znew + beta_*pnew
-        p[:] = 0
-        p[FltNI] = pnew
+        p_local[:] = 0
+        p_local[FltNI] = pnew
 
         if norm(rnew)/norm(Fnew) < 1e-5
             break;
         end
 
         if n == 4000 || norm(rnew)/norm(Fnew) > 1e10
+            println(norm(rnew)/norm(Fnew))
             println("n = ", n)
             error("PCG did not converge")
             return
@@ -66,13 +68,13 @@ end
 
 
 # Sub function to be used inside PCG
-function element_computation(Nel, iglob, F, H, Ht, coefint1, coefint2, W)
+function element_computation(Nel, iglob, F_local, H, Ht, coefint1, coefint2, W, a_local)
     
     for eo = 1:Nel
 
         # Switch to local element representation
         ig = iglob[:,:,eo]
-        locall = F[ig]
+        locall = F_local[ig]
 
         # Gradients wrt local variables
         d_xi = Ht*locall
@@ -83,10 +85,10 @@ function element_computation(Nel, iglob, F, H, Ht, coefint1, coefint2, W)
                  coefint2*(W[:,:,eo].*d_eta)*Ht
 
         # Assemble into global vector
-        a[ig] = a[ig] + locall
+        a_local[ig] = a_local[ig] + locall
 
     end
 
-    return a
+    return a_local
 
 end
