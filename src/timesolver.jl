@@ -10,6 +10,7 @@ include("NRsearch.jl")
 #include("otherFunctions.jl")
 
 temp = [0.0]
+Vf0 = zeros(length(iFlt), 1)
 
 #...........................
 # START OF THE TIME LOOP
@@ -24,33 +25,33 @@ while it < 25
 
     if isolver == 1
 
-        vPre = v[:]
-        dPre = d[:]
+        vPre .= v[:]
+        dPre .= d[:]
 
-        Vf0 = 2*v[iFlt] + Vpl
-        Vf  = Vf0[:]
+        Vf0 .= 2*v[iFlt] + Vpl
+        Vf  .= Vf0[:]
 
         for p1 = 1:2
             
             # Compute the forcing term
-            F[:] = 0
-            F[iFlt] = dPre[iFlt] + v[iFlt]*dt
+            F[:] .= 0
+            F[iFlt] .= dPre[iFlt] .+ v[iFlt]*dt
 
             # Assign previous displacement field as initial guess
-            dnew = d[FltNI]
+            dnew .= d[FltNI]
 
             # Solve d = K^-1F by PCG
             dnew = PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt, FltNI,
                           H, Ht, iglob, Nel, nglob, W)
             
             # update displacement on the medium
-            d[FltNI] = dnew
+            d[FltNI] .= dnew
 
             # make d = F on the fault
-            d[iFlt] = F[iFlt]
+            d[iFlt] .= F[iFlt]
 
             # Compute on-fault stress
-            a[:] = 0
+            a[:] .= 0
             for eo = 1:Nel
                 ig = iglob[:,:,eo]
                 locall = d[ig]
@@ -71,8 +72,8 @@ while it < 25
                 a[ig] = a[ig] + locall
             end
 
-            a[FltIglobBC] = 0
-            tau1 = -a[iFlt]./FltB
+            a[FltIglobBC] .= 0
+            tau1 .= -a[iFlt]./FltB
             
             # Compute slip-rates on-fault
             for jF = 1:FaultNglob-NFBC 
@@ -88,42 +89,42 @@ while it < 25
                 Vf1[j] = Vo[j]*(help1 - help2) 
             end
             
-            Vf1[iFBC] = Vpl
-            Vf = (Vf0 + Vf1)/2
-            v[iFlt] = 0.5*(Vf - Vpl)
+            Vf1[iFBC] .= Vpl
+            Vf .= (Vf0 + Vf1)/2
+            v[iFlt] .= 0.5*(Vf - Vpl)
 
         end
 
-        psi = psi1[:]
-        tau = tau1[:]
-        tau[iFBC] = 0
-        Vf1[iFBC] = Vpl
+        psi .= psi1[:]
+        tau .= tau1[:]
+        tau[iFBC] .= 0
+        Vf1[iFBC] .= Vpl
 
-        v[iFlt] = 0.5*(Vf1 - Vpl)
-        v[FltNI] = (d[FltNI] - dPre[FltNI])/dt
+        v[iFlt] .= 0.5*(Vf1 - Vpl)
+        v[FltNI] .= (d[FltNI] - dPre[FltNI])/dt
 
         #RHS = a[:]
         #RHS[iFlt] = RHS[iFlt] - FltB.*tau
         #RMS = sqrt(sum(RHS.^2)/length(RHS))./maximum(abs.(RHS))
         
         # Line 731: P_MA: Omitted
-        a[:] = 0
-        d[FltIglobBC] = 0
-        v[FltIglobBC] = 0
+        a[:] .= 0
+        d[FltIglobBC] .= 0
+        v[FltIglobBC] .= 0
 
         
         # If isolver != 1, or max slip rate is < 10^-2 m/s
     else
 
-        dPre = d[:]
-        vPre = v[:]
+        dPre .= d[:]
+        vPre .= v[:]
 
         # Update
-        d = d + dt*v + (half_dt^2)*a
+        d .= d .+ dt.*v .+ (half_dt^2).*a
 
         # Prediction
-        v = v + half_dt*a
-        a[:] = 0
+        v .= v .+ half_dt.*a
+        a[:] .= 0
 
 
         # Internal forces -K*d[t+1] stored in global array 'a'
@@ -153,15 +154,15 @@ while it < 25
             a[ig] = a[ig] - locall
         end
 
-        a[FltIglobBC] = 0
+        a[FltIglobBC] .= 0
 
         # Absorbing boundaries
-        a[iBcL] .= a[iBcL] - BcLC.*v[iBcL]
-        a[iBcT] .= a[iBcT] - BcTC.*v[iBcT]
+        a[iBcL] .= a[iBcL] .- BcLC.*v[iBcL]
+        a[iBcT] .= a[iBcT] .- BcTC.*v[iBcT]
 
         ###### Fault Boundary Condition: Rate and State #############
-        FltVfree = 2*v[iFlt] + 2*half_dt*a[iFlt]./M[iFlt]
-        Vf = 2*vPre[iFlt] + Vpl
+        FltVfree .= 2*v[iFlt] .+ 2*half_dt*a[iFlt]./M[iFlt]
+        Vf .= 2*vPre[iFlt] .+ Vpl
 
         for jF = 1:FaultNglob-NFBC
 
@@ -206,24 +207,24 @@ while it < 25
 
         end
         
-        tau = tau2[:] - tauo[:]
-        tau[iFBC] = 0
-        psi = psi2[:]
+        tau .= tau2[:] .- tauo[:]
+        tau[iFBC] .= 0
+        psi .= psi2[:]
         #KD = a[:]
-        a[iFlt] = a[iFlt] - FltB.*tau
+        a[iFlt] .= a[iFlt] - FltB.*tau
         ########## End of fault boundary condition ############## 
 
 
         #RHS = a[:]
 
         # Solve for a_new
-        a[:] = a./M
+        a[:] .= a./M
         
         # Correction
-        v = v + half_dt*a
+        v .= v .+ half_dt*a
 
-        v[FltIglobBC] = 0
-        a[FltIglobBC] = 0
+        v[FltIglobBC] .= 0
+        a[FltIglobBC] .= 0
 
         #### Line 861: Omitting P_Ma
         
