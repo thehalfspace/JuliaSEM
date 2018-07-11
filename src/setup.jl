@@ -39,21 +39,19 @@ wgll2 = wgll*wgll';
 W = zeros(NGLL, NGLL, Nel)
 
 # Global Mass Matrix
-M = zeros(nglob, 1)
+M = zeros(nglob)
 
 # Mass+Damping matrix
-MC = zeros(nglob, 1);
-
-# Used for variable time stepping
-muMax = 0
+MC = zeros(nglob)
 
 # Assemble the Mass and Stiffness matrices
 include("Assemble.jl")
 
 # Time solver parameters
 dt = CFL*dt
-half_dt = 0.5*dt
 dtmin = dt
+half_dt = 0.5*dtmin
+half_dt_sq = 0.5*dtmin^2
 
 tmax = Total_time
 dtmax = 5 * 24 * 60*60/distN * 1000		# 5 days
@@ -64,10 +62,10 @@ if ETA != 0
 end
 
 # Initialize kinematic field: global arrays
-global d = zeros(nglob, 1)
-global v = zeros(nglob, 1)
-v[:,:] = 0.5e-3
-global a = zeros(nglob,1)
+global d = zeros(nglob)
+global v = zeros(nglob)
+v[:] = 0.5e-3
+global a = zeros(nglob)
 
 
 
@@ -87,15 +85,15 @@ BcTC, iBcT = BoundaryMatrix(wgll, NelX, NelY, iglob, dx_dxi, impedance, 'T')
 
 # Mass matrix at boundaries
 Mq = M[:]
-M[iBcL] = M[iBcL] + half_dt*BcLC
-M[iBcT] = M[iBcT] + half_dt*BcTC
+M[iBcL] .= M[iBcL] .+ half_dt*BcLC
+M[iBcT] .= M[iBcT] .+ half_dt*BcTC
 
 
 # Dynamic fault at bottom boundary
 FltB, iFlt = BoundaryMatrix(wgll, NelX, NelY, iglob, dx_dxi, 1, 'B') # impedance = 1
 
-FltZ = M[iFlt]./FltB /half_dt * 0.5
-FltX = x[iFlt]
+const FltZ = M[iFlt]./FltB /half_dt * 0.5
+const FltX = x[iFlt]
 
 
 #.....................
@@ -112,7 +110,7 @@ tauo = tauDepth(distN, FltX)
 #.....................................
 # Stresses and time related variables
 #.....................................
-tau = zeros(FaultNglob, 1)
+tau = zeros(FaultNglob)
 
 psi = tauo./(Seff.*ccb) - fo./ccb - (cca./ccb).*log.(2*v[iFlt]./Vo)
 psi0 = psi[:]
@@ -161,8 +159,8 @@ tevneinc = 0.5
 Vevne = Vthres
 
 # Compute XiLf for each fault node
-Xith = zeros(FaultNglob,1)
-XiLf = zeros(FaultNglob,1)
+Xith = zeros(FaultNglob)
+XiLf = zeros(FaultNglob)
 
 for j=1:FaultNglob
 	
@@ -219,18 +217,18 @@ println("Average node spacing = ", LX/distN/(FaultNglob-1))
 FltNI = deleteat!(collect(1:nglob), iFlt) 
 
 # Some more initializations
-r = zeros(nglob,1)
-beta_ = zeros(nglob,1)
-alpha_ = zeros(nglob,1)
-p = zeros(nglob, 1)
+r = zeros(nglob)
+beta_ = zeros(nglob)
+alpha_ = zeros(nglob)
+p = zeros(nglob)
 
-F = zeros(nglob,1)
-dPre = zeros(nglob,1)
-vPre = zeros(nglob,1)
-dd = zeros(nglob,1)
-dacum = zeros(nglob,1)
+F = zeros(nglob)
+dPre = zeros(nglob)
+vPre = zeros(nglob)
+dd = zeros(nglob)
+dacum = zeros(nglob)
 
-dnew = zeros(length(FltNI),1)
+dnew = zeros(length(FltNI))
 
 
 ################################
@@ -241,7 +239,7 @@ dnew = zeros(length(FltNI),1)
 isolver = 1
 
 # Compute the diagonal of K
-Kdiag = zeros(nglob,1)
+Kdiag = zeros(nglob)
 Klocdiag = zeros(NGLL, NGLL)
 for e = 1:Nel
     ig = iglob[:,:,e]
@@ -256,7 +254,7 @@ for e = 1:Nel
         end
     end
 
-    Kdiag[ig] = Kdiag[ig] + Klocdiag[:,:]
+    Kdiag[ig] .= Kdiag[ig] .+ Klocdiag[:,:]
 end
 
 diagKnew = Kdiag[FltNI]

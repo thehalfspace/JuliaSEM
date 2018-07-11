@@ -78,28 +78,28 @@ const ThickY = 0
 #--------------------------
 const Vpl = 35e-3/yr2sec	#	Plate loading
 
-Seff= repmat([50e6], FaultNglob, 1)		#	Effective normal stress
-tauo = repmat([22.5e6], FaultNglob, 1)  #   Initial shear stress
-fo 	= repmat([0.6], FaultNglob, 1)		#	Reference friction coefficient
-cca = repmat([0.015], FaultNglob, 1)	#	Rate-state parameter 'a'
-ccb = repmat([0.020], FaultNglob, 1)	#	Rate-state parameter 'b'
-const Vo 	= repmat([1e-6], FaultNglob, 1)		#	Reference velocity 'Vo'
-const xLf = repmat([0.008/distN], FaultNglob, 1)#	Dc (Lc) = 8 mm
-FaultC = zeros(FaultNglob, 1)
-Vf1 = zeros(FaultNglob, 1)
-Vf2 = zeros(FaultNglob, 1)
-Vf 	= zeros(FaultNglob, 1)
-psi1= zeros(FaultNglob, 1)
-psi2= zeros(FaultNglob, 1)
-tau1= zeros(FaultNglob, 1)
-tau2= zeros(FaultNglob, 1)
-tau3= zeros(FaultNglob, 1)
-tauNR= zeros(FaultNglob, 1)
-tauAB= zeros(FaultNglob, 1)
+Seff= repmat([50e6], FaultNglob)		#	Effective normal stress
+tauo = repmat([22.5e6], FaultNglob)  #   Initial shear stress
+fo 	= repmat([0.6], FaultNglob)		#	Reference friction coefficient
+cca = repmat([0.015], FaultNglob)	#	Rate-state parameter 'a'
+ccb = repmat([0.020], FaultNglob)	#	Rate-state parameter 'b'
+const Vo 	= repmat([1e-6], FaultNglob)		#	Reference velocity 'Vo'
+const xLf = repmat([0.008/distN], FaultNglob)#	Dc (Lc) = 8 mm
+FaultC = zeros(FaultNglob)
+Vf1 = zeros(FaultNglob)
+Vf2 = zeros(FaultNglob)
+Vf 	= zeros(FaultNglob)
+psi1= zeros(FaultNglob)
+psi2= zeros(FaultNglob)
+tau1= zeros(FaultNglob)
+tau2= zeros(FaultNglob)
+tau3= zeros(FaultNglob)
+tauNR= zeros(FaultNglob)
+tauAB= zeros(FaultNglob)
 
 #-----------------------
 #	Output Seismograms
 #-----------------------
 OUTxseis = collect(-15:3:0)
 OUTnseis = length(OUTxseis)
-OUTyseis = repmat([15],OUTnseis,1)
+OUTyseis = repmat([15],OUTnseis)

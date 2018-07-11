@@ -10,13 +10,14 @@ include("NRsearch.jl")
 #include("otherFunctions.jl")
 
 temp = [0.0]
-Vf0 = zeros(length(iFlt), 1)
+Vf0 = zeros(length(iFlt))
+FltVfree = zeros(length(iFlt))
 
 #...........................
 # START OF THE TIME LOOP
 #...........................
 
-while it < 25
+while it < 100
     it = it + 1
     t = t + dt
 
@@ -115,12 +116,12 @@ while it < 25
         
         # If isolver != 1, or max slip rate is < 10^-2 m/s
     else
-
+        
         dPre .= d[:]
         vPre .= v[:]
 
         # Update
-        d .= d .+ dt.*v .+ (half_dt^2).*a
+        d .= d .+ dt.*v .+ (half_dt_sq).*a
 
         # Prediction
         v .= v .+ half_dt.*a
@@ -176,31 +177,9 @@ while it < 25
                 error("NR SEARCH FAILED!")
                 return
             end
-             
-            if IDstate == 1
-                psi2[j] = psi[j] + 0.5*dt*( (Vo[j]/xLf[j])*exp(-psi[j]) 
-                                            - abs(Vf[j])/xLf[j] 
-                                            + (Vo[j]/xLf[j])*exp(-psi1[j]) 
-                                            - abs(Vf1[j])/xLf[j] )
-
-            elseif IDstate == 2
-                VdtL = 0.5*abs(Vf1[j] + Vf[j])*dt/xLf[j]
-                if VdtL < 1e-6
-                    psi2[j] = log( exp(psi[j]-VdtL) + Vo[j]*dt/xLf[j] -
-                                  0.5*Vo[j]*0.5*abs(Vf1[j] + Vf[j])*dt*dt/(xLf[j]^2))
-                else
-                    psi2[j] = log(exp(psi[j]-VdtL) + 
-                                  (Vo[j]/(0.5*abs(Vf[j] + Vf1[j])))*(1-exp(-VdtL)))
-                end
-
-            elseif IDstate == 3
-                psi2[j] = exp(-0.5*abs(Vf[j] + Vf1[j])*dt/xLf[j]) * 
-                                log(0.5*abs(Vf[j] + Vf1[j])/Vo[j]) + 
-                                exp(-0.5*abs(Vf[j] + Vf1[j])*dt/xLf[j])*psi[j] 
-                                + log(Vo[j]/(-0.5*abs(Vf[j] + Vf1[j])) )
-
-            end
-
+            
+            psi2[j] = IDS2(psi[j], psi1[j], dt, Vo[j], xLf[j], Vf[j], Vf1[j], IDstate)
+            
             # NRsearch 2nd loop
             Vf2[j], tau2[j] = NRsearch(fo[j], Vo[j], cca[j], ccb[j],Seff[j],
                                       tau1[j], tauo[j], psi2[j], FltZ[j], FltVfree[j])

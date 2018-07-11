@@ -38,8 +38,8 @@ function BoundaryMatrix(wgll, NelX, NelY, iglob, jac1D, impedance, side)
 
 	NelB = length(eB)
 	ng = NelB*(NGLL-1) + 1
-	iB = zeros(Int32, ng,1)
-	B = zeros(ng, 1)
+	iB = zeros(Int32, ng)
+	B = zeros(ng)
 	jB = zeros(NGLL, NelB)
 
 	for e=1:NelB
