@@ -15,7 +15,7 @@ temp = [0.0]
 # START OF THE TIME LOOP
 #...........................
 
-while it < 1 # 17
+while it < 25
     it = it + 1
     t = t + dt
 
@@ -28,7 +28,7 @@ while it < 1 # 17
         dPre = d[:]
 
         Vf0 = 2*v[iFlt] + Vpl
-        Vf = Vf0[:]
+        Vf  = Vf0[:]
 
         for p1 = 1:2
             
@@ -78,7 +78,7 @@ while it < 1 # 17
             for jF = 1:FaultNglob-NFBC 
 
                 j = jF - 1 + NFBC
-                psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-6)
+                psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-6, IDstate)
 
                 tauAB[j] = tau1[j] + tauo[j]
                 fa = tauAB[j]/(Seff[j]*cca[j])
@@ -102,9 +102,9 @@ while it < 1 # 17
         v[iFlt] = 0.5*(Vf1 - Vpl)
         v[FltNI] = (d[FltNI] - dPre[FltNI])/dt
 
-        RHS = a[:]
-        RHS[iFlt] = RHS[iFlt] - FltB.*tau
-        RMS = sqrt(sum(RHS.^2)/length(RHS))./maximum(abs.(RHS))
+        #RHS = a[:]
+        #RHS[iFlt] = RHS[iFlt] - FltB.*tau
+        #RMS = sqrt(sum(RHS.^2)/length(RHS))./maximum(abs.(RHS))
         
         # Line 731: P_MA: Omitted
         a[:] = 0
@@ -156,8 +156,8 @@ while it < 1 # 17
         a[FltIglobBC] = 0
 
         # Absorbing boundaries
-        a[iBcL] = a[iBcL] - BcLC.*v[iBcL]
-        a[iBcT] = a[iBcT] - BcTC.*v[iBcT]
+        a[iBcL] .= a[iBcL] - BcLC.*v[iBcL]
+        a[iBcT] .= a[iBcT] - BcTC.*v[iBcT]
 
         ###### Fault Boundary Condition: Rate and State #############
         FltVfree = 2*v[iFlt] + 2*half_dt*a[iFlt]./M[iFlt]
@@ -166,7 +166,7 @@ while it < 1 # 17
         for jF = 1:FaultNglob-NFBC
 
             j = jF - 1 + NFBC
-            psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-5)
+            psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-5, IDstate)
 
             Vf1[j], tau1[j] = NRsearch(fo[j], Vo[j], cca[j], ccb[j],Seff[j],
                                       tauNR[j], tauo[j], psi1[j], FltZ[j], FltVfree[j])
@@ -206,10 +206,10 @@ while it < 1 # 17
 
         end
         
-        tau = tau2 - tauo
+        tau = tau2[:] - tauo[:]
         tau[iFBC] = 0
         psi = psi2[:]
-        KD = a[:]
+        #KD = a[:]
         a[iFlt] = a[iFlt] - FltB.*tau
         ########## End of fault boundary condition ############## 
 
@@ -217,7 +217,7 @@ while it < 1 # 17
         #RHS = a[:]
 
         # Solve for a_new
-        a = a./M
+        a[:] = a./M
         
         # Correction
         v = v + half_dt*a
@@ -282,7 +282,7 @@ while it < 1 # 17
     #-----
 
     # Output timestep info on screen
-    if mod(it,20) == 0
+    if mod(it,40) == 0
         @printf("\nTime (yr) = %1.5g", t/yr2sec)
     end
     
@@ -298,7 +298,7 @@ while it < 1 # 17
     SlipVel[:,it] = 2*v[iFlt] + Vpl
     Slip[:,it] = 2*d[iFlt] + Vpl*t
 
-    temp = push!(temp,Vf[121])
+    temp = push!(temp,Vf[120])
     
     # Compute next timestep dt
     dt = dtevol(dt, dtmax, dtmin, dtincf, XiLf, FaultNglob, NFBC, SlipVel[:,it], isolver)

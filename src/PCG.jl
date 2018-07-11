@@ -56,7 +56,7 @@ function PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt,
         end
 
         if n == 4000 || norm(rnew)/norm(Fnew) > 1e10
-            println(norm(rnew)/norm(Fnew))
+            print(norm(rnew)/norm(Fnew))
             println("n = ", n)
             error("PCG did not converge")
             return
