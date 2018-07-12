@@ -17,7 +17,7 @@ FltVfree = zeros(length(iFlt))
 # START OF THE TIME LOOP
 #...........................
 
-while it < 100
+while t < Total_time
     it = it + 1
     t = t + dt
 
@@ -262,7 +262,7 @@ while it < 100
     #-----
 
     # Output timestep info on screen
-    if mod(it,40) == 0
+    if mod(it,500) == 0
         @printf("\nTime (yr) = %1.5g", t/yr2sec)
     end
     

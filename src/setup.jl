@@ -53,7 +53,6 @@ dtmin = dt
 half_dt = 0.5*dtmin
 half_dt_sq = 0.5*dtmin^2
 
-tmax = Total_time
 dtmax = 5 * 24 * 60*60/distN * 1000		# 5 days
 
 # dt modified slightly for damping
