@@ -234,7 +234,7 @@ while t < Total_time
     if Vfmax > Vevne 
         if idelevne == 0
             nevne = nevne + 1
-            idelevne = 2
+            idelevne = 1
             tevneb = t
             tevne = tevneinc
 
@@ -242,6 +242,7 @@ while t < Total_time
             Vfsec[:,nevne] = 2*v[iFlt] + Vpl
             Tausec[:,nevne] = (tau + tauo)./1e6
         end
+
         if idelevne == 1 && (t - tevneb) > tevne
             nevne = nevne + 1
             
