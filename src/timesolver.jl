@@ -253,7 +253,7 @@ while t < Total_time
         end
 
     else
-        global idelevne = 0
+        idelevne = 0
     end
 
     #-----

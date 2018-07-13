@@ -13,8 +13,8 @@ const Nsize = 2
 const LX = Nsize*24e3/distN	#	Length of Horizontal dimension of box	
 const LY = Nsize*15e3/distN	#	Length of Vertical dimension of box
 
-const NelX = 15*Nsize	#	No. of elements in X
-const NelY = 10*Nsize 	#	No. of elements in Y
+const NelX = 60*Nsize	#	No. of elements in X
+const NelY = 40*Nsize 	#	No. of elements in Y
 
 #NelX = NelX*Nsize
 #NelY = NelY*Nsize
@@ -69,8 +69,8 @@ rho = zeros(NGLL, NGLL)
 mu = zeros(NGLL, NGLL)
 
 # Low velocity layer dimensions
-const ThickX = 0
-const ThickY = 0
+const ThickX = 5e3
+const ThickY = 1e3
 
 
 #--------------------------
