@@ -7,7 +7,6 @@
 include("PCG.jl")
 include("dtevol.jl")
 include("NRsearch.jl")
-#include("otherFunctions.jl")
 
 Vf0 = zeros(length(iFlt))
 FltVfree = zeros(length(iFlt))

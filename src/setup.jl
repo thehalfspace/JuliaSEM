@@ -11,12 +11,12 @@
 #.................................
 # Include external function files
 #.................................
-include("Parameters.jl")	#	Set Parameters
+include("parameters/defaultParameters.jl")	#	Set Parameters
 include("GetGLL.jl")		#	Polynomial interpolation
 include("Meshbox.jl")		# 	Build 2D mesh
 include("BoundaryMatrix.jl") #	Boundary matrices
 include("FindNearestNode.jl")#	Nearest node	
-include("otherFunctions.jl") # other functions
+include("IDState.jl") # other functions
 
 #...............
 # Build 2D Mesh
@@ -98,6 +98,7 @@ const FltX = x[iFlt]
 #.....................
 # Initial Conditions 
 #.....................
+include("initialConditions/defaultInitialConditions.jl")
 #tauo = repmat([22.5e6], FaultNglob, 1)
 
 cca, ccb = fricDepth(cca, ccb, distN, FltX)
