@@ -9,7 +9,6 @@ include("dtevol.jl")
 include("NRsearch.jl")
 #include("otherFunctions.jl")
 
-temp = [0.0]
 Vf0 = zeros(length(iFlt))
 FltVfree = zeros(length(iFlt))
 
@@ -77,9 +76,8 @@ while t < Total_time
             tau1 .= -a[iFlt]./FltB
             
             # Compute slip-rates on-fault
-            for jF = 1:FaultNglob-NFBC 
+            for j = FaultNglob-NFBC-1: FaultNglob-1 
 
-                j = jF - 1 + NFBC
                 psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-6, IDstate)
 
                 tauAB[j] = tau1[j] + tauo[j]
@@ -165,9 +163,10 @@ while t < Total_time
         FltVfree .= 2*v[iFlt] .+ 2*half_dt*a[iFlt]./M[iFlt]
         Vf .= 2*vPre[iFlt] .+ Vpl
 
-        for jF = 1:FaultNglob-NFBC
+        #for jF = 1:FaultNglob-NFBC
+        for j = FaultNglob-NFBC-1: FaultNglob-1 
 
-            j = jF - 1 + NFBC
+            #j = jF - 1 + NFBC
             psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-5, IDstate)
 
             Vf1[j], tau1[j] = NRsearch(fo[j], Vo[j], cca[j], ccb[j],Seff[j],
@@ -279,7 +278,6 @@ while t < Total_time
     SlipVel[:,it] = 2*v[iFlt] + Vpl
     Slip[:,it] = 2*d[iFlt] + Vpl*t
 
-    temp = push!(temp,Vf[120])
     
     # Compute next timestep dt
     dt = dtevol(dt, dtmax, dtmin, dtincf, XiLf, FaultNglob, NFBC, SlipVel[:,it], isolver)
