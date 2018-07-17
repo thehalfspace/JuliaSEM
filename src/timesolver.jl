@@ -276,6 +276,7 @@ while t < Total_time
     Stress[:,it] = (tau + tauo)./1e6
     SlipVel[:,it] = 2*v[iFlt] + Vpl
     Slip[:,it] = 2*d[iFlt] + Vpl*t
+    State[:,it] = psi
 
     
     # Compute next timestep dt
@@ -298,5 +299,6 @@ Tau5yr = Tau5yr[:,1:ntvsx]
 Stress = Stress[:,1:it]
 SlipVel = SlipVel[:,1:it]
 Slip = Slip[:,1:it]
+State = State[:,1:it]
 
 println("\nSimulation Complete")

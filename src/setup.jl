@@ -296,6 +296,6 @@ Tau5yr = zeros(FaultNglob, 1e4)
 Stress = zeros(FaultNglob, 1e5)
 SlipVel = zeros(FaultNglob, 1e5)
 Slip = zeros(FaultNglob, 1e5)
-
+State = zeros(FaultNglob, 1e5)
 
 println("\nSetup Complete")
