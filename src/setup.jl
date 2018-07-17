@@ -53,7 +53,7 @@ dtmin = dt
 half_dt = 0.5*dtmin
 half_dt_sq = 0.5*dtmin^2
 
-dtmax = 5 * 24 * 60*60/distN * 1000		# 5 days
+dtmax = 5 * 24 * 60*60		# 5 days
 
 # dt modified slightly for damping
 if ETA != 0
@@ -101,11 +101,11 @@ const FltX = x[iFlt]
 include("initialConditions/defaultInitialConditions.jl")
 #tauo = repmat([22.5e6], FaultNglob, 1)
 
-cca, ccb = fricDepth(cca, ccb, distN, FltX)
+cca, ccb = fricDepth(cca, ccb, FltX)
 
-Seff = SeffDepth(distN, FltX)
+Seff = SeffDepth(FltX)
 
-tauo = tauDepth(distN, FltX)
+tauo = tauDepth(FltX)
 
 #.....................................
 # Stresses and time related variables
@@ -190,10 +190,10 @@ OUTtGo = 0
 OUTtCount = 1
 
 # Output variables at several locations on fault
-OutLoc1 = 1e3/distN
-OutLoc2 = 2e3/distN
-OutLoc3 = 6e3/distN
-OutLoc4 = 8e3/distN
+OutLoc1 = 1e3
+OutLoc2 = 2e3
+OutLoc3 = 6e3
+OutLoc4 = 8e3
 
 xLoc1, yLoc1, iglobLoc1 = FindNearestNode(OutLoc1, 0, x, y)
 FltLoc1 = round((LX - OutLoc1)*FaultNglob/LX)
@@ -209,7 +209,7 @@ FltLoc4 = round((LX - OutLoc4)*FaultNglob/LX)
 
 # Display important parameters 
 println("Total number of nodes on fault = ", FaultNglob)
-println("Average node spacing = ", LX/distN/(FaultNglob-1))
+println("Average node spacing = ", LX/(FaultNglob-1))
 @printf("dt = %1.17f", dt)
 
 
@@ -262,7 +262,7 @@ diagKnew = Kdiag[FltNI]
 
 v[:] = v[:] - 0.5*Vpl
 Vf = 2*v[iFlt]
-const iFBC = find(abs.(FltX) .> 24e3/distN)
+const iFBC = find(abs.(FltX) .> 24e3)
 const NFBC = length(iFBC)
 Vf[iFBC] = 0
 

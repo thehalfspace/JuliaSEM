@@ -6,15 +6,15 @@ end
 
 
 # Compute rate-state friciton with depth
-function fricDepth(cca, ccb, distN, FltX)
+function fricDepth(cca, ccb, FltX)
     
     # Friction with depth
     a_b = cca - ccb
-    fP1 = [0 -1.2e3/distN]
-    fP2 = [-0.0041 -2e3/distN]
-    fP3 = [-0.0041 -12e3/distN]
-    fP4 = [0.015 -17e3/distN]
-    fP5 = [0.024 -24e3/distN]
+    fP1 = [0, -1.2e3]
+    fP2 = [-0.0041, -2e3]
+    fP3 = [-0.0041, -12e3]
+    fP4 = [0.015, -17e3]
+    fP5 = [0.024, -24e3]
 
     fric_depth1 = find(abs.(FltX) .<= abs(fP2[2]))
     fric_depth2 = find(abs(fP2[2]) .< abs.(FltX) .<= abs(fP3[2]))
@@ -36,9 +36,9 @@ end
 
 
 # Effective normal stress
-function SeffDepth(distN, FltX)
+function SeffDepth(FltX)
     sP1 = [3e6 0]
-    sP2 = [50e6 -2e3/distN]
+    sP2 = [50e6 -2e3]
     Seff_depth = find(abs.(FltX) .<= abs(sP2[2]))
     Seff[Seff_depth] = Int1D(sP1, sP2, FltX[Seff_depth])
 
@@ -47,13 +47,13 @@ end
 
 
 # Shear stress
-function tauDepth(distN, FltX)
+function tauDepth(FltX)
 
     tP1 = [3e6 0]
-    tP2 = [30e6 -2e3/distN]
-    tP3 = [30e6 -12e3/distN]
-    tP4 = [22.5e6 -17e3/distN]
-    tP5 = [22.5e6 -24e3distN]
+    tP2 = [30e6 -2e3]
+    tP3 = [30e6 -12e3]
+    tP4 = [22.5e6 -17e3]
+    tP5 = [22.5e6 -24e3]
 
     tau_depth1 = find(abs.(FltX) .<= abs(tP2[2]))
     tau_depth2 = find(abs(tP2[2]) .< abs.(FltX) .<= abs(tP3[2]))

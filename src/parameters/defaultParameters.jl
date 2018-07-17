@@ -8,10 +8,10 @@
 #----------------
 #	Domain Size:
 #----------------
-const distN = 1	#	km to m conversion
+#const distN = 1	#	km to m conversion
 const Nsize = 2
-const LX = Nsize*24e3/distN	#	Length of Horizontal dimension of box	
-const LY = Nsize*15e3/distN	#	Length of Vertical dimension of box
+const LX = Nsize*24e3	#	Length of Horizontal dimension of box	
+const LY = Nsize*15e3	#	Length of Vertical dimension of box
 
 const NelX = 15*Nsize	#	No. of elements in X
 const NelY = 10*Nsize 	#	No. of elements in Y
@@ -84,7 +84,7 @@ fo 	= repmat([0.6], FaultNglob)		#	Reference friction coefficient
 cca = repmat([0.015], FaultNglob)	#	Rate-state parameter 'a'
 ccb = repmat([0.020], FaultNglob)	#	Rate-state parameter 'b'
 const Vo 	= repmat([1e-6], FaultNglob)		#	Reference velocity 'Vo'
-const xLf = repmat([0.008/distN], FaultNglob)#	Dc (Lc) = 8 mm
+const xLf = repmat([0.008], FaultNglob)#	Dc (Lc) = 8 mm
 FaultC = zeros(FaultNglob)
 Vf1 = zeros(FaultNglob)
 Vf2 = zeros(FaultNglob)
