@@ -11,7 +11,7 @@
 #.................................
 # Include external function files
 #.................................
-include("parameters/defaultParameters.jl")	#	Set Parameters
+include("parameters/BenchmarkParameters.jl")	#	Set Parameters
 include("GetGLL.jl")		#	Polynomial interpolation
 include("Meshbox.jl")		# 	Build 2D mesh
 include("BoundaryMatrix.jl") #	Boundary matrices
@@ -98,14 +98,15 @@ const FltX = x[iFlt]
 #.....................
 # Initial Conditions 
 #.....................
-include("initialConditions/defaultInitialConditions.jl")
+include("initialConditions/BenchmarkIC.jl")
 #tauo = repmat([22.5e6], FaultNglob, 1)
+
+tauo[:] = tauDepth(distN, FltX, Seff[1], maximum(cca), Vpl, Vo[1], fo[1],
+                ccb[1])
 
 cca, ccb = fricDepth(cca, ccb, distN, FltX)
 
 Seff = SeffDepth(distN, FltX)
-
-tauo = tauDepth(distN, FltX)
 
 #.....................................
 # Stresses and time related variables
@@ -262,13 +263,13 @@ diagKnew = Kdiag[FltNI]
 
 v[:] = v[:] - 0.5*Vpl
 Vf = 2*v[iFlt]
-const iFBC = find(abs.(FltX) .> 24e3/distN)
+const iFBC = find(abs.(FltX) .> Fdepth)
 const NFBC = length(iFBC)
 Vf[iFBC] = 0
 
-# Fault boundary: indices where fault within 24 km
+# Fault boundary: indices where fault within 40 km
 fbc = reshape(iglob[:,1,:], length(iglob[:,1,:]),1)
-idx = find(fbc .== find(x .== -24e3)[1] - 1)[1]
+idx = find(fbc .== find(x .== -Fdepth)[1] - 1)[1]
 const FltIglobBC = fbc[1:idx]
 
 v[FltIglobBC] = 0

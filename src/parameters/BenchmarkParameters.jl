@@ -10,8 +10,8 @@
 #----------------
 const distN = 1	#	km to m conversion
 const Nsize = 2
-const LX = Nsize*24e3/distN	#	Length of Horizontal dimension of box	
-const LY = Nsize*15e3/distN	#	Length of Vertical dimension of box
+const LX = Nsize*30e3/distN	#	Length of vertical dimension of box	
+const LY = Nsize*18e3/distN	#	Length of horizontal dimension of box
 
 const NelX = 15*Nsize	#	No. of elements in X
 const NelY = 10*Nsize 	#	No. of elements in Y
@@ -24,6 +24,7 @@ const dye = LY/NelY #	Size of one element along Y
 
 const Nel = NelX*NelY # Total no. of elements
 
+Fdepth = 40e3/distN # fault depth
 
 #----------------
 #	No. of nodes
@@ -61,8 +62,6 @@ const coefint2 = jac/dy_deta^2
 #-------------------------------------
 const rho1 = 2670
 const vs1 = 3464
-const rho2 = 2500
-const vs2 = 0.6*vs1
 ETA = 0
 
 rho = zeros(NGLL, NGLL)
@@ -76,13 +75,13 @@ const ThickY = 0e3
 #--------------------------
 # Earthquake parameters
 #--------------------------
-const Vpl = 35e-3/yr2sec	#	Plate loading
+const Vpl = 1.0e-9 	#	Plate loading
 
 Seff= repmat([50e6], FaultNglob)		#	Effective normal stress
 tauo = repmat([22.5e6], FaultNglob)  #   Initial shear stress
 fo 	= repmat([0.6], FaultNglob)		#	Reference friction coefficient
-cca = repmat([0.015], FaultNglob)	#	Rate-state parameter 'a'
-ccb = repmat([0.020], FaultNglob)	#	Rate-state parameter 'b'
+cca = repmat([0.025], FaultNglob)	#	Rate-state parameter 'a'
+ccb = repmat([0.015], FaultNglob)	#	Rate-state parameter 'b'
 const Vo 	= repmat([1e-6], FaultNglob)		#	Reference velocity 'Vo'
 const xLf = repmat([0.008/distN], FaultNglob)#	Dc (Lc) = 8 mm
 FaultC = zeros(FaultNglob)
