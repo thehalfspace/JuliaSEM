@@ -11,7 +11,7 @@
 #.................................
 # Include external function files
 #.................................
-include("parameters/BenchmarkParameters.jl")	#	Set Parameters
+include("parameters/defaultParameters.jl")	#	Set Parameters
 include("GetGLL.jl")		#	Polynomial interpolation
 include("Meshbox.jl")		# 	Build 2D mesh
 include("BoundaryMatrix.jl") #	Boundary matrices
@@ -98,12 +98,14 @@ const FltX = x[iFlt]
 #.....................
 # Initial Conditions 
 #.....................
-include("initialConditions/BenchmarkIC.jl")
-tauo = repmat([22.5e6], FaultNglob, 1)
+include("initialConditions/defaultInitialConditions.jl")
+#tauo = repmat([22.5e6], FaultNglob, 1)
 
 cca, ccb = fricDepth(cca, ccb, distN, FltX)
 
-tauo[:] = tauDepth(distN, FltX, Vpl, Vo[1], fo[1], Seff[1], maximum(cca), ccb[1])
+Seff = SeffDepth(distN, FltX)
+
+tauo = tauDepth(distN, FltX)
 
 #.....................................
 # Stresses and time related variables

@@ -37,7 +37,7 @@ const FaultNglob = NelX*(NGLL - 1) + 1
 #	Parameters of the time solver
 #---------------------------------
 const yr2sec = 365*24*60*60
-Total_time = 200*yr2sec
+Total_time = 10*yr2sec
 const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
@@ -61,6 +61,8 @@ const coefint2 = jac/dy_deta^2
 #-------------------------------------
 const rho1 = 2670
 const vs1 = 3464
+const rho2 = 2500
+const vs2 = 0.6*vs1
 ETA = 0
 
 rho = zeros(NGLL, NGLL)
@@ -74,13 +76,13 @@ const ThickY = 0e3
 #--------------------------
 # Earthquake parameters
 #--------------------------
-const Vpl = 1.0e-9	#	Plate loading
+const Vpl = 35e-3/yr2sec	#	Plate loading
 
 Seff= repmat([50e6], FaultNglob)		#	Effective normal stress
 tauo = repmat([22.5e6], FaultNglob)  #   Initial shear stress
 fo 	= repmat([0.6], FaultNglob)		#	Reference friction coefficient
-cca = repmat([0.025], FaultNglob)	#	Rate-state parameter 'a'
-ccb = repmat([0.015], FaultNglob)	#	Rate-state parameter 'b'
+cca = repmat([0.015], FaultNglob)	#	Rate-state parameter 'a'
+ccb = repmat([0.020], FaultNglob)	#	Rate-state parameter 'b'
 const Vo 	= repmat([1e-6], FaultNglob)		#	Reference velocity 'Vo'
 const xLf = repmat([0.008/distN], FaultNglob)#	Dc (Lc) = 8 mm
 FaultC = zeros(FaultNglob)
