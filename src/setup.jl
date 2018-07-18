@@ -53,7 +53,7 @@ dtmin = dt
 half_dt = 0.5*dtmin
 half_dt_sq = 0.5*dtmin^2
 
-dtmax = 5 * 24 * 60*60/distN		# 5 days
+dtmax = 50 * 24 * 60*60/distN		# 50 days
 
 # dt modified slightly for damping
 if ETA != 0
