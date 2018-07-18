@@ -53,7 +53,7 @@ dtmin = dt
 half_dt = 0.5*dtmin
 half_dt_sq = 0.5*dtmin^2
 
-dtmax = 5 * 24 * 60*60/distN * 1000		# 5 days
+dtmax = 5 * 24 * 60*60/distN		# 5 days
 
 # dt modified slightly for damping
 if ETA != 0
@@ -101,12 +101,14 @@ const FltX = x[iFlt]
 include("initialConditions/BenchmarkIC.jl")
 #tauo = repmat([22.5e6], FaultNglob, 1)
 
-tauo[:] = tauDepth(distN, FltX, Seff[1], maximum(cca), Vpl, Vo[1], fo[1],
-                ccb[1])
+tau_eta = mu[1,1]/(2*vs1)
+tauo[:] = tauDepth(distN, FltX, Seff[1], maximum(cca), Vpl, Vo[1], fo[1], ccb[1], tau_eta)
+
+tauo[1:91] = 0
 
 cca, ccb = fricDepth(cca, ccb, distN, FltX)
 
-Seff = SeffDepth(distN, FltX)
+#Seff = SeffDepth(distN, FltX)
 
 #.....................................
 # Stresses and time related variables

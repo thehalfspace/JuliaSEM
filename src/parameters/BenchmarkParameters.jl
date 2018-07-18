@@ -10,8 +10,8 @@
 #----------------
 const distN = 1	#	km to m conversion
 const Nsize = 2
-const LX = Nsize*30e3/distN	#	Length of vertical dimension of box	
-const LY = Nsize*18e3/distN	#	Length of horizontal dimension of box
+const LX = Nsize*24e3/distN	#	Length of vertical dimension of box	
+const LY = Nsize*15e3/distN	#	Length of horizontal dimension of box
 
 const NelX = 15*Nsize	#	No. of elements in X
 const NelY = 10*Nsize 	#	No. of elements in Y
@@ -24,12 +24,12 @@ const dye = LY/NelY #	Size of one element along Y
 
 const Nel = NelX*NelY # Total no. of elements
 
-Fdepth = 40e3/distN # fault depth
+Fdepth = 24e3/distN # fault depth
 
 #----------------
 #	No. of nodes
 #----------------
-const P = 4		#	Lagrange polynomial degree
+const P = 8		#	Lagrange polynomial degree
 const NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
 
 const FaultNglob = NelX*(NGLL - 1) + 1
@@ -38,7 +38,7 @@ const FaultNglob = NelX*(NGLL - 1) + 1
 #	Parameters of the time solver
 #---------------------------------
 const yr2sec = 365*24*60*60
-Total_time = 10*yr2sec
+Total_time = 300*yr2sec
 const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 

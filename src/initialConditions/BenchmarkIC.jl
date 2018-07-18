@@ -9,8 +9,8 @@ end
 function fricDepth(cca, ccb, distN, FltX)
     
     # Friction with depth
-    amax = 0.025; h1 = -15e3
-    ao = 0.010; h2 = -18e3
+    amax = 0.025; h1 = -12e3
+    ao = 0.010; h2 = -15e3
     fP1 = [ao h1]
     fP2 = [amax h2]
 
@@ -26,11 +26,11 @@ function fricDepth(cca, ccb, distN, FltX)
 end
 
 # Shear stress
-function tauDepth(distN, FltX, Seff, cca, Vinit, Vo, fo, ccb)
+function tauDepth(distN, FltX, Seff, cca, Vinit, Vo, fo, ccb, tau_eta)
 
     tmp = exp((fo + ccb*log(Vo/Vinit))/(cca))
 
-    tauo = Seff*cca* asinh((Vo/(2*Vinit))*tmp) + Vinit
+    tauo = Seff*cca* asinh((Vo/(2*Vinit))*tmp) + Vinit*tau_eta
 
     return tauo
 end
