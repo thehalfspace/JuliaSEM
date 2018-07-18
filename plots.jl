@@ -61,6 +61,7 @@ function cumSlip(delfsec, delf5yr, FltX)
     ylabel("Depth (km)")
     title("Cumulative Slip")
     ylim([-24, 0])
+    xlim([0, maximum(delfsec)])
 
     show()
 

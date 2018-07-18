@@ -314,4 +314,7 @@ SlipVel = SlipVel[:,1:it]
 Slip = Slip[:,1:it]
 State = State[:,1:it]
 
+rec_int = rec_int[1:ev_it-1]
+Coslip = Coslip[1:ev_it2-1]
+
 println("\nSimulation Complete")

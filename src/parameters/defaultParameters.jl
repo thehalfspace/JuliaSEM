@@ -13,8 +13,8 @@ const Nsize = 2
 const LX = Nsize*24e3	#	Length of Horizontal dimension of box	
 const LY = Nsize*15e3	#	Length of Vertical dimension of box
 
-const NelX = 15*Nsize	#	No. of elements in X
-const NelY = 10*Nsize 	#	No. of elements in Y
+const NelX = 30*Nsize	#	No. of elements in X
+const NelY = 20*Nsize 	#	No. of elements in Y
 
 #NelX = NelX*Nsize
 #NelY = NelY*Nsize
@@ -28,7 +28,7 @@ const Nel = NelX*NelY # Total no. of elements
 #----------------
 #	No. of nodes
 #----------------
-const P = 4		#	Lagrange polynomial degree
+const P = 8		#	Lagrange polynomial degree
 const NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
 
 const FaultNglob = NelX*(NGLL - 1) + 1
