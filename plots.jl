@@ -14,7 +14,7 @@ function fricPlot(cca, ccb, FltX)
     ylabel("Depth (km)")
     title("Rate and State Friction Parameters")
     legend(loc="upper right")
-    ylim([-24, 0])
+    ylim([-40, 0])
     show()
 end
 
@@ -58,7 +58,7 @@ function cumSlip(delfsec, delf5yr, FltX)
     xlabel("Slip (m)")
     ylabel("Depth (km)")
     title("Cumulative Slip")
-    ylim([-24, 0])
+    ylim([-40, 0])
 
     show()
 

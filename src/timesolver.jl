@@ -75,7 +75,7 @@ while t < Total_time
             tau1 .= -a[iFlt]./FltB
             
             # Compute slip-rates on-fault
-            for j = FaultNglob-NFBC-1: FaultNglob-1 
+            for j = NFBC: FaultNglob-1 
 
                 psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-6, IDstate)
 
@@ -163,7 +163,7 @@ while t < Total_time
         Vf .= 2*vPre[iFlt] .+ Vpl
 
         #for jF = 1:FaultNglob-NFBC
-        for j = FaultNglob-NFBC-1: FaultNglob-1 
+        for j = NFBC: FaultNglob-1 
 
             #j = jF - 1 + NFBC
             psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-5, IDstate)

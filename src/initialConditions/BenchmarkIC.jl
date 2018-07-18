@@ -9,8 +9,8 @@ end
 function fricDepth(cca, ccb, distN, FltX)
     
     # Friction with depth
-    amax = 0.025; h1 = -12e3
-    ao = 0.010; h2 = -15e3
+    amax = 0.025; h1 = -15e3
+    ao = 0.010; h2 = -18e3
     fP1 = [ao h1]
     fP2 = [amax h2]
 

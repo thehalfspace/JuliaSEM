@@ -104,7 +104,7 @@ include("initialConditions/BenchmarkIC.jl")
 tau_eta = mu[1,1]/(2*vs1)
 tauo[:] = tauDepth(distN, FltX, Seff[1], maximum(cca), Vpl, Vo[1], fo[1], ccb[1], tau_eta)
 
-tauo[1:91] = 0
+#tauo[1:91] = 0
 
 cca, ccb = fricDepth(cca, ccb, distN, FltX)
 
@@ -271,7 +271,7 @@ Vf[iFBC] = 0
 
 # Fault boundary: indices where fault within 40 km
 fbc = reshape(iglob[:,1,:], length(iglob[:,1,:]),1)
-idx = find(fbc .== find(x .== -Fdepth)[1] - 1)[1]
+idx = find(fbc .== find(x .>= -Fdepth)[1] - 1)[1]
 const FltIglobBC = fbc[1:idx]
 
 v[FltIglobBC] = 0

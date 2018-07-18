@@ -10,11 +10,11 @@
 #----------------
 const distN = 1	#	km to m conversion
 const Nsize = 2
-const LX = Nsize*24e3/distN	#	Length of vertical dimension of box	
-const LY = Nsize*15e3/distN	#	Length of horizontal dimension of box
+const LX = Nsize*36e3/distN	#	Length of vertical dimension of box	
+const LY = Nsize*22.5e3/distN	#	Length of horizontal dimension of box
 
-const NelX = 15*Nsize	#	No. of elements in X
-const NelY = 10*Nsize 	#	No. of elements in Y
+const NelX = 30*Nsize	#	No. of elements in X
+const NelY = 20*Nsize 	#	No. of elements in Y
 
 #NelX = NelX*Nsize
 #NelY = NelY*Nsize
@@ -24,12 +24,12 @@ const dye = LY/NelY #	Size of one element along Y
 
 const Nel = NelX*NelY # Total no. of elements
 
-Fdepth = 24e3/distN # fault depth
+Fdepth = 40e3/distN # fault depth
 
 #----------------
 #	No. of nodes
 #----------------
-const P = 8		#	Lagrange polynomial degree
+const P = 4		#	Lagrange polynomial degree
 const NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
 
 const FaultNglob = NelX*(NGLL - 1) + 1
