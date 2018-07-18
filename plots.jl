@@ -2,34 +2,66 @@
 #   PLOTS FOR EARTHQUAKE CYCLES
 #################################
 
-using Gadfly
+using PyPlot
 
 # Plot friction parameters
-fricPlot = plot(layer(x = (cca-ccb).*1e3 + 10, y = FltX/1e3,
-                      Theme(default_color=colorant"red"), Geom.point),
-                layer(x = Seff/1e6, y = FltX/1e3, 
-                      Theme(default_color=colorant"deepskyblue"), Geom.point),
-                layer(x = tauo/1e6, y = FltX/1e3, 
-                      Theme(default_color=colorant"green"), Geom.point),
-                Guide.xlabel("Scaled (a-b)/ Stress value"),
-                Guide.ylabel("Depth (m)"),
-                Guide.title("Rate and state friction/Stress"),
-                Coord.Cartesian(ymin=-24))
+function fricPlot(cca, ccb, FltX)
+
+    plot(cca, FltX/1e3, "k-", label="a")
+    plot(ccb, FltX/1e3, "k--", label="b")
+    plot(cca-ccb, FltX/1e3, "r-", label="a-b")
+    xlabel("Value")
+    ylabel("Depth (km)")
+    title("Rate and State Friction Parameters")
+    legend(loc="upper right")
+    ylim([-24, 0])
+    show()
+end
 
 # Plot shear stress at location as a function of time
-loc1 = 3e3  # 3 km depth
-FltID = find(abs.(FltX) .< loc1)[1]
+function stressPlot(Stress, time_, yr2sec)
+    
+    loc1 = 3e3  # 3 km depth
+    FltID = find(abs.(FltX) .< loc1)[1]
 
-shearPlot = plot(x = time_./yr2sec, y = Stress[FltID,:], Geom.line,
-                Guide.xlabel("Time (yr)"),
-                Guide.ylabel("Shear stress at location 1"),
-                Guide.title("Shear Stress as a function of time"),
-                Coord.Cartesian(ymin=10, ymax = 60, xmax = 1000))
+    plot(time_/yr2sec, Stress[FltID, :])
+    ylabel("Shear stress at location 1")
+    xlabel("time (yr)")
+    title("Shear stress as a function of time")
+    show()
+
+end
 
 
 # Plot slip velocity at location as a function of time (same location)
-slipVelPlot = plot(x = time_./yr2sec, y = SlipVel[FltID,:], Geom.line,
-                Guide.xlabel("Time (yr)"),
-                Guide.ylabel("Shear stress at location 1"),
-                Guide.title("Shear Stress as a function of time"),
-                Coord.Cartesian(ymin=0, ymax = 5, xmax = 1000))
+function slipvelPlot(SlipVel, time_, yr2sec)
+    
+    loc1 = 3e3  # 3 km depth
+    FltID = find(abs.(FltX) .< loc1)[1]
+
+    plot(time_/yr2sec, log10.(SlipVel[FltID, :]))
+    ylabel("Log of Slip rate at location 1")
+    xlabel("time (yr)")
+    title("Slip rate as a function of time")
+    show()
+
+end
+
+
+# Plot cumulative slip
+function cumSlip(delfsec, delf5yr, FltX)
+
+    indx = find(abs.(FltX) .<= 18e3)[1]
+
+    delfsec2 = delfsec[indx:end, :]
+
+    plot(delf5yr, FltX/1e3, "b-", linewidth=0.4)
+    plot(delfsec2, FltX/1e3, "r-", linewidth=0.4)
+    xlabel("Slip (m)")
+    ylabel("Depth (km)")
+    title("Cumulative Slip")
+    ylim([-24, 0])
+
+    show()
+
+end

@@ -28,7 +28,7 @@ const Nel = NelX*NelY # Total no. of elements
 #----------------
 #	No. of nodes
 #----------------
-const P = 4		#	Lagrange polynomial degree
+const P = 8		#	Lagrange polynomial degree
 const NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
 
 const FaultNglob = NelX*(NGLL - 1) + 1
@@ -37,7 +37,7 @@ const FaultNglob = NelX*(NGLL - 1) + 1
 #	Parameters of the time solver
 #---------------------------------
 const yr2sec = 365*24*60*60
-Total_time = 10*yr2sec
+Total_time = 300*yr2sec
 const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
