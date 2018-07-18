@@ -276,10 +276,12 @@ v[FltIglobBC] = 0
 #idelevne = 0
 
 
-# Output sliprate at the start of every cycle
+# Output slip and recurrence interval at the start of every cycle
 flag = 0
-event_iter1 = 1
-event_iter2 = 1
+ev_it = 1
+ev_it2 = 1
+Coslip = zeros(FaultNglob, 1e3)
+rec_int = zeros(1e3)
 
 
 # Preallocate variables with unknown size

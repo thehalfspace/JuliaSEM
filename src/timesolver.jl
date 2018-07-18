@@ -75,7 +75,7 @@ while t < Total_time
             tau1 .= -a[iFlt]./FltB
             
             # Compute slip-rates on-fault
-            for j = FaultNglob-NFBC-1: FaultNglob-1 
+            for j = NFBC: FaultNglob-1 
 
                 psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-6, IDstate)
 
@@ -163,7 +163,7 @@ while t < Total_time
         Vf .= 2*vPre[iFlt] .+ Vpl
 
         #for jF = 1:FaultNglob-NFBC
-        for j = FaultNglob-NFBC-1: FaultNglob-1 
+        for j = NFBC: FaultNglob-1 
 
             #j = jF - 1 + NFBC
             psi1[j] = IDS(psi[j], dt, Vo[j], xLf[j], Vf[j], 1e-5, IDstate)
@@ -268,8 +268,21 @@ while t < Total_time
     # Determine quasi-static or dynamic regime based on max-slip velocity
     if isolver == 1 && Vfmax < 5e-3 || isolver == 2 && Vfmax < 2e-3
         isolver = 1
+        
+        if flag == 0
+            Coslip[:,ev_it2] = 2*d[iFlt]
+            ev_it2 = ev_it2 + 1
+            flag = 1
+        end
+
     else
         isolver = 2
+
+        if flag == 1
+            rec_int[ev_it] = t/yr2sec
+            ev_it = ev_it + 1
+            flag = 0
+        end
     end
 
     # Some variables for each timestep

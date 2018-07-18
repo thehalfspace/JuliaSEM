@@ -28,7 +28,7 @@ const Nel = NelX*NelY # Total no. of elements
 #----------------
 #	No. of nodes
 #----------------
-const P = 8		#	Lagrange polynomial degree
+const P = 4		#	Lagrange polynomial degree
 const NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
 
 const FaultNglob = NelX*(NGLL - 1) + 1

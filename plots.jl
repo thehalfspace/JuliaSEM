@@ -56,7 +56,7 @@ function cumSlip(delfsec, delf5yr, FltX)
     delfsec2 = delfsec[indx:end, :]
 
     plot(delf5yr, FltX/1e3, "b-", linewidth=0.4)
-    plot(delfsec2, FltX/1e3, "r-", linewidth=0.4)
+    plot(delfsec2, FltX[indx:end]/1e3, "r-", linewidth=0.4)
     xlabel("Slip (m)")
     ylabel("Depth (km)")
     title("Cumulative Slip")
