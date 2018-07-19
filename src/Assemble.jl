@@ -18,7 +18,7 @@ for ey = 1:NelY
         ig = iglob[:,:,eo]
 
         # Properties of heterogeneous medium
-        if ex*dxe >= ThickX && ey*dye <= ThickY
+        if x_points[ex] >= -ThickX && y_points[ey] <= ThickY
             rho[:,:] .= rho2
             mu[:,:] .= rho2*vs2^2
         else
@@ -31,7 +31,7 @@ for ey = 1:NelY
         end
 
         # Diagonal Mass Matrix
-        M[ig] .= M[ig] .+ wgll2.*rho*jac
+        M[ig] .= M[ig] .+ wgll2.*rho*(0.25*dxe[ex]*dye[ey])
 
         # Local contributions to the stiffness matrix
         W[:,:,eo] .= wgll2.*mu;
@@ -39,12 +39,12 @@ for ey = 1:NelY
         # Set timestep
         vso .= sqrt.(mu./rho)
             
-        if dxe<dye
+        if dxe[ex]<dye[ey]
             vs .= max.(vso[1:NGLL-1,:], vso[2:NGLL,:])
-            dx .= repmat( diff(xgll)*0.5*dxe, 1, NGLL)
+            dx .= repmat( diff(xgll)*0.5*dxe[ex], 1, NGLL)
         else
             vs .= max.(vso[:,1:NGLL-1], vso[:,2:NGLL])'
-            dx .= repmat( diff(xgll)*0.5*dye, 1, NGLL)
+            dx .= repmat( diff(xgll)*0.5*dye[ey], 1, NGLL)
         end
             
         dtloc = dx./vs

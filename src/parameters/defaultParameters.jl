@@ -25,11 +25,11 @@ const NelY = 10*Nsize 	#	No. of elements in Y
 x_points = LX*sin.(pi/2*collect(0:NelX)/NelX)
 y_points = LY*(1 - sin.(pi/2*collect(0:NelY)/NelY))
 dxe = diff(x_points)
-dye = diff(y_points)
+dye = abs.(diff(y_points))
 
 const Nel = NelX*NelY # Total no. of elements
 
-Fdepth = 40e3/distN # fault depth
+Fdepth = 24e3/distN # fault depth
 
 #----------------
 #	No. of nodes
