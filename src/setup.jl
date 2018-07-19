@@ -11,9 +11,9 @@
 #.................................
 # Include external function files
 #.................................
-include("parameters/BenchmarkParameters.jl")	#	Set Parameters
+include("parameters/defaultParameters.jl")	#	Set Parameters
 include("GetGLL.jl")		#	Polynomial interpolation
-include("Meshbox.jl")		# 	Build 2D mesh
+include("VariableMesh.jl")		# 	Build 2D mesh
 include("BoundaryMatrix.jl") #	Boundary matrices
 include("FindNearestNode.jl")#	Nearest node	
 include("IDState.jl") # other functions
@@ -21,7 +21,7 @@ include("IDState.jl") # other functions
 #...............
 # Build 2D Mesh
 #...............
-iglob, x, y = MeshBox(LX, LY, NelX, NelY, NGLL)
+iglob, x, y = MeshBox(LX, LY, NelX, NelY, NGLL, dxe, dye)
 x = x-LX		#	For halfspace
 const nglob = length(x);
 
@@ -44,6 +44,26 @@ M = zeros(nglob)
 # Mass+Damping matrix
 MC = zeros(nglob)
 
+
+#------------------------------------
+#	Jacobian for the global -> local 
+#	coordinate conversion
+# (for constant mesh size, use this)
+#------------------------------------
+#const dx_dxi = 0.5*dxe
+#const dy_deta = 0.5*dye
+#const jac = dx_dxi*dy_deta
+#const coefint1 = jac/dx_dxi^2
+#const coefint2 = jac/dy_deta^2
+
+#-----------------------------------
+# Jacobian with variable mesh size
+#-----------------------------------
+include("Varjac1D.jl")
+
+dx_dxi, dy_deta, coefint1, coefint2 = Varjac1D(dxe, dye)
+
+
 # Assemble the Mass and Stiffness matrices
 include("Assemble.jl")
 
@@ -53,7 +73,7 @@ dtmin = dt
 half_dt = 0.5*dtmin
 half_dt_sq = 0.5*dtmin^2
 
-dtmax = 50 * 24 * 60*60/distN		# 50 days
+dtmax = 50 * 24 * 60*60/distN		# 5 days
 
 # dt modified slightly for damping
 if ETA != 0
@@ -271,7 +291,7 @@ Vf[iFBC] = 0
 
 # Fault boundary: indices where fault within 40 km
 fbc = reshape(iglob[:,1,:], length(iglob[:,1,:]),1)
-idx = find(fbc .== find(x .>= -Fdepth)[1] - 1)[1]
+idx = find(fbc .== find(x .== -Fdepth)[1] - 1)[1]
 const FltIglobBC = fbc[1:idx]
 
 v[FltIglobBC] = 0

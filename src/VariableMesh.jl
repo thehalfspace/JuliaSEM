@@ -24,10 +24,7 @@
 ###############################################################################
 
 
-function MeshBox(LX, LY, NELX, NELY, NGLL) 
-
-	dxe = LX/NELX
-	dye = LY/NELY
+function MeshBox(LX, LY, NELX, NELY, NGLL, dxe, dye) 
 
 	XGLL = GetGLL(NGLL)[1]
 
@@ -45,18 +42,20 @@ function MeshBox(LX, LY, NELX, NELY, NGLL)
 	igB = reshape(collect(1:NGLL*(NGLL-1)), NGLL, NGLL-1) # Bottom edge
 	igLB = reshape(collect(1:(NGLL-1)*(NGLL-1)), NGLL-1, NGLL-1) # rest of the elements
 
-	xgll = repmat(0.5*(1+XGLL), 1, NGLL)
-	ygll = dye*xgll'
-	xgll = dxe*xgll
+	x2gll = repmat(0.5*(1+XGLL), 1, NGLL)
+	#ygll = dye*xgll'
+	#xgll = dxe*xgll
 
 
 	for ey = 1:NELY         # number of x elements
 		for ex = 1:NELX     # number of y elements
 
 			e = e + 1
+            
+            ygll = dye[ey]*x2gll'
+            xgll = dxe[ex]*x2gll
 
 			# Redundant nodes at element edges
-            
             # NGLL = number of GLL nodes per element
             
 			if e == 1
@@ -81,23 +80,17 @@ function MeshBox(LX, LY, NELX, NELY, NGLL)
 			last_iglob = ig[NGLL, NGLL]
 
 			# Global coordinates of computational nodes
-			x[ig] = dxe*(ex-1) + xgll
-			y[ig] = dye*(ey-1) + ygll
+            #x[ig] = dxe[ex]*(ex-1) + xgll
+            #y[ig] = dye[ey]*(ey-1) + ygll
+            
+            x[ig] = LX*sin(pi/2*(ex-1)/NelX) + xgll
+            y[ig] = LY*(1 - sin(pi/2*(ey-1)/NelY)) + ygll
 
 		end
 	end
 
 
-    #------------------------------------
-    #	Jacobian for the global -> local 
-    #	coordinate conversion
-    #------------------------------------
-    const dx_dxi = 0.5*dxe
-    const dy_deta = 0.5*dye
-    const jac = dx_dxi*dy_deta
-    const coefint1 = jac/dx_dxi^2
-    const coefint2 = jac/dy_deta^2
+	return iglob, x, y
 
-	return iglob, x, y, coefint1, coefint2, dxe, dye, jac
 end
 

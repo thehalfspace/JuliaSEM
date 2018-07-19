@@ -16,14 +16,20 @@ const LY = Nsize*15e3/distN	#	Length of Vertical dimension of box
 const NelX = 15*Nsize	#	No. of elements in X
 const NelY = 10*Nsize 	#	No. of elements in Y
 
-#NelX = NelX*Nsize
-#NelY = NelY*Nsize
 
-const dxe = LX/NelX #	Size of one element along X
-const dye = LY/NelY #	Size of one element along Y
+# for constant mesh size using MeshBox, uncomment the two lines below
+#dxe = LX/NelX #	Size of one element along X
+#dye = LY/NelY #	Size of one element along Y
+
+# for variable mesh size using VariableMesh, use the lines below
+x_points = LX*sin.(pi/2*collect(0:NelX)/NelX)
+y_points = LY*(1 - sin.(pi/2*collect(0:NelY)/NelY))
+dxe = diff(x_points)
+dye = diff(y_points)
 
 const Nel = NelX*NelY # Total no. of elements
 
+Fdepth = 40e3/distN # fault depth
 
 #----------------
 #	No. of nodes
@@ -42,17 +48,6 @@ const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
 const IDstate = 2
-
-
-#------------------------------------
-#	Jacobian for the global -> local 
-#	coordinate conversion
-#------------------------------------
-const dx_dxi = 0.5*dxe
-const dy_deta = 0.5*dye
-const jac = dx_dxi*dy_deta
-const coefint1 = jac/dx_dxi^2
-const coefint2 = jac/dy_deta^2
 
 #-------------------------------------
 #	Physical properties of the medium
