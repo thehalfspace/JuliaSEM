@@ -60,7 +60,7 @@ function coefint(coefint1, coefint2, dxe, dye)
 
             eo = eo + 1
 
-            jac = 0.25*dxe[ex]*ye[ey]
+            jac = 0.25*dxe[ex]*dye[ey]
 
             coefint1[eo] = jac/(0.5*dxe[ex])^2
             coefint2[eo] = jac/(0.5*dye[ey])^2

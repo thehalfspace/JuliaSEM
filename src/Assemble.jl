@@ -39,12 +39,12 @@ for ey = 1:NelY
         # Set timestep
         vso .= sqrt.(mu./rho)
             
-        if dxe<dye
+        if dxe[ex]<dye[ey]
             vs .= max.(vso[1:NGLL-1,:], vso[2:NGLL,:])
-            dx .= repmat( diff(xgll)*0.5*dxe, 1, NGLL)
+            dx .= repmat( diff(xgll)*0.5*dxe[ex], 1, NGLL)
         else
             vs .= max.(vso[:,1:NGLL-1], vso[:,2:NGLL])'
-            dx .= repmat( diff(xgll)*0.5*dye, 1, NGLL)
+            dx .= repmat( diff(xgll)*0.5*dye[ey], 1, NGLL)
         end
             
         dtloc = dx./vs
