@@ -281,6 +281,7 @@ while t < Total_time
         if flag == 1
             rec_int[ev_it] = t/yr2sec
             ev_it = ev_it + 1
+            #Coslip[:,ev_it1] = 2*d[iFlt]
             flag = 0
         end
     end
@@ -314,7 +315,7 @@ SlipVel = SlipVel[:,1:it]
 Slip = Slip[:,1:it]
 State = State[:,1:it]
 
-rec_int = rec_int[1:ev_it-1]
-Coslip = Coslip[1:ev_it2-1]
+rec_int = rec_int[1:ev_it]
+Coslip = Coslip[:,1:ev_it2]
 
 println("\nSimulation Complete")
