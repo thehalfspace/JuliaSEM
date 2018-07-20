@@ -10,6 +10,7 @@ include("NRsearch.jl")
 
 Vf0 = zeros(length(iFlt))
 FltVfree = zeros(length(iFlt))
+dummy_it = zeros(1000)
 
 #...........................
 # START OF THE TIME LOOP
@@ -272,6 +273,7 @@ while t < Total_time
         if flag == 0
             Coslip[:,ev_it2] = 2*d[iFlt]
             ev_it2 = ev_it2 + 1
+            dummy_it[ev_it2] = it
             flag = 1
         end
 
@@ -315,7 +317,8 @@ SlipVel = SlipVel[:,1:it]
 Slip = Slip[:,1:it]
 State = State[:,1:it]
 
-rec_int = rec_int[1:ev_it]
-Coslip = Coslip[:,1:ev_it2]
+rec_int = rec_int[2:ev_it]
+Coslip = Coslip[:,2:ev_it2]
+dummy_it = dummy_it[2:ev_it2]
 
 println("\nSimulation Complete")
