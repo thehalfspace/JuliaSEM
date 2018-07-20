@@ -13,7 +13,7 @@
 #.................................
 include("parameters/defaultParameters.jl")	#	Set Parameters
 include("GetGLL.jl")		#	Polynomial interpolation
-include("VariableMesh.jl")		# 	Build 2D mesh
+include("MeshBox.jl")		# 	Build 2D mesh
 include("BoundaryMatrix.jl") #	Boundary matrices
 include("FindNearestNode.jl")#	Nearest node	
 include("IDState.jl") # other functions
@@ -21,9 +21,9 @@ include("IDState.jl") # other functions
 #...............
 # Build 2D Mesh
 #...............
-iglob, x, y = MeshBox(LX, LY, NelX, NelY, NGLL, dxe, dye)
+iglob, x, y = MeshBox(LX, LY, NelX, NelY, NGLL)
 x = x-LX		#	For halfspace
-x_points = x_points - LX
+#x_points = x_points - LX
 
 const nglob = length(x);
 
@@ -52,13 +52,13 @@ MC = zeros(nglob)
 #	coordinate conversion
 # (for constant mesh size, use this)
 #------------------------------------
-#const dx_dxi = 0.5*dxe
-#const dy_deta = 0.5*dye
-#const jac = dx_dxi*dy_deta
-#const coefint1 = jac/dx_dxi^2
-#const coefint2 = jac/dy_deta^2
+const dx_dxi = 0.5*dxe
+const dy_deta = 0.5*dye
+const jac = dx_dxi*dy_deta
+const coefint1 = jac/dx_dxi^2
+const coefint2 = jac/dy_deta^2
 
-#-----------------------------------
+#=-----------------------------------
 # Jacobian with variable mesh size
 #-----------------------------------
 include("Varjac1D.jl")
@@ -69,7 +69,7 @@ coefint2 = zeros(Nel)
 coefint1, coefint2 = coefint(coefint1, coefint2, dxe, dye)
 
 #dx_dxi, dy_deta, coefint1, coefint2 = Varjac1D(dxe, dye)
-
+=#
 
 # Assemble the Mass and Stiffness matrices
 include("Assemble.jl")
@@ -279,8 +279,8 @@ for e = 1:Nel
     for k =  1:NGLL
         for j = 1:NGLL
             Klocdiag[k,j] = Klocdiag[k,j] + 
-            sum( coefint1[e]*H[k,:].*(wloc[:,j].*Ht[:,k])
-                + coefint2[e]*(wloc[k,:].*H[j,:]).*Ht[:,j] )
+            sum( coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
+                + coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
         end
     end
 

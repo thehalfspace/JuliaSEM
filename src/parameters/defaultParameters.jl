@@ -13,28 +13,28 @@ const Nsize = 2
 const LX = Nsize*24e3/distN	#	Length of Horizontal dimension of box	
 const LY = Nsize*15e3/distN	#	Length of Vertical dimension of box
 
-const NelX = 15*Nsize	#	No. of elements in X
-const NelY = 10*Nsize 	#	No. of elements in Y
+const NelX = 60*Nsize	#	No. of elements in X
+const NelY = 40*Nsize 	#	No. of elements in Y
 
 
 # for constant mesh size using MeshBox, uncomment the two lines below
-#dxe = LX/NelX #	Size of one element along X
-#dye = LY/NelY #	Size of one element along Y
+dxe = LX/NelX #	Size of one element along X
+dye = LY/NelY #	Size of one element along Y
 
 # for variable mesh size using VariableMesh, use the lines below
-x_points = LX*sin.(pi/2*collect(0:NelX)/NelX)
-y_points = LY*(1 - sin.(pi/2*collect(0:NelY)/NelY))
-dxe = diff(x_points)
-dye = abs.(diff(y_points))
+#x_points = LX*sin.(pi/2*collect(0:NelX)/NelX)
+#y_points = LY*(1 - sin.(pi/2*collect(0:NelY)/NelY))
+#dxe = diff(x_points)
+#dye = abs.(diff(y_points))
 
 const Nel = NelX*NelY # Total no. of elements
 
-Fdepth = 24e3/distN # fault depth
+Fdepth = 40e3/distN # fault depth
 
 #----------------
 #	No. of nodes
 #----------------
-const P = 4		#	Lagrange polynomial degree
+const P = 8		#	Lagrange polynomial degree
 const NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
 
 const FaultNglob = NelX*(NGLL - 1) + 1

@@ -46,7 +46,7 @@ function BoundaryMatrix(wgll, NelX, NelY, iglob, jac1D, impedance, side)
 		ip = (NGLL-1)*(e-1) + collect(1:NGLL)
 		iB[ip] = iglob[igll, jgll, eB[e]]
 		jB[:,e] = ip
-        B[ip] = B[ip] + jac1D[e]*wgll*impedance
+        B[ip] = B[ip] + jac1D*wgll*impedance
 	end
 
 	return B, iB

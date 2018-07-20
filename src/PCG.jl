@@ -82,8 +82,8 @@ function element_computation(Nel, iglob, F_local, H, Ht, coefint1, coefint2, W, 
         d_eta = locall*H
 
         # Element contribution to the internal forces
-        locall = coefint1[eo]*H*(W[:,:,eo].*d_xi) + 
-        coefint2[eo]*(W[:,:,eo].*d_eta)*Ht
+        locall = coefint1*H*(W[:,:,eo].*d_xi) + 
+        coefint2*(W[:,:,eo].*d_eta)*Ht
 
         # Assemble into global vector
         a_local[ig] = a_local[ig] + locall
