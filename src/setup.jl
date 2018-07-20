@@ -13,7 +13,7 @@
 #.................................
 include("parameters/defaultParameters.jl")	#	Set Parameters
 include("GetGLL.jl")		#	Polynomial interpolation
-include("Meshbox.jl")		# 	Build 2D mesh
+include("mesh/VariableMesh.jl")		# 	Build 2D mesh
 include("BoundaryMatrix.jl") #	Boundary matrices
 include("FindNearestNode.jl")#	Nearest node	
 include("IDState.jl") # other functions
@@ -21,8 +21,10 @@ include("IDState.jl") # other functions
 #...............
 # Build 2D Mesh
 #...............
-iglob, x, y = MeshBox(LX, LY, NelX, NelY, NGLL)
+iglob, x, y = MeshBox(LX, LY, NelX, NelY, NGLL, dxe, dye)
 x = x-LX		#	For halfspace
+x_points = x_points - LX
+
 const nglob = length(x);
 
 
@@ -43,6 +45,33 @@ M = zeros(nglob)
 
 # Mass+Damping matrix
 MC = zeros(nglob)
+
+#..................................
+# Jacobian with variable mesh size
+#..................................
+coefint1 = zeros(Nel)
+coefint2 = zeros(Nel)
+
+function coefint(coefint1, coefint2, dxe, dye)
+
+    eo = 0
+    for ey = 1:length(dye)
+        for ex = 1:length(dxe)
+
+            eo = eo + 1
+
+            jac = 0.25*dxe[ex]*ye[ey]
+
+            coefint1[eo] = jac/(0.5*dxe[ex])^2
+            coefint2[eo] = jac/(0.5*dye[ey])^2
+
+        end
+    end
+    
+    return coefint1, coefint2
+end
+
+coefint1, coefint2 = coefint(coefint1, coefint2, dxe, dye)
 
 # Assemble the Mass and Stiffness matrices
 include("Assemble.jl")
@@ -74,13 +103,13 @@ global a = zeros(nglob)
 
 # Left boundary
 impedance = rho1*vs1
-BcLC, iBcL = BoundaryMatrix(wgll, NelX, NelY, iglob, dy_deta, impedance, 'L')
+BcLC, iBcL = BoundaryMatrix(wgll, NelX, NelY, iglob, 0.5*dye, impedance, 'L')
 
 # Right Boundary = free surface: nothing to do
 
 # Top Boundary
 impedance = rho1*vs1
-BcTC, iBcT = BoundaryMatrix(wgll, NelX, NelY, iglob, dx_dxi, impedance, 'T')
+BcTC, iBcT = BoundaryMatrix(wgll, NelX, NelY, iglob, 0.5*dxe, impedance, 'T')
 
 # Mass matrix at boundaries
 Mq = M[:]
@@ -89,7 +118,7 @@ M[iBcT] .= M[iBcT] .+ half_dt*BcTC
 
 
 # Dynamic fault at bottom boundary
-FltB, iFlt = BoundaryMatrix(wgll, NelX, NelY, iglob, dx_dxi, 1, 'B') # impedance = 1
+FltB, iFlt = BoundaryMatrix(wgll, NelX, NelY, iglob, 0.5*dxe, 1, 'B') # impedance = 1
 
 const FltZ = M[iFlt]./FltB /half_dt * 0.5
 const FltX = x[iFlt]
@@ -249,8 +278,8 @@ for e = 1:Nel
     for k =  1:NGLL
         for j = 1:NGLL
             Klocdiag[k,j] = Klocdiag[k,j] + 
-                            sum( coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
-                            + coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
+            sum( coefint1[e]*H[k,:].*(wloc[:,j].*Ht[:,k])
+                + coefint2[e]*(wloc[k,:].*H[j,:]).*Ht[:,j] )
         end
     end
 
@@ -262,13 +291,13 @@ diagKnew = Kdiag[FltNI]
 
 v[:] = v[:] - 0.5*Vpl
 Vf = 2*v[iFlt]
-const iFBC = find(abs.(FltX) .> 24e3)
+const iFBC = find(abs.(FltX) .> Fdepth)
 const NFBC = length(iFBC)
 Vf[iFBC] = 0
 
 # Fault boundary: indices where fault within 24 km
 fbc = reshape(iglob[:,1,:], length(iglob[:,1,:]),1)
-idx = find(fbc .== find(x .== -24e3)[1] - 1)[1]
+idx = find(fbc .== find(x .>= -Fdepth)[1] - 1)[1]
 const FltIglobBC = fbc[1:idx]
 
 v[FltIglobBC] = 0

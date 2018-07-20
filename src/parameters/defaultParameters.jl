@@ -13,17 +13,20 @@ const Nsize = 2
 const LX = Nsize*24e3	#	Length of Horizontal dimension of box	
 const LY = Nsize*15e3	#	Length of Vertical dimension of box
 
-const NelX = 30*Nsize	#	No. of elements in X
-const NelY = 20*Nsize 	#	No. of elements in Y
+const NelX = 15*Nsize	#	No. of elements in X
+const NelY = 10*Nsize 	#	No. of elements in Y
 
-#NelX = NelX*Nsize
-#NelY = NelY*Nsize
+# for constant mesh size using MeshBox.jl, uncomment the two lines below
+#const dxe = LX/NelX #	Size of one element along X
+#const dye = LY/NelY #	Size of one element along Y
 
-const dxe = LX/NelX #	Size of one element along X
-const dye = LY/NelY #	Size of one element along Y
+# for variable mesh size using VariableMesh.jl, uncomment the lines below
+x_points = LX*sin.(pi/2*collect(0:NelX)/NelX)
+y_points = LY*(1 - sin.(pi/2*collect(0:NelY)/NelY))
 
 const Nel = NelX*NelY # Total no. of elements
 
+Fdepth = 24e3 # fault depth
 
 #----------------
 #	No. of nodes
@@ -48,11 +51,11 @@ const IDstate = 2
 #	Jacobian for the global -> local 
 #	coordinate conversion
 #------------------------------------
-const dx_dxi = 0.5*dxe
-const dy_deta = 0.5*dye
-const jac = dx_dxi*dy_deta
-const coefint1 = jac/dx_dxi^2
-const coefint2 = jac/dy_deta^2
+#const dx_dxi = 0.5*dxe
+#const dy_deta = 0.5*dye
+#const jac = dx_dxi*dy_deta
+#const coefint1 = jac/dx_dxi^2
+#const coefint2 = jac/dy_deta^2
 
 #-------------------------------------
 #	Physical properties of the medium
