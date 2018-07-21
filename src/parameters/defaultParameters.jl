@@ -13,8 +13,8 @@ const Nsize = 2
 const LX = Nsize*24e3	#	Length of Horizontal dimension of box	
 const LY = Nsize*15e3	#	Length of Vertical dimension of box
 
-const NelX = 30*Nsize	#	No. of elements in X
-const NelY = 20*Nsize 	#	No. of elements in Y
+const NelX = 60*Nsize	#	No. of elements in X
+const NelY = 40*Nsize 	#	No. of elements in Y
 
 #NelX = NelX*Nsize
 #NelY = NelY*Nsize
@@ -37,7 +37,7 @@ const FaultNglob = NelX*(NGLL - 1) + 1
 #	Parameters of the time solver
 #---------------------------------
 const yr2sec = 365*24*60*60
-Total_time = 150*yr2sec
+Total_time = 1000*yr2sec
 const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
@@ -69,8 +69,8 @@ rho = zeros(NGLL, NGLL)
 mu = zeros(NGLL, NGLL)
 
 # Low velocity layer dimensions
-const ThickX = 0e3
-const ThickY = 0e3
+const ThickX = LX - 8e3
+const ThickY = 0.75e3
 
 
 #--------------------------
