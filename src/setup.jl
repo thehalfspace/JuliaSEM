@@ -11,7 +11,7 @@
 #.................................
 # Include external function files
 #.................................
-include("parameters/defaultParameters.jl")	#	Set Parameters
+include("parameters/BenchmarkParameters.jl")	#	Set Parameters
 include("GetGLL.jl")		#	Polynomial interpolation
 include("MeshBox.jl")		# 	Build 2D mesh
 include("BoundaryMatrix.jl") #	Boundary matrices
@@ -101,13 +101,13 @@ global a = zeros(nglob)
 
 # Left boundary
 impedance = rho1*vs1
-BcLC, iBcL = BoundaryMatrix(wgll, NelX, NelY, iglob, 0.5*dye, impedance, 'L')
+BcLC, iBcL = BoundaryMatrix(wgll, NelX, NelY, iglob, dy_deta, impedance, 'L')
 
 # Right Boundary = free surface: nothing to do
 
 # Top Boundary
 impedance = rho1*vs1
-BcTC, iBcT = BoundaryMatrix(wgll, NelX, NelY, iglob, 0.5*dxe, impedance, 'T')
+BcTC, iBcT = BoundaryMatrix(wgll, NelX, NelY, iglob, dx_dxi, impedance, 'T')
 
 # Mass matrix at boundaries
 Mq = M[:]
@@ -116,7 +116,7 @@ M[iBcT] .= M[iBcT] .+ half_dt*BcTC
 
 
 # Dynamic fault at bottom boundary
-FltB, iFlt = BoundaryMatrix(wgll, NelX, NelY, iglob, 0.5*dxe, 1, 'B') # impedance = 1
+FltB, iFlt = BoundaryMatrix(wgll, NelX, NelY, iglob, dx_dxi, 1, 'B') # impedance = 1
 
 const FltZ = M[iFlt]./FltB /half_dt * 0.5
 const FltX = x[iFlt]
@@ -133,7 +133,7 @@ tauo[:] = tauDepth(distN, FltX, Seff[1], maximum(cca), Vpl, Vo[1], fo[1], ccb[1]
 
 #tauo[1:91] = 0
 
-cca, ccb = fricDepth(cca, ccb, distN, FltX)
+cca = fricDepth(cca, ccb, distN, FltX)
 
 #Seff = SeffDepth(distN, FltX)
 

@@ -65,7 +65,7 @@ while t < Total_time
                 d_xi = H*d_xi
                 d_eta = wloc.*d_eta
                 d_eta = d_eta*Ht
-                locall = coefint1[eo]*d_xi + coefint2[eo]*d_eta
+                locall = coefint1*d_xi + coefint2*d_eta
 
                 # Assemble into global vector
                 a[ig] = a[ig] + locall
@@ -146,7 +146,7 @@ while t < Total_time
             d_xi = H*d_xi
             d_eta = wloc.*d_eta
             d_eta = d_eta*Ht
-            locall = coefint1[eo]*d_xi + coefint2[eo]*d_eta
+            locall = coefint1*d_xi + coefint2*d_eta
 
             # Assemble into global vector
             a[ig] = a[ig] - locall

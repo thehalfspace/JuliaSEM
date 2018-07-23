@@ -13,8 +13,8 @@ const Nsize = 2
 const LX = Nsize*36e3/distN	#	Length of vertical dimension of box	
 const LY = Nsize*22.5e3/distN	#	Length of horizontal dimension of box
 
-const NelX = 30*Nsize	#	No. of elements in X
-const NelY = 20*Nsize 	#	No. of elements in Y
+const NelX = 60*Nsize	#	No. of elements in X
+const NelY = 40*Nsize 	#	No. of elements in Y
 
 #NelX = NelX*Nsize
 #NelY = NelY*Nsize
@@ -38,7 +38,7 @@ const FaultNglob = NelX*(NGLL - 1) + 1
 #	Parameters of the time solver
 #---------------------------------
 const yr2sec = 365*24*60*60
-Total_time = 300*yr2sec
+Total_time = 3000*yr2sec
 const CFL = 0.6	#	Courant stability number
 dt = Inf	#	Timestep: set later
 
@@ -49,11 +49,11 @@ const IDstate = 2
 #	Jacobian for the global -> local 
 #	coordinate conversion
 #------------------------------------
-const dx_dxi = 0.5*dxe
-const dy_deta = 0.5*dye
-const jac = dx_dxi*dy_deta
-const coefint1 = jac/dx_dxi^2
-const coefint2 = jac/dy_deta^2
+#const dx_dxi = 0.5*dxe
+#const dy_deta = 0.5*dye
+#const jac = dx_dxi*dy_deta
+#const coefint1 = jac/dx_dxi^2
+#const coefint2 = jac/dy_deta^2
 
 #-------------------------------------
 #	Physical properties of the medium

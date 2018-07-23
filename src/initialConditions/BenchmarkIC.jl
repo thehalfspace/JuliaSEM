@@ -22,7 +22,7 @@ function fricDepth(cca, ccb, distN, FltX)
     cca[fric_depth2] = Int1D(fP1, fP2, FltX[fric_depth2])
     cca[fric_depth3] = amax
 
-    return cca, ccb
+    return cca
 end
 
 # Shear stress
