@@ -10,7 +10,7 @@ include("NRsearch.jl")
 
 Vf0 = zeros(length(iFlt))
 FltVfree = zeros(length(iFlt))
-dummy_it = zeros(1000)
+dummy_it = zeros(Int32, 1000)
 
 #...........................
 # START OF THE TIME LOOP
