@@ -13,8 +13,8 @@ const Nsize = 2
 const LX = Nsize*36e3/distN	#	Length of vertical dimension of box	
 const LY = Nsize*22.5e3/distN	#	Length of horizontal dimension of box
 
-const NelX = 60*Nsize	#	No. of elements in X
-const NelY = 40*Nsize 	#	No. of elements in Y
+const NelX = 30*Nsize	#	No. of elements in X
+const NelY = 20*Nsize 	#	No. of elements in Y
 
 #NelX = NelX*Nsize
 #NelY = NelY*Nsize

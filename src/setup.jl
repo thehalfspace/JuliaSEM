@@ -313,19 +313,19 @@ event_iter2 = 1
 
 
 # Preallocate variables with unknown size
-time_ = zeros(1e5)
+time_ = zeros(1e6)
 
-delfsec = zeros(FaultNglob, 1e4)
-Vfsec = zeros(FaultNglob, 1e4)
-Tausec = zeros(FaultNglob, 1e4)
+delfsec = zeros(FaultNglob, 1e5)
+Vfsec = zeros(FaultNglob, 1e5)
+Tausec = zeros(FaultNglob, 1e5)
 
 delf5yr = zeros(FaultNglob, 1e4)
 Vf5yr = zeros(FaultNglob, 1e4)
 Tau5yr = zeros(FaultNglob, 1e4)
 
-Stress = zeros(FaultNglob, 1e5)
-SlipVel = zeros(FaultNglob, 1e5)
-Slip = zeros(FaultNglob, 1e5)
-State = zeros(FaultNglob, 1e5)
+Stress = zeros(FaultNglob, 1e6)
+SlipVel = zeros(FaultNglob, 1e6)
+Slip = zeros(FaultNglob, 1e6)
+State = zeros(FaultNglob, 1e6)
 
 println("\nSetup Complete")

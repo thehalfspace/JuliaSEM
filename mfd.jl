@@ -31,7 +31,7 @@ using PyPlot
 
 function mfdPlot(Mw)
     
-    hist = fit(Histogram, Mw, nbins = 25; closed=:right)
+    hist = fit(Histogram, Mw, nbins = 7; closed=:right)
 
     plot(hist.edges[1][2:end], log10.(hist.weights), ".")
     xlabel("Moment Magnitude")
