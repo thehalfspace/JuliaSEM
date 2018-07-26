@@ -10,7 +10,8 @@ include("NRsearch.jl")
 
 Vf0 = zeros(length(iFlt))
 FltVfree = zeros(length(iFlt))
-dummy_it = zeros(Int32, 1000)
+qs_it = zeros(Int32, 10000)
+dyn_it = zeros(Int32, 100000)
 
 #...........................
 # START OF THE TIME LOOP
@@ -273,7 +274,7 @@ while t < Total_time
         if flag == 0
             Coslip[:,ev_it2] = 2*d[iFlt]
             ev_it2 = ev_it2 + 1
-            dummy_it[ev_it2] = it
+            qs_it[ev_it2] = it
             flag = 1
         end
 
@@ -283,6 +284,7 @@ while t < Total_time
         if flag == 1
             rec_int[ev_it] = t/yr2sec
             ev_it = ev_it + 1
+            dyn_it[ev_it] = it 
             #Coslip[:,ev_it1] = 2*d[iFlt]
             flag = 0
         end
@@ -292,7 +294,7 @@ while t < Total_time
     Stress[:,it] = (tau + tauo)./1e6
     SlipVel[:,it] = 2*v[iFlt] + Vpl
     Slip[:,it] = 2*d[iFlt] + Vpl*t
-    State[:,it] = psi
+    #State[:,it] = psi
 
     
     # Compute next timestep dt
@@ -319,6 +321,7 @@ State = State[:,1:it]
 
 rec_int = rec_int[2:ev_it]
 Coslip = Coslip[:,2:ev_it2]
-dummy_it = dummy_it[2:ev_it2]
+qs_it = qs_it[2:ev_it2]
+dyn_it = dyn_it[2:ev_it]
 
 println("\nSimulation Complete")

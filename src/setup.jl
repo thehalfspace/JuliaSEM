@@ -53,7 +53,7 @@ dtmin = dt
 half_dt = 0.5*dtmin
 half_dt_sq = 0.5*dtmin^2
 
-dtmax = 50 * 24 * 60*60		# 50 days
+dtmax = 100 * 24 * 60*60		# 100 days
 
 # dt modified slightly for damping
 if ETA != 0
@@ -287,9 +287,9 @@ rec_int = zeros(1e3)
 # Preallocate variables with unknown size
 time_ = zeros(1e6)
 
-delfsec = zeros(FaultNglob, 1e4)
-Vfsec = zeros(FaultNglob, 1e4)
-Tausec = zeros(FaultNglob, 1e4)
+delfsec = zeros(FaultNglob, 1e5)
+Vfsec = zeros(FaultNglob, 1e5)
+Tausec = zeros(FaultNglob, 1e5)
 
 delf5yr = zeros(FaultNglob, 1e4)
 Vf5yr = zeros(FaultNglob, 1e4)
@@ -298,6 +298,6 @@ Tau5yr = zeros(FaultNglob, 1e4)
 Stress = zeros(FaultNglob, 1e6)
 SlipVel = zeros(FaultNglob, 1e6)
 Slip = zeros(FaultNglob, 1e6)
-State = zeros(FaultNglob, 1e6)
+#State = zeros(FaultNglob, 1e6)
 
 println("\nSetup Complete")

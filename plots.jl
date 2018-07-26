@@ -22,7 +22,7 @@ end
 function stressPlot(Stress, time_, FltX, yr2sec)
     
     loc1 = 8e3  # 3 km depth
-    FltID = find(abs.(FltX) .< loc1)[1]
+    FltID = find(abs.(FltX) .<= loc1)[1]
 
     plot(time_/yr2sec, Stress[FltID, :])
     ylabel("Shear stress at location 1")
@@ -37,7 +37,7 @@ end
 function slipvelPlot(SlipVel, time_, FltX, yr2sec)
     
     loc1 = 8e3  # 3 km depth
-    FltID = find(abs.(FltX) .< loc1)[1]
+    FltID = find(abs.(FltX) .<= loc1)[1]
 
     plot(time_/yr2sec, log10.(SlipVel[FltID, :]))
     ylabel("Log of Slip rate at location 1")
