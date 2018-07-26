@@ -21,7 +21,7 @@ end
 # Plot shear stress at location as a function of time
 function stressPlot(Stress, time_, FltX, yr2sec)
     
-    loc1 = 3e3  # 3 km depth
+    loc1 = 8e3  # 3 km depth
     FltID = find(abs.(FltX) .< loc1)[1]
 
     plot(time_/yr2sec, Stress[FltID, :])
@@ -36,7 +36,7 @@ end
 # Plot slip velocity at location as a function of time (same location)
 function slipvelPlot(SlipVel, time_, FltX, yr2sec)
     
-    loc1 = 3e3  # 3 km depth
+    loc1 = 8e3  # 3 km depth
     FltID = find(abs.(FltX) .< loc1)[1]
 
     plot(time_/yr2sec, log10.(SlipVel[FltID, :]))

@@ -13,7 +13,7 @@ function moment_magnitude(G, Coslip, dummy_it, SlipVel, dxe)
         iter = Int(dummy_it[ev])
 
         # find where slip velocity is > 1e-3
-        arr = find(SlipVel[:, iter] .>= 1e-3)
+        arr = find(SlipVel[:, iter] .>= 0.1e-3)
 
         # Integrate slip with rupture area to get moment
         Mo = G*sum(abs.(Coslip[arr,ev]).*dxe^2)
