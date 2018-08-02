@@ -13,6 +13,19 @@ FltVfree = zeros(length(iFlt))
 qs_it = zeros(Int32, 10000)
 dyn_it = zeros(Int32, 100000)
 
+
+FaultC = zeros(FaultNglob)
+Vf1 = zeros(FaultNglob)
+Vf2 = zeros(FaultNglob)
+Vf 	= zeros(FaultNglob)
+psi1= zeros(FaultNglob)
+psi2= zeros(FaultNglob)
+tau1= zeros(FaultNglob)
+tau2= zeros(FaultNglob)
+tau3= zeros(FaultNglob)
+tauNR= zeros(FaultNglob)
+tauAB= zeros(FaultNglob)
+
 #...........................
 # START OF THE TIME LOOP
 #...........................

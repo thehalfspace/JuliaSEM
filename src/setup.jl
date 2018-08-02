@@ -129,8 +129,8 @@ end
 
 
 # Output seismograms
-OUTxseis, OUTyseis, OUTiglob, OUTdseis = FindNearestNode(OUTxseis, OUTyseis, x, y)
-kkseis = 1
+#OUTxseis, OUTyseis, OUTiglob, OUTdseis = FindNearestNode(OUTxseis, OUTyseis, x, y)
+#kkseis = 1
 
 # Initialize data for output snapshots
 #OUTindx = 

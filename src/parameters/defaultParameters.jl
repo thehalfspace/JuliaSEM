@@ -1,105 +1,98 @@
 #######################################################################
-#
-#		PARAMETER FILE: SET THE PHYSICAL PARAMETERS FOR THE SIMULATION
-#
+#	PARAMETER FILE: SET THE PHYSICAL PARAMETERS FOR THE SIMULATION
 #######################################################################
 
+using Parameters
 
-#----------------
-#	Domain Size:
-#----------------
-#const distN = 1	#	km to m conversion
-const Nsize = 2
-const LX = Nsize*24e3	#	Length of Horizontal dimension of box	
-const LY = Nsize*15e3	#	Length of Vertical dimension of box
+@with_kw immutable space_parameters
+    
+    # Domain size
+    Nsize::Int8 = 2
 
-const NelX = 60*Nsize	#	No. of elements in X
-const NelY = 40*Nsize 	#	No. of elements in Y
+    LX::Int64 = 24e3*Nsize  # depth dimension of rectangular domain
+    LY::Int64 = 15e3*Nsize # off fault dimenstion of rectangular domain
 
-#NelX = NelX*Nsize
-#NelY = NelY*Nsize
+    NelX::Int8 = 15*Nsize # no. of elements in x
+    NelY::Int8 = 10*Nsize # no. of elements in y
 
-const dxe = LX/NelX #	Size of one element along X
-const dye = LY/NelY #	Size of one element along Y
+    dxe::Float64 = LX/NelX #	Size of one element along X
+    dye::Float64 = LY/NelY #	Size of one element along Y
+    Nel::Int64 = NelX*NelY # Total no. of elements
+    
+    P::Int = 4		#	Lagrange polynomial degree
+    NGLL::Int64 = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
+    FltNglob::Int64 = NelX*(NGLL - 1) + 1
 
-const Nel = NelX*NelY # Total no. of elements
+    # Jacobian for global -> local coordinate conversion
+    dx_dxi::Float64 = 0.5*dxe
+    dy_deta::Float64 = 0.5*dye
+    jac::Float64 = dx_dxi*dy_deta
+    coefint1::Float64 = jac/dx_dxi^2
+    coefint2::Float64 = jac/dy_deta^2
+end
 
+@with_kw immutable time_parameters
+    
+    yr2sec::Int64 = 365*24*60*60
+    Total_time::Int128 = 100*yr2sec     # Set the total time for simulation here
 
-#----------------
-#	No. of nodes
-#----------------
-const P = 4		#	Lagrange polynomial degree
-const NGLL = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
+    CFL::Float64 = 0.6	#	Courant stability number
+     
+    IDstate::Int = 2    #   State variable equation type
 
-const FaultNglob = NelX*(NGLL - 1) + 1
+    # Some other time variables used in the loop
+    dtincf = 1.2
+    gamma_ = pi/4
 
-#---------------------------------
-#	Parameters of the time solver
-#---------------------------------
-const yr2sec = 365*24*60*60
-Total_time = 1000*yr2sec
-const CFL = 0.6	#	Courant stability number
-dt = Inf	#	Timestep: set later
-
-const IDstate = 2
-
-
-#------------------------------------
-#	Jacobian for the global -> local 
-#	coordinate conversion
-#------------------------------------
-const dx_dxi = 0.5*dxe
-const dy_deta = 0.5*dye
-const jac = dx_dxi*dy_deta
-const coefint1 = jac/dx_dxi^2
-const coefint2 = jac/dy_deta^2
-
-#-------------------------------------
-#	Physical properties of the medium
-#	(Modify them when assembling Mass
-#	 and Stiffness matrices )
-#-------------------------------------
-const rho1 = 2670
-const vs1 = 3464
-const rho2 = 2500
-const vs2 = 0.6*vs1
-ETA = 0
-
-rho = zeros(NGLL, NGLL)
-mu = zeros(NGLL, NGLL)
-
-# Low velocity layer dimensions
-const ThickX = LX - 8e3
-const ThickY = 0.75e3
+end
 
 
-#--------------------------
-# Earthquake parameters
-#--------------------------
-const Vpl = 35e-3/yr2sec	#	Plate loading
 
-Seff= repmat([50e6], FaultNglob)		#	Effective normal stress
-tauo = repmat([22.5e6], FaultNglob)  #   Initial shear stress
-fo 	= repmat([0.6], FaultNglob)		#	Reference friction coefficient
-cca = repmat([0.015], FaultNglob)	#	Rate-state parameter 'a'
-ccb = repmat([0.020], FaultNglob)	#	Rate-state parameter 'b'
-const Vo 	= repmat([1e-6], FaultNglob)		#	Reference velocity 'Vo'
-const xLf = repmat([0.008], FaultNglob)#	Dc (Lc) = 8 mm
-FaultC = zeros(FaultNglob)
-Vf1 = zeros(FaultNglob)
-Vf2 = zeros(FaultNglob)
-Vf 	= zeros(FaultNglob)
-psi1= zeros(FaultNglob)
-psi2= zeros(FaultNglob)
-tau1= zeros(FaultNglob)
-tau2= zeros(FaultNglob)
-tau3= zeros(FaultNglob)
-tauNR= zeros(FaultNglob)
-tauAB= zeros(FaultNglob)
+@with_kw immutable medium_properties
+
+    NGLL = space_parameters().NGLL
+    LX = space_parameters().LX
+
+    rho1::Float64 = 2670
+    vs1::Float64 = 3464
+
+    rho2::Float64 = 2500
+    vs2::Float64 = 0.6*vs1
+
+    ETA = 0
+
+    rho::Matrix{Float64} = zeros(NGLL, NGLL)
+    mu::Matrix{Float64} = zeros(NGLL, NGLL)
+
+
+    # Low velocity layer dimensions
+    ThickX::Float64 = LX - 8e3
+    ThickY::Float64 = 0.75e3
+end
+
+
+@with_kw immutable earthquake_parameters
+
+    yr2sec = time_parameters().yr2sec
+    FltNglob = space_parameters().FltNglob
+
+    Vpl::Float64 = 35e-3/yr2sec	#	Plate loading
+
+    fo::Array{Float64} 	= repmat([0.6], FltNglob)		#	Reference friction coefficient
+    Vo::Array{Float64} 	= repmat([1e-6], FltNglob)		#	Reference velocity 'Vo'
+    xLf::Array{Float64} = repmat([0.008], FltNglob)#	Dc (Lc) = 8 mm
+
+    Vthres::Int = 0.01
+
+
+end
+
+
 
 #-----------------------
 #	Output Seismograms
 #-----------------------
-OUTxseis = collect(-15:3:0)
-OUTnseis = length(OUTxseis)
-OUTyseis = repmat([15],OUTnseis)
+#OUTxseis = collect(-15:3:0)
+#OUTnseis = length(OUTxseis)
+#OUTyseis = repmat([15],OUTnseis)
+

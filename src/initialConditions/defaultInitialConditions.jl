@@ -6,9 +6,12 @@ end
 
 
 # Compute rate-state friciton with depth
-function fricDepth(cca, ccb, FltX)
+function fricDepth(s::space_parameters, FltX)
     
     # Friction with depth
+    cca::Array{Float64} = repmat([0.015], s.FltNglob)
+    ccb::Array{Float64} = repmat([0.020], s.FltNglob)
+
     a_b = cca - ccb
     fP1 = [0, -1.2e3]
     fP2 = [-0.0041, -2e3]
@@ -36,7 +39,9 @@ end
 
 
 # Effective normal stress
-function SeffDepth(FltX)
+function SeffDepth(s::space_parameters, FltX)
+
+    Seff::Array{Float64} = repmat([50e6], s.FltNglob)
     sP1 = [3e6 0]
     sP2 = [50e6 -2e3]
     Seff_depth = find(abs.(FltX) .<= abs(sP2[2]))
@@ -47,8 +52,9 @@ end
 
 
 # Shear stress
-function tauDepth(FltX)
+function tauDepth(s::space_parameters, FltX)
 
+    tauo::Array{Float64} = repmat([22.5e6], s.FltNglob)
     tP1 = [3e6 0]
     tP2 = [30e6 -2e3]
     tP3 = [30e6 -12e3]
