@@ -41,8 +41,11 @@ end
     IDstate::Int = 2    #   State variable equation type
 
     # Some other time variables used in the loop
-    dtincf = 1.2
-    gamma_ = pi/4
+    dtincf::Float64 = 1.2
+    gamma_::Float64 = pi/4
+    tvsx::Int64 = 2*yr2sec
+    tvsxinc::Int64 = tvsx
+    tevneinc::Int64 = 1
 
 end
 
@@ -82,7 +85,8 @@ end
     Vo::Array{Float64} 	= repmat([1e-6], FltNglob)		#	Reference velocity 'Vo'
     xLf::Array{Float64} = repmat([0.008], FltNglob)#	Dc (Lc) = 8 mm
 
-    Vthres::Int = 0.01
+    Vthres::Float64 = 0.01
+    Vevne::Float64 = Vthres
 
 
 end

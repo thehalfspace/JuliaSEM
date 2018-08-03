@@ -73,4 +73,3 @@ function tauDepth(s::space_parameters, FltX)
 
     return tauo
 end
-

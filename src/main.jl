@@ -19,7 +19,7 @@ include("BoundaryMatrix.jl")    #	Boundary matrices
 include("FindNearestNode.jl")   #	Nearest node
 include("initialConditions/defaultInitialConditions.jl")
 include("IDState.jl") # state variable computation
-include("XiLf.jl")
+include("otherFunctions.jl")
 
 
 function main(s::space_parameters, t::time_parameters, 
@@ -102,9 +102,7 @@ function main(s::space_parameters, t::time_parameters,
     # Initial Conditions
     #......................
     cca, ccb = fricDepth(s, FltX)   # rate-state friction parameters
-
     Seff = SeffDepth(s, FltX)       # effective normal stress
-
     tauo = tauDepth(s, FltX)        # initial shear stress
 
     # Kelvin-Voigt Viscosity
@@ -137,18 +135,55 @@ function main(s::space_parameters, t::time_parameters,
     tauAB::Array{Float64} = zeros(s.FltNglob)
 
     # Initial state variable
-    psi = tauo./(Seff.*ccb) - eq.fo./ccb - (cca./ccb).*log.(2*v[iFlt]./eq.Vo)
-    psi0 = psi[:]
+    psi::Array{Float64} = tauo./(Seff.*ccb) - eq.fo./ccb - (cca./ccb).*log.(2*v[iFlt]./eq.Vo)
+    psi0::Array{Float64} = psi[:]
 
     # Compute XiLF used in timestep calculation
-    XiLf = XiLfFunc(s, t, muMax) 
+    XiLf = XiLfFunc(s, t, eq, muMax, cca, ccb, Seff) 
 
-    return cca, tauo
+
+    # Time related non-constant variables variables
+    slipstart::Int = 0
+    ievb::Int = 0
+    ieva::Int = 0
+    ntvsx::Int = 0
+    nevne::Int = 0
+    isolver::Int = 1
     
+    # Skip lines 486-490
+    # Skip lines 492-507: Outloc1, 2, variables.
+
+    # Display important parameters
+    println("Total number of nodes on fault: ", s.FltNglob)
+    println("Average node spacing: ", s.LX/(s.FltNglob-1))
+    @printf("dt: %1.09f s", dt)
+
+    # Find nodes that do not belong to the fault
+    FltNI = deleteat!(collect(1:nglob), iFlt)
+
+    # Some more initializations
+    r::Array{Float64} = zeros(nglob)
+    beta_::Array{Float64} = zeros(nglob)
+    alpha_::Array{Float64} = zeros(nglob)
+    p::Array{Float64} = zeros(nglob)
+
+    F::Array{Float64} = zeros(nglob)
+    dPre::Array{Float64} = zeros(nglob)
+    vPre::Array{Float64} = zeros(nglob)
+    dd::Array{Float64} = zeros(nglob)
+    dacum::Array{Float64} = zeros(nglob)
+    
+    dnew::Array{Float64} = zeros(length(FltNI))
+
+    
+    # Compute diagonal of K
+    Kdiag
+
+    return FltNI
 end
 
 s = space_parameters()
 t = time_parameters()
 m = medium_properties()
 eq = earthquake_parameters()
-cca, tauo = main(s,t,m,eq)
+FltNI = main(s,t,m,eq);
