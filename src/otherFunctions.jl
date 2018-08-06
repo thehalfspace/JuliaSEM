@@ -34,3 +34,31 @@ function XiLfFunc(s::space_parameters, t::time_parameters,
 
     return XiLf
 end
+
+
+function KdiagFunc(s::space_parameters, iglob, W, H, Ht, FltNI)
+
+	nglob = s.FltNglob*(s.NelY*(s.NGLL-1) + 1)
+
+    # Compute the diagonal of K
+    Kdiag::Array{Float64} = zeros(nglob)
+    Klocdiag::Array{Float64,2} = zeros(s.NGLL, s.NGLL)
+    for et = 1:s.Nel
+        ig = iglob[:,:,et]
+        wloc = W[:,:,et]
+        Klocdiag[:,:] = 0
+
+        for k =  1:s.NGLL
+            for j = 1:s.NGLL
+                Klocdiag[k,j] = Klocdiag[k,j] + 
+                                sum( s.coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
+                                + s.coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
+            end
+        end
+
+        Kdiag[ig] .= Kdiag[ig] .+ Klocdiag[:,:]
+    end
+
+    return Kdiag[FltNI]
+
+end

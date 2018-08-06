@@ -34,7 +34,7 @@ end
 @with_kw immutable time_parameters
     
     yr2sec::Int64 = 365*24*60*60
-    Total_time::Int128 = 100*yr2sec     # Set the total time for simulation here
+    Total_time::Int128 = 10*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      

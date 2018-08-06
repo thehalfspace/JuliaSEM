@@ -19,6 +19,9 @@ include("BoundaryMatrix.jl")    #	Boundary matrices
 include("FindNearestNode.jl")   #	Nearest node
 include("initialConditions/defaultInitialConditions.jl")
 include("IDState.jl") # state variable computation
+include("PCG.jl")
+include("dtevol.jl")
+include("NRsearch.jl")
 include("otherFunctions.jl")
 
 
@@ -125,7 +128,8 @@ function main(s::space_parameters, t::time_parameters,
     FaultC::Array{Float64} = zeros(s.FltNglob)
     Vf1::Array{Float64}  = zeros(s.FltNglob)
     Vf2::Array{Float64} = zeros(s.FltNglob)
-    Vf::Array{Float64} 	= zeros(s.FltNglob)
+    Vf0::Array{Float64} = zeros(length(iFlt))
+    FltVfree::Array{Float64} = zeros(length(iFlt))
     psi1::Array{Float64} = zeros(s.FltNglob)
     psi2::Array{Float64} = zeros(s.FltNglob)
     tau1::Array{Float64} = zeros(s.FltNglob)
@@ -177,13 +181,137 @@ function main(s::space_parameters, t::time_parameters,
 
     
     # Compute diagonal of K
-    Kdiag
+    diagKnew = KdiagFunc(s, iglob, W, H, Ht, FltNI) 
 
-    return FltNI
+    v[:] = v[:] - 0.5*eq.Vpl
+    Vf::Array{Float64} = 2*v[iFlt]
+    iFBC::Array{Int64} = find(abs.(FltX) .> 24e3)
+    NFBC::Int64 = length(iFBC)
+    Vf[iFBC] = 0
+
+    # Fault boundary: indices where fault within 24 km
+    fbc = reshape(iglob[:,1,:], length(iglob[:,1,:]),1)
+    idx = find(fbc .== find(x .== -24e3)[1] - 1)[1]
+    FltIglobBC::Array{Int64} = fbc[1:idx]
+
+    v[FltIglobBC] = 0
+
+
+    # Preallocate variables with unknown size
+    time_ = zeros(1e6)
+
+    delfsec::Array{Float64} = zeros(s.FltNglob, 1e5)
+    Vfsec::Array{Float64} = zeros(s.FltNglob, 1e5)
+    Tausec::Array{Float64} = zeros(s.FltNglob, 1e5)
+
+    delf5yr::Array{Float64} = zeros(s.FltNglob, 1e4)
+    Vf5yr::Array{Float64} = zeros(s.FltNglob, 1e4)
+    Tau5yr::Array{Float64} = zeros(s.FltNglob, 1e4)
+
+    Stress::Array{Float64} = zeros(s.FltNglob, 1e6)
+    SlipVel::Array{Float64} = zeros(s.FltNglob, 1e6)
+    Slip::Array{Float64} = zeros(s.FltNglob, 1e6)
+
+
+    #....................
+    # Start of time loop
+    #....................
+    it = 0
+    t = 0
+    IDstate = 2
+
+    #while t < t.Total_time
+    while it<10
+        it = it + 1
+        t = t + dt
+
+        time_[it] = t 
+
+
+        if isolver == 1
+
+            vPre .= v[:]
+            dPre .= d[:]
+
+            Vf0 .= 2*v[iFlt] + eq.Vpl
+            Vf  .= Vf0[:]
+
+            for p1 = 1:2
+                
+                # Compute the forcing term
+                F[:] .= 0
+                F[iFlt] .= dPre[iFlt] .+ v[iFlt]*dt
+
+                # Assign previous displacement field as initial guess
+                dnew .= d[FltNI]
+
+                # Solve d = K^-1F by PCG
+                dnew = PCG(s, diagKnew, dnew, F, iFlt, FltNI,
+                              H, Ht, iglob, nglob, W)
+                
+                # update displacement on the medium
+                d[FltNI] .= dnew
+
+                # make d = F on the fault
+                d[iFlt] .= F[iFlt]
+
+                # Compute on-fault stress
+                a[:] .= 0
+
+                a = element_computation(s, iglob, d, H, Ht, W, a)
+
+                a[FltIglobBC] .= 0
+                tau1 .= -a[iFlt]./FltB
+                
+                # Compute slip-rates on-fault
+                for j = NFBC: s.FltNglob-1 
+
+                    psi1[j] = IDS(psi[j], dt, eq.Vo[j], eq.xLf[j], Vf[j], 1e-6, IDstate)
+
+                    tauAB[j] = tau1[j] + tauo[j]
+                    fa = tauAB[j]/(Seff[j]*cca[j])
+                    help = -(eq.fo[j] + ccb[j]*psi1[j])/cca[j]
+                    help1 = exp(help + fa)
+                    help2 = exp(help - fa)
+                    Vf1[j] = eq.Vo[j]*(help1 - help2) 
+                end
+                
+                Vf1[iFBC] .= eq.Vpl
+                Vf .= (Vf0 + Vf1)/2
+                v[iFlt] .= 0.5*(Vf - eq.Vpl)
+
+            end
+
+            psi .= psi1[:]
+            tau .= tau1[:]
+            tau[iFBC] .= 0
+            Vf1[iFBC] .= eq.Vpl
+
+            v[iFlt] .= 0.5*(Vf1 - eq.Vpl)
+            v[FltNI] .= (d[FltNI] - dPre[FltNI])/dt
+
+            #RHS = a[:]
+            #RHS[iFlt] = RHS[iFlt] - FltB.*tau
+            #RMS = sqrt(sum(RHS.^2)/length(RHS))./maximum(abs.(RHS))
+            
+            # Line 731: P_MA: Omitted
+            a[:] .= 0
+            d[FltIglobBC] .= 0
+            v[FltIglobBC] .= 0
+
+            
+            # If isolver != 1, or max slip rate is < 10^-2 m/s
+        else
+            a = 1
+        end
+
+    end
+
+    return FltIglobBC
 end
 
 s = space_parameters()
 t = time_parameters()
 m = medium_properties()
 eq = earthquake_parameters()
-FltNI = main(s,t,m,eq);
+FltIglobBC = main(s,t,m,eq);

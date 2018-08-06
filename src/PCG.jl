@@ -6,15 +6,15 @@
 ################################################
 
 
-function PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt,
-             FltNI, H, Ht, iglob, Nel, nglob, W)
+function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
+             FltNI, H, Ht, iglob, nglob, W)
     
     #global a 
     a_local = zeros(nglob)
     dd_local = zeros(nglob)
     p_local = zeros(nglob)
     
-    a_local = element_computation(Nel, iglob, F, H, Ht, coefint1, coefint2, W, a_local)
+    a_local = element_computation(s, iglob, F, H, Ht, W, a_local)
     Fnew = -a_local[FltNI]
 
     dd_local[FltNI] = dnew
@@ -22,7 +22,7 @@ function PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt,
 
     a_local[:] = 0
     
-    a_local = element_computation(Nel, iglob, dd_local, H, Ht, coefint1, coefint2, W, a_local)
+    a_local = element_computation(s, iglob, dd_local, H, Ht, W, a_local)
     anew = a_local[FltNI]
 
     # Initial residue
@@ -36,7 +36,7 @@ function PCG(coefint1, coefint2, diagKnew, dnew, F, iFlt,
         anew[:] = 0
         a_local[:] = 0
         
-        a_local = element_computation(Nel, iglob, p_local, H, Ht, coefint1, coefint2, W, a_local)
+        a_local = element_computation(s, iglob, p_local, H, Ht, W, a_local)
 
         anew = a_local[FltNI]
 
@@ -68,9 +68,9 @@ end
 
 
 # Sub function to be used inside PCG
-function element_computation(Nel, iglob, F_local, H, Ht, coefint1, coefint2, W, a_local)
+function element_computation(s::space_parameters, iglob, F_local, H, Ht, W, a_local)
     
-    for eo = 1:Nel
+    for eo = 1:s.Nel
 
         # Switch to local element representation
         ig = iglob[:,:,eo]
@@ -81,8 +81,8 @@ function element_computation(Nel, iglob, F_local, H, Ht, coefint1, coefint2, W, 
         d_eta = locall*H
 
         # Element contribution to the internal forces
-        locall = coefint1*H*(W[:,:,eo].*d_xi) + 
-                 coefint2*(W[:,:,eo].*d_eta)*Ht
+        locall = s.coefint1*H*(W[:,:,eo].*d_xi) + 
+                 s.coefint2*(W[:,:,eo].*d_eta)*Ht
 
         # Assemble into global vector
         a_local[ig] = a_local[ig] + locall
