@@ -92,3 +92,29 @@ function element_computation(s::space_parameters, iglob, F_local, H, Ht, W, a_lo
     return a_local
 
 end
+
+# Sub function to be used inside PCG
+function element_computation2(s::space_parameters, iglob, F_local, H, Ht, W, a_local)
+    
+    for eo = 1:s.Nel
+
+        # Switch to local element representation
+        ig = iglob[:,:,eo]
+        locall = F_local[ig]
+
+        # Gradients wrt local variables
+        d_xi = Ht*locall
+        d_eta = locall*H
+
+        # Element contribution to the internal forces
+        locall = s.coefint1*H*(W[:,:,eo].*d_xi) + 
+                 s.coefint2*(W[:,:,eo].*d_eta)*Ht
+
+        # Assemble into global vector
+        a_local[ig] = a_local[ig] - locall
+
+    end
+
+    return a_local
+
+end

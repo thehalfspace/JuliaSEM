@@ -1,5 +1,4 @@
 # Calculate XiLf used in computing the timestep
-
 function XiLfFunc(s::space_parameters, t::time_parameters, 
                   eq::earthquake_parameters, muMax, cca, ccb, Seff)
 
@@ -36,6 +35,7 @@ function XiLfFunc(s::space_parameters, t::time_parameters,
 end
 
 
+# K diagonal vector computation
 function KdiagFunc(s::space_parameters, iglob, W, H, Ht, FltNI)
 
 	nglob = s.FltNglob*(s.NelY*(s.NGLL-1) + 1)
@@ -61,4 +61,82 @@ function KdiagFunc(s::space_parameters, iglob, W, H, Ht, FltNI)
 
     return Kdiag[FltNI]
 
+end
+
+# IDstate functions
+function IDS(xLf, Vo, psi, dt, Vf, cnd, IDstate = 2)
+    #= compute slip-rates on fault based on different
+       formulations =#
+
+    if IDstate == 1
+        psi1 = psi + dt*((Vo./xLf).*exp(-psi) - abs(Vf)./xLf)
+
+    elseif IDstate == 2
+        VdtL = abs(Vf)*dt/xLf
+        if VdtL < cnd
+            psi1 = log( exp(psi-VdtL) + Vo*dt/xLf -
+                        0.5*Vo*abs(Vf)*dt*dt/(xLf^2))
+        else
+            psi1 = log(exp(psi-VdtL) + (Vo/abs(Vf))*(1-exp(-VdtL)))
+        end
+
+    elseif IDstate == 3
+        psi1 = exp(-abs(Vf)*dt/xLf) * log(abs(Vf)/Vo) + 
+        exp(-abs(Vf)*dt/xLf)*psi + log(Vo/abs(Vf))
+
+        if ~any(imag(psi1)) == 0
+            return
+        end
+    end
+
+    return psi1
+
+end
+
+# On fault slip rates
+function IDS2(xLf, Vo, psi, psi1, dt, Vf, Vf1, IDstate = 2)
+            
+    if IDstate == 1
+        psi2 = psi + 0.5*dt*( (Vo/xLf)*exp(-psi) - abs(Vf)/xLf 
+                                + (Vo/xLf)*exp(-psi1) - abs(Vf1)/xLf )
+
+    elseif IDstate == 2
+        VdtL = 0.5*abs(Vf1 + Vf)*dt/xLf
+
+        if VdtL < 1e-6
+            psi2 = log( exp(psi-VdtL) + Vo*dt/xLf -
+                            0.5*Vo*0.5*abs(Vf1 + Vf)*dt*dt/(xLf^2))
+        else
+            psi2 = log(exp(psi-VdtL) + 
+                            (Vo/(0.5*abs(Vf + Vf1)))*(1-exp(-VdtL)))
+        end
+
+    elseif IDstate == 3
+        psi2 = exp(-0.5*abs(Vf + Vf1)*dt/xLf) * log(0.5*abs(Vf + Vf1)/Vo) + 
+                        exp(-0.5*abs(Vf + Vf1)*dt/xLf)*psi 
+                        + log(Vo/(-0.5*abs(Vf + Vf1)) )
+    end
+
+    return psi2
+end
+
+# Slip rates on fault for quasi-static regime
+function slrFunc(eq, NFBC, FltNglob, psi, psi1, Vf, Vf1, IDstate, tau1, tauo, Seff, cca, ccb, dt)
+
+
+    tauAB::Array{Float64} = zeros(FltNglob)
+
+    for j = NFBC: FltNglob-1 
+
+        psi1[j] = IDS(eq.xLf[j], eq.Vo[j], psi[j], dt, Vf[j], 1e-6, IDstate)
+
+        tauAB[j] = tau1[j] + tauo[j]
+        fa = tauAB[j]/(Seff[j]*cca[j])
+        help = -(eq.fo[j] + ccb[j]*psi1[j])/cca[j]
+        help1 = exp(help + fa)
+        help2 = exp(help - fa)
+        Vf1[j] = eq.Vo[j]*(help1 - help2) 
+    end
+
+    return psi1, Vf1
 end

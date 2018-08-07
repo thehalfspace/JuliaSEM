@@ -34,7 +34,7 @@ end
 @with_kw immutable time_parameters
     
     yr2sec::Int64 = 365*24*60*60
-    Total_time::Int128 = 10*yr2sec     # Set the total time for simulation here
+    Total_time::Int128 = 100*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      
@@ -43,9 +43,8 @@ end
     # Some other time variables used in the loop
     dtincf::Float64 = 1.2
     gamma_::Float64 = pi/4
-    tvsx::Int64 = 2*yr2sec
-    tvsxinc::Int64 = tvsx
     tevneinc::Int64 = 1
+    dtmax::Int64 = 100 * 24 * 60*60		# 100 days
 
 end
 
