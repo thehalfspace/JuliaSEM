@@ -34,7 +34,7 @@ end
 @with_kw immutable time_parameters
     
     yr2sec::Int64 = 365*24*60*60
-    Total_time::Int128 = 100*yr2sec     # Set the total time for simulation here
+    Total_time::Int128 = 20*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      
@@ -87,15 +87,4 @@ end
     Vthres::Float64 = 0.01
     Vevne::Float64 = Vthres
 
-
 end
-
-
-
-#-----------------------
-#	Output Seismograms
-#-----------------------
-#OUTxseis = collect(-15:3:0)
-#OUTnseis = length(OUTxseis)
-#OUTyseis = repmat([15],OUTnseis)
-

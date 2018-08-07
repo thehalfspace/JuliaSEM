@@ -454,13 +454,5 @@ function main(s::space_parameters, tim::time_parameters,
     SlipVel = SlipVel[:,1:it]
     Slip = Slip[:,1:it]
 
-    println("\nSimulation Complete\n")
-
-    return delf5yr, delfsec, FltX
+    return FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb 
 end
-
-s = space_parameters()
-tim = time_parameters()
-m = medium_properties()
-eq = earthquake_parameters()
-delf5yr, delfsec, FltX = main(s,tim,m,eq);
