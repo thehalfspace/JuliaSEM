@@ -106,4 +106,7 @@ function MwPlot(Mw)
     ax[:set_title]("Magnitude-frequency distribution")
     ax[:legend](loc="upper right")
     show()
+
+    figname = string(dir, "/plots", name, "/mfd.png")
+    ax[:savefig](figname, dpi = 300)
 end
