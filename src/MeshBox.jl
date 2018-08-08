@@ -24,20 +24,26 @@
 ###############################################################################
 
 
-function MeshBox(LX, LY, NELX, NELY, NGLL) 
+function MeshBox(s::space_parameters) 
 
-	dxe = LX/NELX
-	dye = LY/NELY
+
+    NGLL = s.NGLL
+    dye = s.dye
+    dxe = s.dxe
+    NelY = s.NelY
+    NelX = s.NelX
+    Nel = s.Nel
+
 
 	XGLL = GetGLL(NGLL)[1]
 
-	iglob = zeros(Int32, NGLL, NGLL, NELX*NELY)
-	nglob = (NELX*(NGLL-1) + 1) * (NELY*(NGLL-1) + 1)
+	iglob = zeros(Int32, NGLL, NGLL, Nel)
+	nglob = s.FltNglob*(NelY*(NGLL-1) + 1)
 
-	x = zeros(nglob, 1)
-	y = zeros(nglob, 1)
+    x::Array{Float64} = zeros(nglob, 1)
+    y::Array{Float64} = zeros(nglob, 1)
 
-	e = 0
+	et = 0
 	last_iglob = 0
 
 	ig = reshape(collect(1:NGLL*NGLL), NGLL, NGLL)
@@ -50,34 +56,34 @@ function MeshBox(LX, LY, NELX, NELY, NGLL)
 	xgll = dxe*xgll
 
 
-	for ey = 1:NELY         # number of x elements
-		for ex = 1:NELX     # number of y elements
+	for ey = 1:NelY         # number of x elements
+		for ex = 1:NelX     # number of y elements
 
-			e = e + 1
+			et = et + 1
 
 			# Redundant nodes at element edges
             
             # NGLL = number of GLL nodes per element
             
-			if e == 1
+			if et == 1
 				ig = reshape(collect(1:NGLL*NGLL), NGLL, NGLL)
 			else
 				if ey ==1 # Bottom Row
-					ig[1,:] = iglob[NGLL, :, e-1]   # Left edge
+					ig[1,:] = iglob[NGLL, :, et-1]   # Left edge
 					ig[2:end, :] = last_iglob + igL # The rest
 
 				elseif ex == 1	# Left Column
-					ig[:,1] = iglob[:,NGLL,e-NELX]	# Bottom edge
+					ig[:,1] = iglob[:,NGLL,et-NelX]	# Bottom edge
 					ig[:,2:end] = last_iglob + igB 	# The rest
 
 				else 			# Other Elements
-					ig[1,:] = iglob[NGLL, :, e-1]	# Left edge
-					ig[:,1] = iglob[:, NGLL, e-NELX]# Bottom edge
+					ig[1,:] = iglob[NGLL, :, et-1]	# Left edge
+					ig[:,1] = iglob[:, NGLL, et-NelX]# Bottom edge
 					ig[2:end, 2:end] = last_iglob + igLB
 				end
 			end
 
-			iglob[:,:,e] = ig
+			iglob[:,:,et] = ig
 			last_iglob = ig[NGLL, NGLL]
 
 			# Global coordinates of computational nodes

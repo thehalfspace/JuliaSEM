@@ -4,87 +4,59 @@
 
 
     
-rho = zeros(NGLL, NGLL)
-mu = zeros(NGLL, NGLL)
-vso = zeros(NGLL, NGLL)
-vs = zeros(NGLL-1, NGLL)
-dx = zeros(NGLL-1, NGLL)
-muMax = 0
+function assemble(s::space_parameters, m::medium_properties, iglob, M, W)
 
-for ey = 1:NelY
-    for ex = 1:NelX
 
-        eo = (ey-1)*NelX + ex
-        ig = iglob[:,:,eo]
+    xgll, wgll, H = GetGLL(s.NGLL)
+    wgll2 = wgll*wgll';
 
-        # Properties of heterogeneous medium
-        if ex*dxe >= ThickX && ey*dye <= ThickY
-            rho[:,:] .= rho2
-            mu[:,:] .= rho2*vs2^2
-        else
-            rho[:,:] .= rho1
-            mu[:,:] .= rho1*vs1^2
-        end
+    vso = zeros(s.NGLL, s.NGLL)
+    vs = zeros(s.NGLL-1, s.NGLL)
+    dx = zeros(s.NGLL-1, s.NGLL)
+    muMax = 0
+    dt = Inf
 
-        if muMax < maximum(maximum(mu))
-            muMax = maximum(maximum(mu))
-        end
+    for ey = 1:s.NelY
+        for ex = 1:s.NelX
 
-        # Diagonal Mass Matrix
-        M[ig] .= M[ig] .+ wgll2.*rho*jac
+            eo = (ey-1)*s.NelX + ex
+            ig = iglob[:,:,eo]
 
-        # Local contributions to the stiffness matrix
-        W[:,:,eo] .= wgll2.*mu;
+            # Properties of heterogeneous medium
+            if ex*s.dxe >= m.ThickX && ey*s.dye <= m.ThickY
+                m.rho[:,:] .= m.rho2
+                m.mu[:,:] .= m.rho2*m.vs2^2
+            else
+                m.rho[:,:] .= m.rho1
+                m.mu[:,:] .= m.rho1*m.vs1^2
+            end
+
+            if muMax < maximum(maximum(m.mu))
+                muMax = maximum(maximum(m.mu))
+            end
+
+            # Diagonal Mass Matrix
+            M[ig] .= M[ig] .+ wgll2.*m.rho*s.jac
+
+            # Local contributions to the stiffness matrix
+            W[:,:,eo] .= wgll2.*m.mu;
             
-        # Set timestep
-        vso .= sqrt.(mu./rho)
+            # Set timestep
+            vso .= sqrt.(m.mu./m.rho)
             
-        if dxe<dye
-            vs .= max.(vso[1:NGLL-1,:], vso[2:NGLL,:])
-            dx .= repmat( diff(xgll)*0.5*dxe, 1, NGLL)
-        else
-            vs .= max.(vso[:,1:NGLL-1], vso[:,2:NGLL])'
-            dx .= repmat( diff(xgll)*0.5*dye, 1, NGLL)
+            if s.dxe<s.dye
+                vs .= max.(vso[1:s.NGLL-1,:], vso[2:s.NGLL,:])
+                dx .= repmat( diff(xgll)*0.5*s.dxe, 1, s.NGLL)
+            else
+                vs .= max.(vso[:,1:s.NGLL-1], vso[:,2:s.NGLL])'
+                dx .= repmat( diff(xgll)*0.5*s.dye, 1, s.NGLL)
+            end
+            
+            dtloc = dx./vs
+            dt = minimum( push!(dtloc[1:end], dt) )
+
         end
-            
-        dtloc = dx./vs
-        dt = minimum( push!(dtloc[1:end], dt) )
-
-
     end
+
+    return M, W, dt, muMax
 end
-
-
-#=
-# With single for loop
-
-for c = 1:Nel
-
-    ig = iglob[:,:,c]
-
-    # Properties of heterogeneous medium
-    rho[:,:] = 1
-    mu[:,:] = 1
-
-    # Diagonal Mass Matrix
-    M[ig] = M[ig] + wgll2.*rho*jac
-
-    # Local contributions to the stiffness matrix
-    W[:,:,c] = wgll2.*mu;
-        
-    # Set timestep
-    vs = sqrt.(mu./rho)
-
-    if dxe<dye
-        vs = max.(vs[1:NGLL-1,:], vs[2:NGLL,:])
-        dx = repmat( diff(xgll)*0.5*dxe, 1, NGLL)
-    else
-        vs = max.(vs[:,1:NGLL-1], vs[:,2:NGLL])
-        dx = repmat( diff(xgll)*0.5*dye, 1, NGLL)'
-    end
-        
-    dtloc = dx./vs
-    dt = minimum( push!(dtloc[1:end], dt) )    
-
-end
-=#;

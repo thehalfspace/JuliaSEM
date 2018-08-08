@@ -4,12 +4,24 @@
 
 using PyPlot
 
+# Customize plot
+PyPlot.matplotlib[:rc]("text", usetex = true)
+PyPlot.matplotlib[:rc]("text.latex", preamble = "\\usepackage{amsmath}")
+#PyPlot.matplotlib[:rc]("font", size = 18)
+#PyPlot.matplotlib[:rc]("axes", labelsize = 15)
+#PyPlot.matplotlib[:rc]("axes", titlesize = 15)
+#PyPlot.matplotlib[:rc]("xtick", labelsize = 12)
+#PyPlot.matplotlib[:rc]("ytick", labelsize = 12)
+#PyPlot.matplotlib[:rc]("legend", fontsize = 18)
+#PyPlot.matplotlib[:rc]("figure", titlesize = 18)
+PyPlot.matplotlib[:rc]("figure", figsize = (6,4), dpi = 120)
+
 # Plot friction parameters
 function fricPlot(cca, ccb, FltX)
 
-    plot(cca, FltX/1e3, "k-", label="a")
-    plot(ccb, FltX/1e3, "k--", label="b")
-    plot(cca-ccb, FltX/1e3, "r-", label="a-b")
+    plot(cca, FltX/1e3, "k-", label="a", lw = 1)
+    plot(ccb, FltX/1e3, "k--", label="b", lw = 1)
+    plot(cca-ccb, FltX/1e3, "r-", label="a-b", lw = 1)
     xlabel("Value")
     ylabel("Depth (km)")
     title("Rate and State Friction Parameters")
@@ -55,8 +67,8 @@ function cumSlip(delfsec, delf5yr, FltX)
 
     delfsec2 = delfsec[indx:end, :]
 
-    plot(delf5yr, FltX/1e3, "b-", linewidth=0.4)
-    plot(delfsec2, FltX[indx:end]/1e3, "r-", linewidth=0.4)
+    plot(delf5yr, FltX/1e3, "b-", linewidth=1)
+    plot(delfsec2, FltX[indx:end]/1e3, "r-", linewidth=1)
     xlabel("Slip (m)")
     ylabel("Depth (km)")
     title("Cumulative Slip")
