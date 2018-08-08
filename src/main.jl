@@ -1,11 +1,11 @@
 #########################################
-#										#
-#	SPECTRAL ELEMENT METHOD FOR  		#
-#	EARTHQUAKE CYCLE SIMULATION			#
-#										#
-#	Prithvi Thakur						#
-#	Adapted from Kaneko et al. (2011)	#
-#	and J.P. Ampuero's SEMLAB       	#
+#										
+#	SPECTRAL ELEMENT METHOD FOR  		
+#	EARTHQUAKE CYCLE SIMULATION			
+#										
+#	Prithvi Thakur						
+#	Adapted from Kaneko et al. (2011)	
+#	and J.P. Ampuero's SEMLAB       	
 #########################################
 
 #.................................
