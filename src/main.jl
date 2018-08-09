@@ -326,7 +326,12 @@ function main(s::space_parameters, tim::time_parameters,
             
                 if Vf[j] > 1e10 || isnan(Vf[j]) == 1 || isnan(tau1[j]) == 1
                     #println(FltVfree)
-                    #println("iter = ", it)
+                    println("Fault location = ", j)
+                    
+                    # Directory to save the simulation results
+                    filename = string(dir, "/data", name, "nrfail.jld")
+
+                    @save filename
                     error("NR SEARCH FAILED!")
                     return
                 end

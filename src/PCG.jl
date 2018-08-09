@@ -58,6 +58,11 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
         if n == 4000 || norm(rnew)/norm(Fnew) > 1e10
             print(norm(rnew)/norm(Fnew))
             println("n = ", n)
+            
+            # Directory to save the simulation results
+            filename = string(dir, "/data", name, "pcgfail.jld")
+            @save filename
+
             error("PCG did not converge")
             return
         end
