@@ -12,8 +12,8 @@ using Parameters
     LX::Int64 = 24e3*Nsize  # depth dimension of rectangular domain
     LY::Int64 = 15e3*Nsize # off fault dimenstion of rectangular domain
 
-    NelX::Int8 = 60*Nsize # no. of elements in x
-    NelY::Int8 = 40*Nsize # no. of elements in y
+    NelX::Int8 = 30*Nsize # no. of elements in x
+    NelY::Int8 = 20*Nsize # no. of elements in y
 
     dxe::Float64 = LX/NelX #	Size of one element along X
     dye::Float64 = LY/NelY #	Size of one element along Y

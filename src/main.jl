@@ -1,30 +1,31 @@
 #########################################
-#										#
-#	SPECTRAL ELEMENT METHOD FOR  		#
-#	EARTHQUAKE CYCLE SIMULATION			#
-#										#
-#	Prithvi Thakur						#
-#	Adapted from Kaneko et al. (2011)	#
-#	and J.P. Ampuero's SEMLAB       	#
+#										
+#	SPECTRAL ELEMENT METHOD FOR  		
+#	EARTHQUAKE CYCLE SIMULATION			
+#										
+#	Prithvi Thakur						
+#	Adapted from Kaneko et al. (2011)	
+#	and J.P. Ampuero's SEMLAB       	
 #########################################
 
 using Printf
 using LinearAlgebra
+using JLD2
 
 #.................................
 # Include external function files
 #.................................
 include("parameters/defaultParameters.jl")	    #	Set Parameters
-include("GetGLL.jl")		#	Polynomial interpolation
-include("Meshbox.jl")		# 	Build 2D mesh
-include("Assemble.jl")
+include("GetGLL.jl")		    #	Polynomial interpolation
+include("Meshbox.jl")		    # 	Build 2D mesh
+include("Assemble.jl")          #   Assemble mass and stiffness matrix
 include("BoundaryMatrix.jl")    #	Boundary matrices
-include("FindNearestNode.jl")   #	Nearest node
+include("FindNearestNode.jl")   #	Nearest node for output
 include("initialConditions/defaultInitialConditions.jl")
-include("PCG.jl")
-include("dtevol.jl")
-include("NRsearch.jl")
-include("otherFunctions.jl")
+include("PCG.jl")               # Preconditioned conjugate gradient to invert matrix
+include("dtevol.jl")            # compute the next timestep
+include("NRsearch.jl")          # Newton-rhapson search method to find roots
+include("otherFunctions.jl")    # some other functions to solve for friction
 
 
 function main(s::space_parameters, tim::time_parameters, 
@@ -264,11 +265,13 @@ function main(s::space_parameters, tim::time_parameters,
                 # Compute on-fault stress
                 a[:] .= 0
 
+                # Compute forcing (acceleration) for each element
                 a = element_computation(s, iglob, d, H, Ht, W, a)
 
                 a[FltIglobBC] .= 0
                 tau1 .= -a[iFlt]./FltB
                 
+                # Function to calculate sliprate
                 psi1, Vf1 = slrFunc(eq, NFBC, s.FltNglob, psi, psi1, Vf, Vf1, 
                                     IDstate, tau1, tauo, Seff, cca, ccb, dt)
 
@@ -333,8 +336,12 @@ function main(s::space_parameters, tim::time_parameters,
                                           tauNR[j], tauo[j], psi1[j], FltZ[j], FltVfree[j])
             
                 if Vf[j] > 1e10 || isnan(Vf[j]) == 1 || isnan(tau1[j]) == 1
-                    #println(FltVfree)
-                    #println("iter = ", it)
+                    
+                    println("Fault Location = ", j)
+
+                    # Save simulation results
+                    filename = string(dir, "/data", name, "nrfail.jld")
+                    @save filename 
                     @error("NR SEARCH FAILED!")
                     return
                 end

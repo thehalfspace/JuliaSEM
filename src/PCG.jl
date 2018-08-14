@@ -1,10 +1,11 @@
 ################################################
-#                                              #
-#   SOLVE FOR DIPLACEMENT USING PRECONDITIONED #
-#           CONJUGATE GRADIENT METHOD          #
-#                                              #
+#                                              
+#   SOLVE FOR DIPLACEMENT USING PRECONDITIONED 
+#           CONJUGATE GRADIENT METHOD          
+#                                              
 ################################################
 
+using JLD2
 
 function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
              FltNI, H, Ht, iglob, nglob, W)
@@ -58,6 +59,9 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
         if n == 4000 || norm(rnew)/norm(Fnew) > 1e10
             print(norm(rnew)/norm(Fnew))
             println("n = ", n)
+
+            filename = string(dir, "data/", name, "pcgfail.jld")
+            @save filename
             @error("PCG did not converge")
             return
         end
@@ -93,7 +97,7 @@ function element_computation(s::space_parameters, iglob, F_local, H, Ht, W, a_lo
 
 end
 
-# Sub function to be used inside PCG
+# Compute the displacement/forcing for each element
 function element_computation2(s::space_parameters, iglob, F_local, H, Ht, W, a_local)
     
     for eo = 1:s.Nel

@@ -2,6 +2,8 @@
 #   NEWTON RHAPSON SEARCH METHOD
 ####################################
 
+using JLD2
+
 function NRsearch(fo, Vo, cca, ccb, Seff, tau, tauo, psi, FltZ, FltVfree)
 
     Vw = 1e10
@@ -30,6 +32,9 @@ function NRsearch(fo, Vo, cca, ccb, Seff, tau, tauo, psi, FltZ, FltVfree)
 
         if abs(delta) > 1e10 || k == 1000
             println("k = ", k)
+            # Save simulation results
+            filename = string(dir, "/data", name, "nrfail.jld")
+            @save filename 
             @error("NR search fails to converge")
         end
     end
