@@ -2,6 +2,8 @@
 #   NEWTON RHAPSON SEARCH METHOD
 ####################################
 
+using JLD
+
 function NRsearch(fo, Vo, cca, ccb, Seff, tau, tauo, psi, FltZ, FltVfree)
 
     Vw = 1e10

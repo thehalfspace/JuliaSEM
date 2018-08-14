@@ -9,7 +9,10 @@
 # 5. Plot results from the scripts function
 
 # Name of the current simulation
-global name = "/dump01"
+global name = "/longFZ01"
+
+# Description
+description = "Very long and thin fault zone"
 
 # Get the current directory for saving figures
 global dir = pwd()
@@ -39,4 +42,4 @@ filename = string(dir, "/data", name, ".jld")
 @save filename
 
 # Create a new directory to save plots
-mkdir(string(dir, "/plots/", name))
+mkdir(string(dir, "/plots", name))

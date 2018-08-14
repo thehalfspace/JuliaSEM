@@ -23,6 +23,7 @@ include("dtevol.jl")
 include("NRsearch.jl")
 include("otherFunctions.jl")
 
+using JLD
 
 function main(s::space_parameters, tim::time_parameters, 
               m::medium_properties, eq::earthquake_parameters)

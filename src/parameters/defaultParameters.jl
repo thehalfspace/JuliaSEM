@@ -19,7 +19,7 @@ using Parameters
     dye::Float64 = LY/NelY #	Size of one element along Y
     Nel::Int64 = NelX*NelY # Total no. of elements
     
-    P::Int = 6		#	Lagrange polynomial degree
+    P::Int = 4		#	Lagrange polynomial degree
     NGLL::Int64 = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
     FltNglob::Int64 = NelX*(NGLL - 1) + 1
 
