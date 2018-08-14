@@ -16,14 +16,16 @@ end
 #.................................................
 # Compute the final Coseismic slip for each event
 #.................................................
-function Coslip(Slip, SlipVel)
+function Coslip(Slip, SlipVel, time_=zeros(1000000))
 
     Vfmax = maximum(SlipVel, 1)
 
     delfafter::Array{Float64,2} = zeros(Slip)
+    t_catalog::Array{Float64} = zeros(Slip[:,1])
+
     Vthres = 0.01 # event threshold
     slipstart = 0
-    it = 1
+    it = 1; it2 = 1
     delfref = zeros(Slip[:,1])
 
     for i = 1:length(Slip[1,:])
@@ -32,6 +34,8 @@ function Coslip(Slip, SlipVel)
         if Vfmax[i] > 1.01*Vthres && slipstart == 0
             delfref = Slip[:,i]
             slipstart = 1
+            t_catalog[it2] = time_[i]
+            it2 = it2+1
         end
 
         # End of each event
@@ -42,7 +46,7 @@ function Coslip(Slip, SlipVel)
         end
     end
 
-    return delfafter[:,1:it-1]
+    return delfafter[:,1:it-1], t_catalog[1:it2-1]
 end
 
 #..........................................................
@@ -51,10 +55,10 @@ end
 #       dimension along depth is the same as the rupture
 #       dimension perpendicular to the plane
 #..........................................................
-function moment_magnitude(s, m, Slip, SlipVel)
+function moment_magnitude(s, m, Slip, SlipVel, time_)
 
     # Final coseismic slip of each earthquake
-    delfafter = Coslip(Slip, SlipVel)
+    delfafter, t_catalog = Coslip(Slip, SlipVel, time_)
 
     iter = length(delfafter[1,:])
     
@@ -82,7 +86,7 @@ function moment_magnitude(s, m, Slip, SlipVel)
 
     Mw = (2/3)*log10.(moment.*1e7) - 10.7
 
-    return Mw
+    return Mw, t_catalog
 end
 
 
@@ -109,4 +113,24 @@ function MwPlot(Mw)
 
     figname = string(dir, "/plots", name, "/mfd.png")
     ax[:savefig](figname, dpi = 300)
+end
+
+
+#.................................
+# Plot earthquake catalog
+# (Earthquake magnitude with time)
+#.................................
+function eq_catalog(Mw, t_catalog, yr2sec)
+
+    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    ax = fig[:add_subplot](111)
+
+    ax[:scatter](t_catalog./yr2sec, Mw, s = 30, marker=".")
+    ax[:set_xlabel]("Time (yrs)")
+    ax[:set_ylabel]("Moment Magnitude (Mw)")
+    ax[:set_title]("Earthquake Catalogue")
+    show()
+
+    figname = string(dir, "/plots", name, "catalogue.png")
+    fig[:savefig](figname, dpi = 300)
 end

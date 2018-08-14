@@ -40,8 +40,8 @@ function MeshBox(s::space_parameters)
 	iglob = zeros(Int32, NGLL, NGLL, Nel)
 	nglob = s.FltNglob*(NelY*(NGLL-1) + 1)
 
-    x::Array{Float64} = zeros(nglob, 1)
-    y::Array{Float64} = zeros(nglob, 1)
+    x::Array{Float64} = zeros(nglob)
+    y::Array{Float64} = zeros(nglob)
 
 	et = 0
 	last_iglob = 0
@@ -51,7 +51,7 @@ function MeshBox(s::space_parameters)
 	igB = reshape(collect(1:NGLL*(NGLL-1)), NGLL, NGLL-1) # Bottom edge
 	igLB = reshape(collect(1:(NGLL-1)*(NGLL-1)), NGLL-1, NGLL-1) # rest of the elements
 
-	xgll = repmat(0.5*(1+XGLL), 1, NGLL)
+	xgll = repeat(0.5*(1 .+ XGLL), 1, NGLL)
 	ygll = dye*xgll'
 	xgll = dxe*xgll
 
@@ -70,16 +70,16 @@ function MeshBox(s::space_parameters)
 			else
 				if ey ==1 # Bottom Row
 					ig[1,:] = iglob[NGLL, :, et-1]   # Left edge
-					ig[2:end, :] = last_iglob + igL # The rest
+					ig[2:end, :] = last_iglob .+ igL # The rest
 
 				elseif ex == 1	# Left Column
 					ig[:,1] = iglob[:,NGLL,et-NelX]	# Bottom edge
-					ig[:,2:end] = last_iglob + igB 	# The rest
+					ig[:,2:end] = last_iglob .+ igB 	# The rest
 
 				else 			# Other Elements
 					ig[1,:] = iglob[NGLL, :, et-1]	# Left edge
 					ig[:,1] = iglob[:, NGLL, et-NelX]# Bottom edge
-					ig[2:end, 2:end] = last_iglob + igLB
+					ig[2:end, 2:end] = last_iglob .+ igLB
 				end
 			end
 
@@ -87,8 +87,8 @@ function MeshBox(s::space_parameters)
 			last_iglob = ig[NGLL, NGLL]
 
 			# Global coordinates of computational nodes
-			x[ig] = dxe*(ex-1) + xgll
-			y[ig] = dye*(ey-1) + ygll
+			x[ig] = dxe*(ex-1) .+ xgll
+			y[ig] = dye*(ey-1) .+ ygll
 
 		end
 	end

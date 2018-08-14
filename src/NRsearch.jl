@@ -30,7 +30,7 @@ function NRsearch(fo, Vo, cca, ccb, Seff, tau, tauo, psi, FltZ, FltVfree)
 
         if abs(delta) > 1e10 || k == 1000
             println("k = ", k)
-            error("NR search fails to converge")
+            @error("NR search fails to converge")
         end
     end
 

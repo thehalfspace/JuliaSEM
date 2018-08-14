@@ -6,8 +6,8 @@ function XiLfFunc(s::space_parameters, t::time_parameters,
     Ximax = 0.5
     Xithf = 1
 
-    Xith = Array{Float64}(s.FltNglob)
-    XiLf = Array{Float64}(s.FltNglob)
+    Xith:: Array{Float64} = zeros(s.FltNglob)
+    XiLf::Array{Float64} = zeros(s.FltNglob)
 
     for j = 1:s.FltNglob
 
@@ -46,7 +46,7 @@ function KdiagFunc(s::space_parameters, iglob, W, H, Ht, FltNI)
     for et = 1:s.Nel
         ig = iglob[:,:,et]
         wloc = W[:,:,et]
-        Klocdiag[:,:] = 0
+        Klocdiag[:,:] .= 0
 
         for k =  1:s.NGLL
             for j = 1:s.NGLL

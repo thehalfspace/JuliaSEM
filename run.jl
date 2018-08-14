@@ -9,7 +9,7 @@
 # 5. Plot results from the scripts function
 
 # Name of the current simulation
-global name = "/dump01"
+global name = "/dump02"
 
 # Get the current directory for saving figures
 global dir = pwd()
@@ -17,21 +17,19 @@ global dir = pwd()
 # include the main function
 include(string(dir, "/src/main.jl"))
 
-using JLD
+using JLD2
 
 s = space_parameters()
 tim = time_parameters()
 m = medium_properties()
 eq = earthquake_parameters()
 
-tic()
-FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb = 
+elapsed_time = @elapsed FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb = 
                                                     @time main(s, tim, m, eq);
 
 println("\n")
-elapsed_time = toc()
 
-info("Simulation Complete!")
+@info("Simulation Complete!")
 
 # Directory to save the simulation results
 filename = string(dir, "/data", name, ".jld")

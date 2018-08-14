@@ -40,7 +40,7 @@ end
 # Plot shear stress at location as a function of time
 function stressPlot(Stress, time_, FltX, yr2sec, loc1 = 8e3)
     
-    FltID = find(abs.(FltX) .<= loc1)[1]
+    FltID = findall(abs.(FltX) .<= loc1)[1]
     
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
@@ -60,7 +60,7 @@ end
 # Plot slip velocity at location as a function of time (same location)
 function slipvelPlot(SlipVel, time_, FltX, yr2sec, loc1 = 8e3)
     
-    FltID = find(abs.(FltX) .<= loc1)[1]
+    FltID = findall(abs.(FltX) .<= loc1)[1]
 
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
@@ -77,11 +77,30 @@ function slipvelPlot(SlipVel, time_, FltX, yr2sec, loc1 = 8e3)
 
 end
 
+# Plot Vfmax
+function slipvelmax(SlipVel, time_, yre2sec)
+
+    Vfmax = maximum(SlipVel, 1)[:]
+    
+    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    ax = fig[:add_subplot](111)
+
+    ax[:plot](time_./yr2sec, Vfmax, lw = 1)
+    ax[:set_xlabel]("Time (years)")
+    ax[:set_ylabel]("Max. Slip rate (m/s)")
+    ax[:set_title]("Max. slip rate on fault")
+    ax[:set_yscale]("log")
+    show()
+
+    figname = string(dir, "/plots", name, "/Vfmax.png")
+    fig[:savefig](figname, dpi = 300)
+end
+
 
 # Plot cumulative slip
 function cumSlip(delfsec, delf5yr, FltX)
 
-    indx = find(abs.(FltX) .<= 18e3)[1]
+    indx = findall(abs.(FltX) .<= 18e3)[1]
 
     delfsec2 = delfsec[indx:end, :]
 

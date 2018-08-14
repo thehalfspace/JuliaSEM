@@ -4,7 +4,7 @@
 
 using Parameters
 
-@with_kw immutable space_parameters
+@with_kw struct space_parameters
     
     # Domain size
     Nsize::Int8 = 2
@@ -31,10 +31,10 @@ using Parameters
     coefint2::Float64 = jac/dy_deta^2
 end
 
-@with_kw immutable time_parameters
+@with_kw struct time_parameters
     
     yr2sec::Int64 = 365*24*60*60
-    Total_time::Int128 = 20*yr2sec     # Set the total time for simulation here
+    Total_time::Int128 = 60*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      
@@ -50,7 +50,7 @@ end
 
 
 
-@with_kw immutable medium_properties
+@with_kw struct medium_properties
 
     NGLL = space_parameters().NGLL
     LX = space_parameters().LX
@@ -73,16 +73,16 @@ end
 end
 
 
-@with_kw immutable earthquake_parameters
+@with_kw struct earthquake_parameters
 
     yr2sec = time_parameters().yr2sec
     FltNglob = space_parameters().FltNglob
 
     Vpl::Float64 = 35e-3/yr2sec	#	Plate loading
 
-    fo::Array{Float64} 	= repmat([0.6], FltNglob)		#	Reference friction coefficient
-    Vo::Array{Float64} 	= repmat([1e-6], FltNglob)		#	Reference velocity 'Vo'
-    xLf::Array{Float64} = repmat([0.008], FltNglob)#	Dc (Lc) = 8 mm
+    fo::Array{Float64} 	= repeat([0.6], FltNglob)		#	Reference friction coefficient
+    Vo::Array{Float64} 	= repeat([1e-6], FltNglob)		#	Reference velocity 'Vo'
+    xLf::Array{Float64} = repeat([0.008], FltNglob)#	Dc (Lc) = 8 mm
 
     Vthres::Float64 = 0.01
     Vevne::Float64 = Vthres

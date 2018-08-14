@@ -17,10 +17,10 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
     a_local = element_computation(s, iglob, F, H, Ht, W, a_local)
     Fnew = -a_local[FltNI]
 
-    dd_local[FltNI] = dnew
-    dd_local[iFlt] = 0
+    dd_local[FltNI] .= dnew
+    dd_local[iFlt] .= 0
 
-    a_local[:] = 0
+    a_local[:] .= 0
     
     a_local = element_computation(s, iglob, dd_local, H, Ht, W, a_local)
     anew = a_local[FltNI]
@@ -29,12 +29,12 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
     rnew = Fnew - anew
     znew = rnew./diagKnew
     pnew = znew
-    p_local[:] = 0
+    p_local[:] .= 0
     p_local[FltNI] = pnew
 
     for n = 1:4000
-        anew[:] = 0
-        a_local[:] = 0
+        anew[:] .= 0
+        a_local[:] .= 0
         
         a_local = element_computation(s, iglob, p_local, H, Ht, W, a_local)
 
@@ -48,7 +48,7 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
         znew = rnew./diagKnew
         beta_ = znew'*rnew/(zold'*rold)
         pnew = znew + beta_*pnew
-        p_local[:] = 0
+        p_local[:] .= 0
         p_local[FltNI] = pnew
 
         if norm(rnew)/norm(Fnew) < 1e-5
@@ -58,7 +58,7 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
         if n == 4000 || norm(rnew)/norm(Fnew) > 1e10
             print(norm(rnew)/norm(Fnew))
             println("n = ", n)
-            error("PCG did not converge")
+            @error("PCG did not converge")
             return
         end
     end

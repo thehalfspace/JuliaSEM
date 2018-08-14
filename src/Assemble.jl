@@ -46,10 +46,10 @@ function assemble(s::space_parameters, m::medium_properties, iglob, M, W)
             
             if s.dxe<s.dye
                 vs .= max.(vso[1:s.NGLL-1,:], vso[2:s.NGLL,:])
-                dx .= repmat( diff(xgll)*0.5*s.dxe, 1, s.NGLL)
+                dx .= repeat( diff(xgll)*0.5*s.dxe, 1, s.NGLL)
             else
                 vs .= max.(vso[:,1:s.NGLL-1], vso[:,2:s.NGLL])'
-                dx .= repmat( diff(xgll)*0.5*s.dye, 1, s.NGLL)
+                dx .= repeat( diff(xgll)*0.5*s.dye, 1, s.NGLL)
             end
             
             dtloc = dx./vs
