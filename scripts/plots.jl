@@ -77,6 +77,26 @@ function slipvelPlot(SlipVel, time_, FltX, yr2sec, loc1 = 8e3)
 
 end
 
+# Plot Vfmax
+function sliipvelmax(SlipVel, time_)
+    
+    Vfmax = maximum(SlipVel,1)
+
+    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    ax = fig[:add_subplot](111)
+
+    ax[:plot](time_/yr2sec, Vfmax, lw = 1)
+    ax[:set_xlabel]("Time (years)")
+    ax[:set_ylabel]("Max. Slip rate (m/s)")
+    ax[:set_title](string("Max. slip rate on fault"))
+    ax[:set_yscale]("log")
+    show()
+
+    figname = string(dir, "/plots", name, "/Vfmax.png")
+    fig[:savefig](figname, dpi = 300)
+
+end
+
 
 # Plot cumulative slip
 function cumSlip(delfsec, delf5yr, FltX)
