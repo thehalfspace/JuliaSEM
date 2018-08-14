@@ -78,9 +78,9 @@ function slipvelPlot(SlipVel, time_, FltX, yr2sec, loc1 = 8e3)
 end
 
 # Plot Vfmax
-function sliipvelmax(SlipVel, time_)
+function slipvelmax(SlipVel, time_, yr2sec)
     
-    Vfmax = maximum(SlipVel,1)
+    Vfmax = maximum(SlipVel,1)[:]
 
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)

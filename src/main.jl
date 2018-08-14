@@ -14,14 +14,14 @@
 include("parameters/defaultParameters.jl")	    #	Set Parameters
 include("GetGLL.jl")		#	Polynomial interpolation
 include("Meshbox.jl")		# 	Build 2D mesh
-include("Assemble.jl")
+include("Assemble.jl")      #   Assemble mass and stiffness matrix
 include("BoundaryMatrix.jl")    #	Boundary matrices
-include("FindNearestNode.jl")   #	Nearest node
+include("FindNearestNode.jl")   #	Nearest node for output
 include("initialConditions/defaultInitialConditions.jl")
-include("PCG.jl")
-include("dtevol.jl")
-include("NRsearch.jl")
-include("otherFunctions.jl")
+include("PCG.jl")           #   Preconditioned conjugate gradient method to invert matrix
+include("dtevol.jl")        # compute the next timestep
+include("NRsearch.jl")      # newton-rhapson root search method
+include("otherFunctions.jl") # some other friction solver methods
 
 using JLD
 
