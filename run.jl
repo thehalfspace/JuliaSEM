@@ -32,9 +32,9 @@ println("\n")
 @info("Simulation Complete!")
 
 # Directory to save the simulation results
-#filename = string(dir, "/data", name, ".jld")
+filename = string(dir, "/data", name, ".jld")
 
-#@save filename
+@save filename
 
 # Create a new directory to save plots
 #mkdir(string(dir, "/plots/", name))

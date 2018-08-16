@@ -131,6 +131,8 @@ function main(s::space_parameters, tim::time_parameters,
     Vf2::Array{Float64} = zeros(s.FltNglob)
     Vf0::Array{Float64} = zeros(length(iFlt))
     FltVfree::Array{Float64} = zeros(length(iFlt))
+    psi::Array{Float64} = zeros(s.FltNglob)
+    psi0::Array{Float64} = zeros(s.FltNglob)
     psi1::Array{Float64} = zeros(s.FltNglob)
     psi2::Array{Float64} = zeros(s.FltNglob)
     tau1::Array{Float64} = zeros(s.FltNglob)
@@ -140,8 +142,8 @@ function main(s::space_parameters, tim::time_parameters,
     #tauAB::Array{Float64} = zeros(s.FltNglob)
 
     # Initial state variable
-    psi::Array{Float64} = tauo./(Seff.*ccb) - eq.fo./ccb - (cca./ccb).*log.(2*v[iFlt]./eq.Vo)
-    psi0::Array{Float64} = psi[:]
+    psi = tauo./(Seff.*ccb) - eq.fo./ccb - (cca./ccb).*log.(2*v[iFlt]./eq.Vo)
+    psi0 .= psi[:]
 
     # Compute XiLF used in timestep calculation
     XiLf = XiLfFunc(s, tim, eq, muMax, cca, ccb, Seff) 
@@ -237,22 +239,23 @@ function main(s::space_parameters, tim::time_parameters,
 
         if isolver == 1
 
-            vPre .= v[:]
-            dPre .= d[:]
+            vPre .= v
+            dPre .= d
 
             Vf0 .= 2*v[iFlt] .+ eq.Vpl
-            Vf  .= Vf0[:]
+            Vf  .= Vf0
 
             for p1 = 1:2
                 
                 # Compute the forcing term
-                F[:] .= 0
+                F .= 0
                 F[iFlt] .= dPre[iFlt] .+ v[iFlt]*dt
 
                 # Assign previous displacement field as initial guess
                 dnew .= d[FltNI]
 
                 # Solve d = K^-1F by PCG
+                #println("\nPCG:")
                 dnew = PCG(s, diagKnew, dnew, F, iFlt, FltNI,
                               H, Ht, iglob, nglob, W)
                 
@@ -263,15 +266,17 @@ function main(s::space_parameters, tim::time_parameters,
                 d[iFlt] .= F[iFlt]
 
                 # Compute on-fault stress
-                a[:] .= 0
+                a .= 0
 
                 # Compute forcing (acceleration) for each element
+                #println("\nElement Computation:")
                 a = element_computation(s, iglob, d, H, Ht, W, a)
 
                 a[FltIglobBC] .= 0
                 tau1 .= -a[iFlt]./FltB
                 
                 # Function to calculate sliprate
+               # println("\nSlr function:")
                 psi1, Vf1 = slrFunc(eq, NFBC, s.FltNglob, psi, psi1, Vf, Vf1, 
                                     IDstate, tau1, tauo, Seff, cca, ccb, dt)
 
@@ -294,7 +299,7 @@ function main(s::space_parameters, tim::time_parameters,
             #RMS = sqrt(sum(RHS.^2)/length(RHS))./maximum(abs.(RHS))
             
             # Line 731: P_MA: Omitted
-            a[:] .= 0
+            a .= 0
             d[FltIglobBC] .= 0
             v[FltIglobBC] .= 0
 
@@ -302,15 +307,15 @@ function main(s::space_parameters, tim::time_parameters,
             # If isolver != 1, or max slip rate is < 10^-2 m/s
         else
             
-            dPre .= d[:]
-            vPre .= v[:]
+            dPre .= d
+            vPre .= v
 
             # Update
             d .= d .+ dt.*v .+ (half_dt_sq).*a
 
             # Prediction
             v .= v .+ half_dt.*a
-            a[:] .= 0
+            a .= 0
 
             # Internal forces -K*d[t+1] stored in global array 'a'
             # This is different from matlab code; will change if Nel_ETA is not zero
@@ -354,9 +359,9 @@ function main(s::space_parameters, tim::time_parameters,
 
             end
             
-            tau .= tau2[:] .- tauo[:]
+            tau .= tau2 .- tauo
             tau[iFBC] .= 0
-            psi .= psi2[:]
+            psi .= psi2
             #KD = a[:]
             a[iFlt] .= a[iFlt] .- FltB.*tau
             ########## End of fault boundary condition ############## 
@@ -365,7 +370,7 @@ function main(s::space_parameters, tim::time_parameters,
             #RHS = a[:]
 
             # Solve for a_new
-            a[:] .= a./M
+            a .= a./M
             
             # Correction
             v .= v .+ half_dt*a

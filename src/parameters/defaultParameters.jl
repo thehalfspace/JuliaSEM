@@ -12,14 +12,14 @@ using Parameters
     LX::Int64 = 24e3*Nsize  # depth dimension of rectangular domain
     LY::Int64 = 15e3*Nsize # off fault dimenstion of rectangular domain
 
-    NelX::Int8 = 30*Nsize # no. of elements in x
-    NelY::Int8 = 20*Nsize # no. of elements in y
+    NelX::Int8 = 15*Nsize # no. of elements in x
+    NelY::Int8 = 10*Nsize # no. of elements in y
 
     dxe::Float64 = LX/NelX #	Size of one element along X
     dye::Float64 = LY/NelY #	Size of one element along Y
     Nel::Int64 = NelX*NelY # Total no. of elements
     
-    P::Int = 6		#	Lagrange polynomial degree
+    P::Int = 8		#	Lagrange polynomial degree
     NGLL::Int64 = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
     FltNglob::Int64 = NelX*(NGLL - 1) + 1
 
@@ -35,7 +35,7 @@ end
     
     yr2sec::Int64 = 365*24*60*60
     
-    Total_time::Int128 = 1000*yr2sec     # Set the total time for simulation here
+    Total_time::Int128 = 100*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      
