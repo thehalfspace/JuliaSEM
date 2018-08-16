@@ -50,13 +50,12 @@ function KdiagFunc(s::space_parameters, iglob, W, H, Ht, FltNI)
 
         for k =  1:s.NGLL
             for j = 1:s.NGLL
-                Klocdiag[k,j] = Klocdiag[k,j] + 
-                                sum( s.coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
+                Klocdiag[k,j] +=  sum( s.coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
                                 + s.coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
             end
         end
 
-        Kdiag[ig] .= Kdiag[ig] .+ Klocdiag[:,:]
+        Kdiag[ig] .+= Klocdiag[:,:]
     end
 
     return Kdiag[FltNI]

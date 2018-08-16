@@ -87,8 +87,8 @@ function MeshBox(s::space_parameters)
 			last_iglob = ig[NGLL, NGLL]
 
 			# Global coordinates of computational nodes
-			x[ig] = dxe*(ex-1) .+ xgll
-			y[ig] = dye*(ey-1) .+ ygll
+			x[ig] .= dxe*(ex-1) .+ xgll
+			y[ig] .= dye*(ey-1) .+ ygll
 
 		end
 	end

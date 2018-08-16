@@ -33,7 +33,7 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
     p_local[:] .= 0
     p_local[FltNI] = pnew
 
-    for n = 1:4000
+    @inbounds for n = 1:4000
         anew[:] .= 0
         a_local[:] .= 0
         
@@ -42,7 +42,7 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
         anew = a_local[FltNI]
 
         alpha_ = znew'*rnew/(pnew'*anew)
-        dnew = dnew + alpha_*pnew
+        dnew  .+= alpha_*pnew
         rold = rnew
         zold = znew
         rnew = rold - alpha_*anew
@@ -74,7 +74,7 @@ end
 # Sub function to be used inside PCG
 function element_computation(s::space_parameters, iglob, F_local, H, Ht, W, a_local)
     
-    for eo = 1:s.Nel
+    @inbounds for eo = 1:s.Nel
 
         # Switch to local element representation
         ig = iglob[:,:,eo]
@@ -89,7 +89,7 @@ function element_computation(s::space_parameters, iglob, F_local, H, Ht, W, a_lo
                  s.coefint2*(W[:,:,eo].*d_eta)*Ht
 
         # Assemble into global vector
-        a_local[ig] = a_local[ig] + locall
+        a_local[ig] += locall
 
     end
 
@@ -100,7 +100,7 @@ end
 # Compute the displacement/forcing for each element
 function element_computation2(s::space_parameters, iglob, F_local, H, Ht, W, a_local)
     
-    for eo = 1:s.Nel
+    @inbounds for eo = 1:s.Nel
 
         # Switch to local element representation
         ig = iglob[:,:,eo]
@@ -115,7 +115,7 @@ function element_computation2(s::space_parameters, iglob, F_local, H, Ht, W, a_l
                  s.coefint2*(W[:,:,eo].*d_eta)*Ht
 
         # Assemble into global vector
-        a_local[ig] = a_local[ig] - locall
+        a_local[ig] -= locall
 
     end
 

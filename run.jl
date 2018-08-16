@@ -8,6 +8,10 @@
 # 4. Run the simulation from terminal. (julia run.jl)
 # 5. Plot results from the scripts function
 
+using JLD2
+using Printf
+using LinearAlgebra
+
 # Name of the current simulation
 global name = "/dump02"
 
@@ -17,24 +21,17 @@ global dir = pwd()
 # include the main function
 include(string(dir, "/src/main.jl"))
 
-using JLD2
+output = main(space_parameters(), time_parameters(), medium_properties(), earthquake_parameters())
 
-s = space_parameters()
-tim = time_parameters()
-m = medium_properties()
-eq = earthquake_parameters()
-
-elapsed_time = @elapsed FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb = 
-                                                    @time main(s, tim, m, eq);
 
 println("\n")
 
 @info("Simulation Complete!")
 
 # Directory to save the simulation results
-filename = string(dir, "/data", name, ".jld")
+#filename = string(dir, "/data", name, ".jld")
 
-@save filename
+#@save filename
 
 # Create a new directory to save plots
 #mkdir(string(dir, "/plots/", name))

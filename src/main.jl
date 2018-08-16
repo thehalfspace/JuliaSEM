@@ -27,6 +27,23 @@ include("dtevol.jl")            # compute the next timestep
 include("NRsearch.jl")          # Newton-rhapson search method to find roots
 include("otherFunctions.jl")    # some other functions to solve for friction
 
+struct results
+    #s::space_parameters
+    #t::time_parameters
+    #m::medium_properties
+    #eq::earthquake_parameters
+
+    FltX::Array{Float64}
+    delf5yr::Array{Float64,2}
+    delfsec::Array{Float64,2}
+    Stress::Array{Float64,2}
+    SlipVel::Array{Float64,2}
+    Slip::Array{Float64,2}
+    time_::Array{Float64}
+    cca::Array{Float64}
+    ccb::Array{Float64}
+
+end
 
 function main(s::space_parameters, tim::time_parameters, 
               m::medium_properties, eq::earthquake_parameters)
@@ -74,7 +91,7 @@ function main(s::space_parameters, tim::time_parameters,
     # Initialize kinematic field: global arrays
     global d = zeros(nglob)
     global v = zeros(nglob)
-    v[:] .= 0.5e-3
+    v .= 0.5e-3
     global a = zeros(nglob)
 
     #......................
@@ -228,7 +245,6 @@ function main(s::space_parameters, tim::time_parameters,
     #....................
     it = 0
     t = 0
-    IDstate = 2
 
     while t < tim.Total_time
         it = it + 1
@@ -278,7 +294,7 @@ function main(s::space_parameters, tim::time_parameters,
                 # Function to calculate sliprate
                # println("\nSlr function:")
                 psi1, Vf1 = slrFunc(eq, NFBC, s.FltNglob, psi, psi1, Vf, Vf1, 
-                                    IDstate, tau1, tauo, Seff, cca, ccb, dt)
+                                    tim.IDstate, tau1, tauo, Seff, cca, ccb, dt)
 
                 Vf1[iFBC] .= eq.Vpl
                 Vf .= (Vf0 + Vf1)/2
@@ -335,7 +351,7 @@ function main(s::space_parameters, tim::time_parameters,
             for j = NFBC: s.FltNglob-1 
 
                 #j = jF - 1 + NFBC
-                psi1[j] = IDS(eq.xLf[j], eq.Vo[j], psi[j], dt, Vf[j], 1e-5, IDstate)
+                psi1[j] = IDS(eq.xLf[j], eq.Vo[j], psi[j], dt, Vf[j], 1e-5, tim.IDstate)
 
                 Vf1[j], tau1[j] = NRsearch(eq.fo[j], eq.Vo[j], cca[j], ccb[j],Seff[j],
                                           tauNR[j], tauo[j], psi1[j], FltZ[j], FltVfree[j])
@@ -351,7 +367,7 @@ function main(s::space_parameters, tim::time_parameters,
                     return
                 end
                 
-                psi2[j] = IDS2(eq.xLf[j], eq.Vo[j], psi[j], psi1[j], dt, Vf[j], Vf1[j], IDstate)
+                psi2[j] = IDS2(eq.xLf[j], eq.Vo[j], psi[j], psi1[j], dt, Vf[j], Vf1[j], tim.IDstate)
                 
                 # NRsearch 2nd loop
                 Vf2[j], tau2[j] = NRsearch(eq.fo[j], eq.Vo[j], cca[j], ccb[j],Seff[j],
@@ -474,5 +490,7 @@ function main(s::space_parameters, tim::time_parameters,
     SlipVel = SlipVel[:,1:it]
     Slip = Slip[:,1:it]
 
-    return FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb 
+    output = results(FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb)
+
+    return output
 end

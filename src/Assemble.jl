@@ -36,7 +36,7 @@ function assemble(s::space_parameters, m::medium_properties, iglob, M, W)
             end
 
             # Diagonal Mass Matrix
-            M[ig] .= M[ig] .+ wgll2.*m.rho*s.jac
+            M[ig] .+= wgll2.*m.rho*s.jac
 
             # Local contributions to the stiffness matrix
             W[:,:,eo] .= wgll2.*m.mu;

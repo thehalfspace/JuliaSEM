@@ -53,7 +53,7 @@ function BoundaryMatrix(s::space_parameters, m::medium_properties, wgll, iglob, 
 		ip = (s.NGLL-1)*(e-1) .+ collect(1:s.NGLL)
 		iB[ip] = iglob[igll, jgll, eB[e]]
 		jB[:,e] = ip
-		B[ip] = B[ip] .+ jac1D*wgll*impedance
+		B[ip] .+= jac1D*wgll*impedance
 	end
 
 	return B, iB

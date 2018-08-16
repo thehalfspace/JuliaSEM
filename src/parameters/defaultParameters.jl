@@ -7,21 +7,21 @@ using Parameters
 @with_kw struct space_parameters
     
     # Domain size
-    Nsize::Int8 = 2
+    Nsize::Int = 2
 
-    LX::Int64 = 24e3*Nsize  # depth dimension of rectangular domain
-    LY::Int64 = 15e3*Nsize # off fault dimenstion of rectangular domain
+    LX::Int = 24e3*Nsize  # depth dimension of rectangular domain
+    LY::Int = 15e3*Nsize # off fault dimenstion of rectangular domain
 
-    NelX::Int8 = 15*Nsize # no. of elements in x
-    NelY::Int8 = 10*Nsize # no. of elements in y
+    NelX::Int = 15*Nsize # no. of elements in x
+    NelY::Int = 10*Nsize # no. of elements in y
 
     dxe::Float64 = LX/NelX #	Size of one element along X
     dye::Float64 = LY/NelY #	Size of one element along Y
-    Nel::Int64 = NelX*NelY # Total no. of elements
+    Nel::Int = NelX*NelY # Total no. of elements
     
     P::Int = 8		#	Lagrange polynomial degree
-    NGLL::Int64 = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
-    FltNglob::Int64 = NelX*(NGLL - 1) + 1
+    NGLL::Int = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
+    FltNglob::Int = NelX*(NGLL - 1) + 1
 
     # Jacobian for global -> local coordinate conversion
     dx_dxi::Float64 = 0.5*dxe
@@ -33,9 +33,9 @@ end
 
 @with_kw struct time_parameters
     
-    yr2sec::Int64 = 365*24*60*60
+    yr2sec::Int = 365*24*60*60
     
-    Total_time::Int128 = 100*yr2sec     # Set the total time for simulation here
+    Total_time::Int = 10*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      
@@ -44,8 +44,8 @@ end
     # Some other time variables used in the loop
     dtincf::Float64 = 1.2
     gamma_::Float64 = pi/4
-    tevneinc::Int64 = 1
-    dtmax::Int64 = 100 * 24 * 60*60		# 100 days
+    tevneinc::Int = 1
+    dtmax::Int = 100 * 24 * 60*60		# 100 days
 
 end
 
