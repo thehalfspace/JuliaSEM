@@ -9,7 +9,7 @@ function XiLfFunc(s::space_parameters, t::time_parameters,
     Xith:: Array{Float64} = zeros(s.FltNglob)
     XiLf::Array{Float64} = zeros(s.FltNglob)
 
-    for j = 1:s.FltNglob
+    @inbounds for j = 1:s.FltNglob
 
         # Compute time restricting parameters
         expr1 = -(cca[j] - ccb[j])/cca[j]
@@ -43,7 +43,7 @@ function KdiagFunc(s::space_parameters, iglob, W, H, Ht, FltNI)
     # Compute the diagonal of K
     Kdiag::Array{Float64} = zeros(nglob)
     Klocdiag::Array{Float64,2} = zeros(s.NGLL, s.NGLL)
-    for et = 1:s.Nel
+    @inbounds for et = 1:s.Nel
         ig = iglob[:,:,et]
         wloc = W[:,:,et]
         Klocdiag[:,:] .= 0
@@ -125,7 +125,7 @@ function slrFunc(eq, NFBC, FltNglob, psi, psi1, Vf, Vf1, IDstate, tau1, tauo, Se
 
     tauAB::Array{Float64} = zeros(FltNglob)
 
-    for j = NFBC: FltNglob-1 
+    @inbounds for j = NFBC: FltNglob-1 
 
         psi1[j] = IDS(eq.xLf[j], eq.Vo[j], psi[j], dt, Vf[j], 1e-6, IDstate)
 

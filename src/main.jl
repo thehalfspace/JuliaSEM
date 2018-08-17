@@ -261,7 +261,7 @@ function main(s::space_parameters, tim::time_parameters,
             Vf0 .= 2*v[iFlt] .+ eq.Vpl
             Vf  .= Vf0
 
-            for p1 = 1:2
+            @inbounds for p1 = 1:2
                 
                 # Compute the forcing term
                 F .= 0
@@ -348,7 +348,7 @@ function main(s::space_parameters, tim::time_parameters,
 
 
             #for jF = 1:FaultNglob-NFBC
-            for j = NFBC: s.FltNglob-1 
+            @inbounds for j = NFBC: s.FltNglob-1 
 
                 #j = jF - 1 + NFBC
                 psi1[j] = IDS(eq.xLf[j], eq.Vo[j], psi[j], dt, Vf[j], 1e-5, tim.IDstate)
@@ -490,7 +490,6 @@ function main(s::space_parameters, tim::time_parameters,
     SlipVel = SlipVel[:,1:it]
     Slip = Slip[:,1:it]
 
-    output = results(FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb)
+    return results(FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb)
 
-    return output
 end
