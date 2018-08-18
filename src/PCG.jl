@@ -7,7 +7,7 @@
 
 using JLD2
 
-function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
+function PCG(P::parameters, diagKnew, dnew, F, iFlt,
              FltNI, H, Ht, iglob, nglob, W)
     
     #global a 
@@ -15,7 +15,7 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
     dd_local = zeros(nglob)
     p_local = zeros(nglob)
     
-    a_local = element_computation(s, iglob, F, H, Ht, W, a_local)
+    a_local = element_computation(P, iglob, F, H, Ht, W, a_local)
     Fnew = -a_local[FltNI]
 
     dd_local[FltNI] .= dnew
@@ -23,7 +23,7 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
 
     a_local[:] .= 0
     
-    a_local = element_computation(s, iglob, dd_local, H, Ht, W, a_local)
+    a_local = element_computation(P, iglob, dd_local, H, Ht, W, a_local)
     anew = a_local[FltNI]
 
     # Initial residue
@@ -37,7 +37,7 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
         anew[:] .= 0
         a_local[:] .= 0
         
-        a_local = element_computation(s, iglob, p_local, H, Ht, W, a_local)
+        a_local = element_computation(P, iglob, p_local, H, Ht, W, a_local)
 
         anew = a_local[FltNI]
 
@@ -60,8 +60,8 @@ function PCG(s::space_parameters, diagKnew, dnew, F, iFlt,
             print(norm(rnew)/norm(Fnew))
             println("n = ", n)
 
-            filename = string(dir, "data/", name, "pcgfail.jld")
-            @save filename
+            filename = string(dir, "/data", name, "pcgfail.jld")
+            @save filename dnew, rnew, Fnew
             @error("PCG did not converge")
             return
         end
@@ -72,9 +72,9 @@ end
 
 
 # Sub function to be used inside PCG
-function element_computation(s::space_parameters, iglob, F_local, H, Ht, W, a_local)
+function element_computation(P::parameters, iglob, F_local, H, Ht, W, a_local)
     
-    @inbounds for eo = 1:s.Nel
+    @inbounds for eo = 1:P.Nel
 
         # Switch to local element representation
         ig = iglob[:,:,eo]
@@ -85,8 +85,8 @@ function element_computation(s::space_parameters, iglob, F_local, H, Ht, W, a_lo
         d_eta = locall*H
 
         # Element contribution to the internal forces
-        locall = s.coefint1*H*(W[:,:,eo].*d_xi) + 
-                 s.coefint2*(W[:,:,eo].*d_eta)*Ht
+        locall = P.coefint1*H*(W[:,:,eo].*d_xi) + 
+                 P.coefint2*(W[:,:,eo].*d_eta)*Ht
 
         # Assemble into global vector
         a_local[ig] += locall
@@ -98,9 +98,9 @@ function element_computation(s::space_parameters, iglob, F_local, H, Ht, W, a_lo
 end
 
 # Compute the displacement/forcing for each element
-function element_computation2(s::space_parameters, iglob, F_local, H, Ht, W, a_local)
+function element_computation2(P::parameters, iglob, F_local, H, Ht, W, a_local)
     
-    @inbounds for eo = 1:s.Nel
+    @inbounds for eo = 1:P.Nel
 
         # Switch to local element representation
         ig = iglob[:,:,eo]
@@ -111,8 +111,8 @@ function element_computation2(s::space_parameters, iglob, F_local, H, Ht, W, a_l
         d_eta = locall*H
 
         # Element contribution to the internal forces
-        locall = s.coefint1*H*(W[:,:,eo].*d_xi) + 
-                 s.coefint2*(W[:,:,eo].*d_eta)*Ht
+        locall = P.coefint1*H*(W[:,:,eo].*d_xi) + 
+                 P.coefint2*(W[:,:,eo].*d_eta)*Ht
 
         # Assemble into global vector
         a_local[ig] -= locall

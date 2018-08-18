@@ -20,8 +20,9 @@ global dir = pwd()
 
 # include the main function
 include(string(dir, "/src/main.jl"))
+include(string(dir,"/src/setup.jl"))
 
-output = main(space_parameters(), time_parameters(), medium_properties(), earthquake_parameters())
+output = main(parameters(), setup(parameters()))
 
 
 println("\n")

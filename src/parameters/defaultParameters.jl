@@ -4,7 +4,7 @@
 
 using Parameters
 
-@with_kw struct space_parameters
+@with_kw struct parameters
     
     # Domain size
     Nsize::Int = 2
@@ -29,10 +29,11 @@ using Parameters
     jac::Float64 = dx_dxi*dy_deta
     coefint1::Float64 = jac/dx_dxi^2
     coefint2::Float64 = jac/dy_deta^2
-end
 
-@with_kw struct time_parameters
-    
+    #..................
+    # TIME PARAMETERS
+    #..................
+
     yr2sec::Int = 365*24*60*60
     
     Total_time::Int = 10*yr2sec     # Set the total time for simulation here
@@ -47,14 +48,10 @@ end
     tevneinc::Int = 1
     dtmax::Int = 100 * 24 * 60*60		# 100 days
 
-end
 
-
-
-@with_kw struct medium_properties
-
-    NGLL = space_parameters().NGLL
-    LX = space_parameters().LX
+    #...................
+    # MEDIUM PROPERTIES
+    #...................
 
     rho1::Float64 = 2670
     vs1::Float64 = 3464
@@ -71,13 +68,10 @@ end
     # Low velocity layer dimensions
     ThickX::Float64 = LX - LX#8e3
     ThickY::Float64 = 0.75e3
-end
 
-
-@with_kw struct earthquake_parameters
-
-    yr2sec = time_parameters().yr2sec
-    FltNglob = space_parameters().FltNglob
+    #.......................
+    # EARTHQUAKE PARAMETERS
+    #.......................
 
     Vpl::Float64 = 35e-3/yr2sec	#	Plate loading
 
