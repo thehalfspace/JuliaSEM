@@ -10,7 +10,7 @@ using PyPlot
 # Compute maximum slip rate at each timestep
 #............................................
 function Vfmax(SlipVel)
-    return maximum(SlipVel, 1)
+    return maximum(SlipVel, dims = 1)[:]
 end
 
 #.................................................
@@ -18,7 +18,7 @@ end
 #.................................................
 function Coslip(Slip, SlipVel, time_=zeros(1000000))
 
-    Vfmax = maximum(SlipVel, 1)
+    Vfmax = maximum(SlipVel, dims = 1)[:]
 
     delfafter::Array{Float64,2} = zeros(Slip)
     t_catalog::Array{Float64} = zeros(Slip[:,1])

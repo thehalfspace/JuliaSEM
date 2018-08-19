@@ -78,9 +78,9 @@ function slipvelPlot(SlipVel, time_, FltX, yr2sec, loc1 = 8e3)
 end
 
 # Plot Vfmax
-function slipvelmax(SlipVel, time_, yre2sec)
+function VfmaxPlot(SlipVel, time_, yr2sec)
 
-    Vfmax = maximum(SlipVel, 1)[:]
+    Vfmax = maximum(SlipVel, dims = 1)[:]
     
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
@@ -98,7 +98,7 @@ end
 
 
 # Plot cumulative slip
-function cumSlip(delfsec, delf5yr, FltX)
+function cumSlipPlot(delfsec, delf5yr, FltX)
 
     indx = findall(abs.(FltX) .<= 18e3)[1]
 

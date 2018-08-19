@@ -22,7 +22,7 @@ global dir = pwd()
 include(string(dir, "/src/main.jl"))
 include(string(dir,"/src/setup.jl"))
 
-output = main(parameters(), setup(parameters()))
+simulation_time = @elapsed output = main(parameters(), setup(parameters()))
 
 
 println("\n")
@@ -30,9 +30,9 @@ println("\n")
 @info("Simulation Complete!")
 
 # Directory to save the simulation results
-#filename = string(dir, "/data", name, ".jld")
+filename = string(dir, "/data", name, ".jld")
 
-#@save filename
+@save filename output
 
 # Create a new directory to save plots
-#mkdir(string(dir, "/plots/", name))
+mkdir(string(dir, "/plots", name))

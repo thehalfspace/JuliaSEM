@@ -30,16 +30,10 @@ include("otherFunctions.jl")    # some other functions to solve for friction
 
 struct results
 
-    FltX::Array{Float64}
-    delf5yr::Array{Float64,2}
-    delfsec::Array{Float64,2}
     Stress::Array{Float64,2}
     SlipVel::Array{Float64,2}
     Slip::Array{Float64,2}
     time_::Array{Float64}
-    cca::Array{Float64}
-    ccb::Array{Float64}
-
 end
 
 function main(P::parameters, S::input_variables)
@@ -385,19 +379,10 @@ function main(P::parameters, S::input_variables)
     
     # Remove zeros from preallocated vectors
     time_ = time_[1:it]
-
-    delfsec = delfsec[:, 1:nevne]
-    #Vfsec = Vfsec[:,1:nevne]
-    #Tausec = Tausec[:,1:nevne]
-
-    delf5yr = delf5yr[:,1:ntvsx]
-    #Vf5yr = Vf5yr[:,1:ntvsx]
-    #Tau5yr = Tau5yr[:,1:ntvsx]
-
     Stress = Stress[:,1:it]
     SlipVel = SlipVel[:,1:it]
     Slip = Slip[:,1:it]
 
-    return results(S.FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, S.cca, S.ccb)
+    return results(Stress, SlipVel, Slip, time_)
 
 end
