@@ -85,11 +85,11 @@ function main(P::parameters, S::input_variables)
     #slipstart::Int = 0
     #ievb::Int = 0
     #ieva::Int = 0
-    ntvsx::Int = 0
-    nevne::Int = 0
+    #ntvsx::Int = 0
+    #nevne::Int = 0
     isolver::Int = 1
-    tvsx::Int64 = 2*P.yr2sec
-    tvsxinc::Int64 = tvsx
+    #tvsx::Int64 = 2*P.yr2sec
+    #tvsxinc::Int64 = tvsx
     
     # Skip lines 486-490
     # Skip lines 492-507: Outloc1, 2, variables.
@@ -129,11 +129,11 @@ function main(P::parameters, S::input_variables)
     # Preallocate variables with unknown size
     time_ = zeros(1000000)
 
-    delfsec::Array{Float64} = zeros(P.FltNglob, 100000)
+    #delfsec::Array{Float64} = zeros(P.FltNglob, 100000)
     #Vfsec::Array{Float64} = zeros(P.FltNglob, 100000)
     #Tausec::Array{Float64} = zeros(P.FltNglob, 100000)
 
-    delf5yr::Array{Float64} = zeros(P.FltNglob, 10000)
+    #delf5yr::Array{Float64} = zeros(P.FltNglob, 10000)
     #Vf5yr::Array{Float64} = zeros(P.FltNglob, 10000)
     #Tau5yr::Array{Float64} = zeros(P.FltNglob, 10000)
 
@@ -264,7 +264,7 @@ function main(P::parameters, S::input_variables)
 
                     # Save simulation results
                     filename = string(dir, "/data", name, "nrfail.jld")
-                    @save filename 
+                    @save filename SlipVel, Slip, Stress 
                     @error("NR SEARCH FAILED!")
                     return
                 end
@@ -310,47 +310,13 @@ function main(P::parameters, S::input_variables)
         # Output variables at different depths for every timestep
         # Omitted the part of code from line 871 - 890, because I 
         # want to output only certain variables each timestep
+        # Doing it in separate script
         #----
 
-        # Output stress, slip, sliprate on fault every certain interval
-        if t > tvsx
-            ntvsx = ntvsx + 1
-            
-            delf5yr[:,ntvsx] = 2*d[S.iFlt] .+ P.Vpl*t
-            #Vf5yr[:,ntvsx] = 2*v[S.iFlt] .+ P.Vpl
-            #Tau5yr[:,ntvsx] = (tau + tauo)./1e6
-            
-            tvsx = tvsx +tvsxinc
-        end
-        
-        if Vfmax > P.Vevne 
-            if idelevne == 0
-                nevne = nevne + 1
-                idelevne = 1
-                tevneb = t
-                tevne = P.tevneinc
-
-                delfsec[:,nevne] = 2*d[S.iFlt] .+ P.Vpl*t
-                #Vfsec[:,nevne] = 2*v[S.iFlt] .+ P.Vpl
-                #Tausec[:,nevne] = (tau + tauo)./1e6
-            end
-
-            if idelevne == 1 && (t - tevneb) > tevne
-                nevne = nevne + 1
-                
-                delfsec[:,nevne] = 2*d[S.iFlt] .+ P.Vpl*t
-                #Vfsec[:,nevne] = 2*v[S.iFlt] .+ P.Vpl
-                #Tausec[:,nevne] = (tau + tauo)./1e6
-
-                tevne = tevne + P.tevneinc
-            end
-
-        else
-            idelevne = 0
-        end
 
         #-----
         # Output stress and slip before and after events
+        # Doing it in separate script
         # Omitting lines 920-934
         #-----
 
