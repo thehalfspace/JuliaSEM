@@ -332,7 +332,7 @@ function main(s::space_parameters, tim::time_parameters,
                     # Directory to save the simulation results
                     filename = string(dir, "/data", name, "nrfail.jld")
 
-                    @save filename
+                    @save filename j, FltX, Stress, SlipVel, time_, Vf1, Vf, tau1, FltVfree
                     error("NR SEARCH FAILED!")
                     return
                 end

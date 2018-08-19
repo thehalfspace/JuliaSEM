@@ -68,8 +68,8 @@ end
 
 
     # Low velocity layer dimensions
-    ThickX::Float64 = LX - LX#8e3
-    ThickY::Float64 = 0.75e3
+    ThickX::Float64 = LX - 12.8e3
+    ThickY::Float64 = 0.5e3
 end
 
 

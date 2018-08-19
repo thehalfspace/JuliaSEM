@@ -6,13 +6,13 @@
 # 2. Go to src/initialConditions/defaultInitialConditions and change as needed
 # 3. Change the name of the simulation in this file
 # 4. Run the simulation from terminal. (julia run.jl)
-# 5. Plot results from the scripts function
+# 5. Plot results from the scripts folder
 
 # Name of the current simulation
-global name = "/longFZ01"
+global name = "/FZ_12km"
 
 # Description
-description = "Very long and thin fault zone"
+description = "12km deep fault zone, width = 800m"
 
 # Get the current directory for saving figures
 global dir = pwd()
