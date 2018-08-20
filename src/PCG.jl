@@ -5,7 +5,7 @@
 #                                              
 ################################################
 
-using JLD2
+#using JLD2
 
 function PCG(P::parameters, diagKnew, dnew, F, iFlt,
              FltNI, H, Ht, iglob, nglob, W)
@@ -60,8 +60,8 @@ function PCG(P::parameters, diagKnew, dnew, F, iFlt,
             print(norm(rnew)/norm(Fnew))
             println("n = ", n)
 
-            filename = string(dir, "/data", name, "pcgfail.jld")
-            @save filename dnew, rnew, Fnew
+            filename = string(dir, "/data", name, "pcgfail.jld2")
+            @save filename dnew rnew Fnew
             @error("PCG did not converge")
             return
         end

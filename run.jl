@@ -30,7 +30,7 @@ println("\n")
 @info("Simulation Complete!")
 
 # Directory to save the simulation results
-filename = string(dir, "/data", name, ".jld")
+filename = string(dir, "/data", name, ".jld2")
 
 @save filename output
 

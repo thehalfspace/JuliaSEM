@@ -8,25 +8,25 @@
 #	and J.P. Ampuero's SEMLAB       	
 #########################################
 
-using Printf
-using LinearAlgebra
-using JLD2
+#using Printf
+#using LinearAlgebra
+#using JLD2
 
 #.................................
 # Include external function files
 #.................................
-include("parameters/defaultParameters.jl")	    #	Set Parameters
-include("GetGLL.jl")		    #	Polynomial interpolation
-include("Meshbox.jl")		    # 	Build 2D mesh
-include("Assemble.jl")          #   Assemble mass and stiffness matrix
-include("BoundaryMatrix.jl")    #	Boundary matrices
-include("FindNearestNode.jl")   #	Nearest node for output
+#include("parameters/defaultParameters.jl")	    #	Set Parameters
+#include("GetGLL.jl")		    #	Polynomial interpolation
+#include("Meshbox.jl")		    # 	Build 2D mesh
+#include("Assemble.jl")          #   Assemble mass and stiffness matrix
+#include("BoundaryMatrix.jl")    #	Boundary matrices
+#include("FindNearestNode.jl")   #	Nearest node for output
 include("setup.jl")             #   Setup the constants for simulation
-include("initialConditions/defaultInitialConditions.jl")
+#include("initialConditions/defaultInitialConditions.jl")
 include("PCG.jl")               # Preconditioned conjugate gradient to invert matrix
 include("dtevol.jl")            # compute the next timestep
 include("NRsearch.jl")          # Newton-rhapson search method to find roots
-include("otherFunctions.jl")    # some other functions to solve for friction
+#include("otherFunctions.jl")    # some other functions to solve for friction
 
 struct results
 
@@ -263,8 +263,8 @@ function main(P::parameters, S::input_variables)
                     println("Fault Location = ", j)
 
                     # Save simulation results
-                    filename = string(dir, "/data", name, "nrfail.jld")
-                    @save filename SlipVel, Slip, Stress 
+                    filename = string(dir, "/data", name, "nrfail.jld2")
+                    @save filename results(Stress,SlipVel, Slip, time_) 
                     @error("NR SEARCH FAILED!")
                     return
                 end

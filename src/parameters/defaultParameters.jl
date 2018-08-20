@@ -19,7 +19,7 @@ using Parameters
     dye::Float64 = LY/NelY #	Size of one element along Y
     Nel::Int = NelX*NelY # Total no. of elements
     
-    P::Int = 4		#	Lagrange polynomial degree
+    P::Int = 12		#	Lagrange polynomial degree
     NGLL::Int = P + 1 #	No. of Gauss-Legendre-Lobatto nodes
     FltNglob::Int = NelX*(NGLL - 1) + 1
 
@@ -36,7 +36,7 @@ using Parameters
 
     yr2sec::Int = 365*24*60*60
     
-    Total_time::Int = 10*yr2sec     # Set the total time for simulation here
+    Total_time::Int = 500*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      
@@ -66,8 +66,8 @@ using Parameters
 
 
     # Low velocity layer dimensions
-    ThickX::Float64 = LX - LX#8e3
-    ThickY::Float64 = 0.75e3
+    ThickX::Float64 = LX - ceil(6e3/dxe)*dxe # ~6km deep
+    ThickY::Float64 = ceil(0.75e3/dye)*dye   # ~ 0.75*2km wide
 
     #.......................
     # EARTHQUAKE PARAMETERS
