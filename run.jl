@@ -13,7 +13,7 @@ using Printf
 using LinearAlgebra
 
 # Name of the current simulation
-global name = "/dump02"
+global name = "/dump01"
 
 # Get the current directory for saving figures
 global dir = pwd()
@@ -27,12 +27,12 @@ simulation_time = @elapsed output = main(parameters(), setup(parameters()))
 
 println("\n")
 
-@info("Simulation Complete!")
+@info("Simulation Complete!");
 
 # Directory to save the simulation results
-filename = string(dir, "/data", name, ".jld2")
+filename = string(dir, "/data", name, ".jld2");
 
-@save filename output
+@save filename output simulation_time name dir 
 
 # Create a new directory to save plots
-mkdir(string(dir, "/plots", name))
+mkdir(string(dir, "/plots", name));

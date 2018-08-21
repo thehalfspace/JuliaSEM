@@ -1,35 +1,41 @@
-#########################################
+###############################################################################
 #										
-#	SPECTRAL ELEMENT METHOD FOR  		
-#	EARTHQUAKE CYCLE SIMULATION			
-#										
-#	Prithvi Thakur						
+#	SPECTRAL ELEMENT METHOD FOR EARTHQUAKE CYCLE SIMULATION			
+#	
+#   Written in: Julia 1.0
+#
+#	Created: 06/20/2018
+#   Author: Prithvi Thakur (Original code by Kaneko et al.)
+#
 #	Adapted from Kaneko et al. (2011)	
 #	and J.P. Ampuero's SEMLAB       	
-#########################################
-
-#using Printf
-#using LinearAlgebra
-#using JLD2
+#
+#   CHANGELOG:
+#       * 08-20-2018: Use JLD2 to store data instead of JLD
+#       * 08-14-2018: Modify script to automatically make plots directory
+#                     and save.
+#
+#       (Old stuff: I don't remember the dates (08/2017-08/2018))
+#       * Change functions to adapt Julia 1.0 changes
+#       * Move the cumulative slip calculation outside the time loop 
+#       * Add scripts to compute the earthquake magnitude     
+#       * Add plots script for various plotting functions
+#       * Implemented elastic halfspace
+#       * Setup for a shallow fault zone
+#       * Organize everything into structs and functions
+#       * Interpolation for initial stress and friction in halfspace
+#       * Add separate files for parameters, initial conditions, functions
+###############################################################################
 
 #.................................
 # Include external function files
 #.................................
-#include("parameters/defaultParameters.jl")	    #	Set Parameters
-#include("GetGLL.jl")		    #	Polynomial interpolation
-#include("Meshbox.jl")		    # 	Build 2D mesh
-#include("Assemble.jl")          #   Assemble mass and stiffness matrix
-#include("BoundaryMatrix.jl")    #	Boundary matrices
-#include("FindNearestNode.jl")   #	Nearest node for output
 include("setup.jl")             #   Setup the constants for simulation
-#include("initialConditions/defaultInitialConditions.jl")
 include("PCG.jl")               # Preconditioned conjugate gradient to invert matrix
 include("dtevol.jl")            # compute the next timestep
 include("NRsearch.jl")          # Newton-rhapson search method to find roots
-#include("otherFunctions.jl")    # some other functions to solve for friction
 
 struct results
-
     Stress::Array{Float64,2}
     SlipVel::Array{Float64,2}
     Slip::Array{Float64,2}
