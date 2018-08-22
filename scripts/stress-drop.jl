@@ -34,7 +34,7 @@ function static_stress_drop(Stress, SlipVel, time_=zeros(1e6))
 
         # End of each event
         if Vfmax[i] < 0.99*Vthres && slipstart == 1
-            stressdrop[:,it] = Stress[:,i] - stress_ref
+            stressdrop[:,it] = -Stress[:,i] + stress_ref
             slipstart = 0
             it = it + 1
         end
@@ -47,19 +47,22 @@ end
 #......................................
 # Plot max. stress drop with depth
 #......................................
-function stressdropPlot(stressdrop, FltX, eq_depth)
+function stressdropPlot(stressdrop, FltX, Mw, indx)
  
     x_axis = maximum(stressdrop, 1)
 
     fig = PyPlot.figure(figsize=(6,4.5), dpi=120)
     ax = fig[:add_subplot](111)
     
-    ax[:plot](x_axis, FltX[eq_depth])
+    ax[:plot](stressdrop[:,indx], FltX./1e3)
+    #ax[:axhline](y = -12, linestyle="--", color="k", label="Fault Zone")
     ax[:set_xlabel]("Stress Drop (MPa)")
     ax[:set_ylabel]("Depth (km)")
-    ax[:set_title]("Static Stress Drop for Earthquakes")
+    ax[:set_title](string("Static Stress Drop for Mw = ", round(Mw[indx],1)," Earthquake (long FZ)"))
+    ax[:set_ylim]([-24, 0])
+    #ax[:legend](loc="upper right")
     show()
 
-    #figname = string(dir, "/plots", name, "/catalogue.png")
-    #fig[:savefig](figname, dpi = 300)
+    figname = string(dir, "/plots", name, "/stress_drop_", round(Mw[indx]), ".png")
+    fig[:savefig](figname, dpi = 300)
 end
