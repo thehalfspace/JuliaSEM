@@ -1,7 +1,7 @@
 
 include("parameters/defaultParameters.jl")	    #	Set Parameters
 include("GetGLL.jl")		    #	Polynomial interpolation
-include("Meshbox.jl")		    # 	Build 2D mesh
+include("MeshBox.jl")		    # 	Build 2D mesh
 include("Assemble.jl")          #   Assemble mass and stiffness matrix
 include("BoundaryMatrix.jl")    #	Boundary matrices
 include("FindNearestNode.jl")   #	Nearest node for output

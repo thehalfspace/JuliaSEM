@@ -36,7 +36,7 @@ using Parameters
 
     yr2sec::Int = 365*24*60*60
     
-    Total_time::Int = 100*yr2sec     # Set the total time for simulation here
+    Total_time::Int = 10*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      
