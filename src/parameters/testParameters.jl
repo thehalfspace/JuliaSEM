@@ -2,9 +2,81 @@
 #	PARAMETER FILE: SET THE PHYSICAL PARAMETERS FOR THE SIMULATION
 #######################################################################
 
-using Parameters
 
-@with_kw struct parameters
+struct parameters
+
+    # Domain size
+    Nsize::Int 
+
+    LX::Int
+    LY::Int
+
+    NelX::Int
+    NelY::Int
+
+    dxe::Float64
+    dye::Float64
+    Nel::Int
+    
+    P::Int    
+    NGLL::Int
+    FltNglob::Int
+
+    # Jacobian for global -> local coordinate conversion
+    dx_dxi::Float64
+    dy_deta::Float64
+    jac::Float64
+    coefint1::Float64
+    coefint2::Float64
+
+    #..................
+    # TIME PARAMETERS
+    #..................
+    yr2sec::Int
+    Total_time::Int
+    CFL::Float64
+    IDstate::Int
+
+    # Some other time variables used in the loop
+    dtincf::Float64
+    gamma_::Float64
+    tevneinc::Int
+    dtmax::Int
+
+    #...................
+    # MEDIUM PROPERTIES
+    #...................
+
+    rho1::Float64
+    vs1::Float64
+
+    rho2::Float64
+    vs2::Float64
+
+    ETA::Float64
+
+    # Low velocity layer dimensions
+    ThickX::Float64
+    ThickY::Float64
+
+    #.......................
+    # EARTHQUAKE PARAMETERS
+    #.......................
+
+    Vpl::Float64
+
+    fo::Array{Float64}
+    Vo::Array{Float64}
+    xLf::Array{Float64}
+
+    Vthres::Float64
+    Vevne::Float64
+
+end
+
+
+
+function setParameters(FZdepth)
     
     # Domain size
     Nsize::Int = 2
@@ -61,13 +133,11 @@ using Parameters
 
     ETA = 0
 
-    rho::Matrix{Float64} = zeros(NGLL, NGLL)
-    mu::Matrix{Float64} = zeros(NGLL, NGLL)
 
 
     # Low velocity layer dimensions
-    ThickX::Float64 = LX - ceil(6e3/dxe)*dxe # ~6km deep
-    ThickY::Float64 = ceil(0.75e3/dye)*dye   # ~ 0.75*2km wide
+    ThickX::Float64 = LX - ceil(FZdepth/dxe)*dxe # ~FZdepth m deep
+    ThickY::Float64 = ceil(0.5e3/dye)*dye   # ~ 0.75*2 km wide
 
     #.......................
     # EARTHQUAKE PARAMETERS
@@ -81,5 +151,12 @@ using Parameters
 
     Vthres::Float64 = 0.01
     Vevne::Float64 = Vthres
+
+
+    return parameters(Nsize, LX, LY, NelX, NelY, dxe, dye, Nel, P, NGLL, 
+                      FltNglob, dx_dxi, dy_deta, jac, coefint1, coefint2, 
+                      yr2sec, Total_time, CFL, IDstate, dtincf, gamma_,
+                      tevneinc, dtmax, rho1, vs1, rho2, vs2, ETA, ThickX,
+                      ThickY, Vpl, fo, Vo, xLf, Vthres, Vevne)
 
 end

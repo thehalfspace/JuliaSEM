@@ -20,8 +20,8 @@ function FBC(P, S, NFBC, psi1, Vf1, tau1, psi2, Vf2, tau2, psi, Vf, FltVfree, dt
             println("Fault Location = ", j)
 
             # Save simulation results
-            filename = string(dir, "/data", name, "nrfail.jld2")
-            @save filename results(Stress,SlipVel, Slip, time_) 
+            #filename = string(dir, "/data", name, "nrfail.jld2")
+            #@save filename results(Stress,SlipVel, Slip, time_) 
             @error("NR SEARCH FAILED!")
             return
         end

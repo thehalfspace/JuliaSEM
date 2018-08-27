@@ -11,6 +11,7 @@
 #	and J.P. Ampuero's SEMLAB       	
 #
 #   CHANGELOG:
+#       * 08-27-2018: Remove the dependency on Parameters.jl
 #       * 08-26-2018: Using distributed for loop in PCG and NRsearch
 #       * 08-24-2018: Create a separate function for NRsearch loop: FBC()
 #       * 08-20-2018: Use JLD2 to store data instead of JLD

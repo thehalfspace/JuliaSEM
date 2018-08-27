@@ -12,17 +12,17 @@
 using Distributed
 addprocs(4)
 
-@everywhere using Distributed
-@everywhere using JLD2
+#@everywhere using Distributed
+#@everywhere using JLD2
 @everywhere using Printf
 @everywhere using LinearAlgebra
 @everywhere using DelimitedFiles
 @everywhere using SharedArrays
 
-@everywhere include("src/parameters/defaultParameters.jl")	    #	Set Parameters
+@everywhere include("src/parameters/testParameters.jl")	    #	Set Parameters
 @everywhere include("src/setup.jl")
 
-@everywhere P = parameters()
+@everywhere P = setParameters(5e3)
 @everywhere S = setup(P)
 
 @everywhere include("src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
