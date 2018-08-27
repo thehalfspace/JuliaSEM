@@ -1,5 +1,3 @@
-
-include("parameters/defaultParameters.jl")	    #	Set Parameters
 include("GetGLL.jl")		    #	Polynomial interpolation
 include("MeshBox.jl")		    # 	Build 2D mesh
 include("Assemble.jl")          #   Assemble mass and stiffness matrix
@@ -18,6 +16,7 @@ struct input_variables
     xgll::Array{Float64}
     wgll::Array{Float64}
     H::Array{Float64,2}
+    Ht::Array{Float64,2}
 
     W::Array{Float64,3}
     M::Array{Float64}
@@ -145,7 +144,7 @@ function setup(P::parameters)
     idx = findall(fbc .== findall(x .== -24e3)[1] - 1)[1]    
     FltIglobBC::Array{Int} = fbc[1:idx]
 
-    S = input_variables(iglob,nglob, x, y, xgll, wgll, H, W, M, MC, BcLC ,iBcL ,BcTC ,
+    S = input_variables(iglob,nglob, x, y, xgll, wgll, H, Ht, W, M, MC, BcLC ,iBcL ,BcTC ,
                         iBcT, FltB, iFlt ,FltZ ,FltX ,cca ,ccb ,Seff ,tauo ,Nel_ETA ,
                         XiLf, diagKnew, FltIglobBC ,FltNI, dt)
 

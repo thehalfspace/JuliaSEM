@@ -1,6 +1,6 @@
 ################################################
 #                                              
-#   SOLVE FOR DIPLACEMENT USING PRECONDITIONED 
+#   SOLVE FOR DISPLACEMENT USING PRECONDITIONED 
 #           CONJUGATE GRADIENT METHOD          
 #                                              
 ################################################
@@ -10,14 +10,14 @@
 function PCG(P::parameters, diagKnew, dnew, F, iFlt,
              FltNI, H, Ht, iglob, nglob, W)
     
-    #global a 
-    a_local = zeros(nglob)
+    a_local = SharedArray{Float64}(nglob)
     dd_local = zeros(nglob)
     p_local = zeros(nglob)
-    
+   
+
     a_local = element_computation(P, iglob, F, H, Ht, W, a_local)
     Fnew = -a_local[FltNI]
-
+    
     dd_local[FltNI] .= dnew
     dd_local[iFlt] .= 0
 
@@ -60,8 +60,8 @@ function PCG(P::parameters, diagKnew, dnew, F, iFlt,
             print(norm(rnew)/norm(Fnew))
             println("n = ", n)
 
-            filename = string(dir, "/data", name, "pcgfail.jld2")
-            @save filename dnew rnew Fnew
+            #filename = string(dir, "/data", name, "pcgfail.jld2")
+            #@save filename dnew rnew Fnew
             @error("PCG did not converge")
             return
         end
@@ -74,22 +74,16 @@ end
 # Sub function to be used inside PCG
 function element_computation(P::parameters, iglob, F_local, H, Ht, W, a_local)
     
-    @inbounds for eo = 1:P.Nel
+    @sync @distributed for eo = 1:P.Nel
 
-        # Switch to local element representation
         ig = iglob[:,:,eo]
-        locall = F_local[ig]
 
-        # Gradients wrt local variables
-        d_xi = Ht*locall
-        d_eta = locall*H
-
-        # Element contribution to the internal forces
-        locall = P.coefint1*H*(W[:,:,eo].*d_xi) + 
-                 P.coefint2*(W[:,:,eo].*d_eta)*Ht
+        locall = local_calc(P, F_local[ig], H, Ht, W[:,:,eo])
+        
+        #  println(locall)
 
         # Assemble into global vector
-        a_local[ig] += locall
+        a_local[ig] .+= locall
 
     end
 
@@ -97,25 +91,30 @@ function element_computation(P::parameters, iglob, F_local, H, Ht, W, a_local)
 
 end
 
+@everywhere function local_calc(P, locall, H, Ht, Wlocal)
+
+    # Gradients wrt local variables
+    d_xi = Ht*locall
+    d_eta = locall*H
+
+    # Element contribution to the internal forces
+    locall = P.coefint1*H*(Wlocal.*d_xi) + 
+            P.coefint2*(Wlocal.*d_eta)*Ht
+    return locall 
+end
+
 # Compute the displacement/forcing for each element
 function element_computation2(P::parameters, iglob, F_local, H, Ht, W, a_local)
     
-    @inbounds for eo = 1:P.Nel
+   @sync @distributed for eo = 1:P.Nel
 
         # Switch to local element representation
         ig = iglob[:,:,eo]
-        locall = F_local[ig]
 
-        # Gradients wrt local variables
-        d_xi = Ht*locall
-        d_eta = locall*H
-
-        # Element contribution to the internal forces
-        locall = P.coefint1*H*(W[:,:,eo].*d_xi) + 
-                 P.coefint2*(W[:,:,eo].*d_eta)*Ht
+        locall = local_calc(P, F_local[ig], H, Ht, W[:,:,eo])
 
         # Assemble into global vector
-        a_local[ig] -= locall
+        a_local[ig] .-= locall
 
     end
 

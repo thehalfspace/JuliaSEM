@@ -92,8 +92,8 @@ function VfmaxPlot(SlipVel, time_, yr2sec)
     ax[:set_yscale]("log")
     show()
 
-    figname = string(dir, "/plots", name, "/Vfmax.png")
-    fig[:savefig](figname, dpi = 300)
+    #  figname = string(dir, "/plots", name, "/Vfmax.png")
+    #  fig[:savefig](figname, dpi = 300)
 end
 
 
@@ -116,7 +116,7 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     ax[:set_xlim]([0, maximum(delfsec)])
     show()
     
-    figname = string(dir, "/plots", name, "/cumslip.png")
-    fig[:savefig](figname, dpi = 300)
+    #  figname = string(dir, "/plots", name, "/cumslip.png")
+    #  fig[:savefig](figname, dpi = 300)
 
 end

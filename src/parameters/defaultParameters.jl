@@ -12,8 +12,8 @@ using Parameters
     LX::Int = 24e3*Nsize  # depth dimension of rectangular domain
     LY::Int = 15e3*Nsize # off fault dimenstion of rectangular domain
 
-    NelX::Int = 15*Nsize # no. of elements in x
-    NelY::Int = 10*Nsize # no. of elements in y
+    NelX::Int = 120*Nsize # no. of elements in x
+    NelY::Int = 80*Nsize # no. of elements in y
 
     dxe::Float64 = LX/NelX #	Size of one element along X
     dye::Float64 = LY/NelY #	Size of one element along Y
@@ -36,7 +36,7 @@ using Parameters
 
     yr2sec::Int = 365*24*60*60
     
-    Total_time::Int = 10*yr2sec     # Set the total time for simulation here
+    Total_time::Int = 200*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      

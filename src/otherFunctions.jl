@@ -122,9 +122,9 @@ end
 function slrFunc(P, NFBC, FltNglob, psi, psi1, Vf, Vf1, IDstate, tau1, tauo, Seff, cca, ccb, dt)
 
 
-    tauAB::Array{Float64} = zeros(FltNglob)
+    tauAB = SharedArray{Float64}(FltNglob)
 
-    @inbounds for j = NFBC: FltNglob-1 
+   @sync @distributed for j = NFBC: FltNglob-1 
 
         psi1[j] = IDS(P.xLf[j], P.Vo[j], psi[j], dt, Vf[j], 1e-6, IDstate)
 
