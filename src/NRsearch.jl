@@ -2,8 +2,43 @@
 #   NEWTON RHAPSON SEARCH METHOD
 ####################################
 
-using JLD
+# Fault Boundary function
+function FBC(P, S, NFBC, psi1, Vf1, tau1, psi2, Vf2, tau2, psi, Vf, FltVfree, dt)
 
+    tauNR = SharedArray{Float64}(P.FltNglob)
+
+   @sync @distributed for j = NFBC: P.FltNglob-1 
+
+        #j = jF - 1 + NFBC
+        psi1[j] = IDS(P.xLf[j], P.Vo[j], psi[j], dt, Vf[j], 1e-5, P.IDstate)
+
+        Vf1[j], tau1[j] = NRsearch(P.fo[j], P.Vo[j], S.cca[j], S.ccb[j], S.Seff[j],
+                                  tauNR[j], S.tauo[j], psi1[j], S.FltZ[j], FltVfree[j])
+    
+        if Vf[j] > 1e10 || isnan(Vf[j]) == 1 || isnan(tau1[j]) == 1
+            
+            println("Fault Location = ", j)
+
+            # Save simulation results
+            #filename = string(dir, "/data", name, "nrfail.jld2")
+            #@save filename results(Stress,SlipVel, Slip, time_) 
+            @error("NR SEARCH FAILED!")
+            return
+        end
+        
+        psi2[j] = IDS2(P.xLf[j], P.Vo[j], psi[j], psi1[j], dt, Vf[j], Vf1[j], P.IDstate)
+        
+        # NRsearch 2nd loop
+        Vf2[j], tau2[j] = NRsearch(P.fo[j], P.Vo[j], S.cca[j], S.ccb[j], S.Seff[j],
+                                  tau1[j], S.tauo[j], psi2[j], S.FltZ[j], FltVfree[j])
+
+    end
+
+    return psi1, Vf1, tau1, psi2, Vf2, tau2
+end
+
+
+# Newton Rhapson search method
 function NRsearch(fo, Vo, cca, ccb, Seff, tau, tauo, psi, FltZ, FltVfree)
 
     Vw = 1e10
@@ -32,12 +67,10 @@ function NRsearch(fo, Vo, cca, ccb, Seff, tau, tauo, psi, FltZ, FltVfree)
 
         if abs(delta) > 1e10 || k == 1000
             println("k = ", k)
-            
-            # Directory to save the simulation results
-            filename = string(dir, "/data", name, "nrfail.jld")
-            @save filename
-
-            error("NR search fails to converge")
+            # Save simulation results
+            #filename = string(dir, "/data", name, "nrfail.jld2")
+            #@save filename 
+            @error("NR search fails to converge")
         end
     end
 

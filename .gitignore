@@ -1,7 +1,7 @@
 /data/*
 /dump/*
 /.ipynb_checkpoints/*
-
+*.swp
 /SimulationMFD.ipynb
 /AdaptiveMesh.ipynb
 /Parallel.ipynb

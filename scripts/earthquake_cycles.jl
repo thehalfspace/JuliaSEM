@@ -10,19 +10,19 @@ using PyPlot
 # Compute maximum slip rate at each timestep
 #............................................
 function Vfmax(SlipVel)
-    return maximum(SlipVel, 1)
+    return maximum(SlipVel, dims = 1)[:]
 end
 
 #.................................................
 # Compute the final Coseismic slip for each event
 #.................................................
-function Coslip2(Slip, SlipVel, time_=zeros(1e6))
+function Coslip(Slip, SlipVel, time_=zeros(1000000))
 
-    Vfmax = maximum(SlipVel, 1)
+    Vfmax = maximum(SlipVel, dims = 1)[:]
 
     delfafter::Array{Float64,2} = zeros(Slip)
-    t_catalog::Array{Float64} = zeros(Slip[1,:])
-    
+    t_catalog::Array{Float64} = zeros(Slip[:,1])
+
     Vthres = 0.01 # event threshold
     slipstart = 0
     it = 1; it2 = 1
@@ -58,7 +58,7 @@ end
 function moment_magnitude(s, m, Slip, SlipVel, time_)
 
     # Final coseismic slip of each earthquake
-    delfafter, t_catalog = Coslip2(Slip, SlipVel, time_)
+    delfafter, t_catalog = Coslip(Slip, SlipVel, time_)
 
     iter = length(delfafter[1,:])
     
@@ -133,5 +133,25 @@ function eq_catalogue(Mw, t_catalog, yr2sec)
     show()
 
     figname = string(dir, "/plots", name, "/catalogue.png")
+    fig[:savefig](figname, dpi = 300)
+end
+
+
+#.................................
+# Plot earthquake catalog
+# (Earthquake magnitude with time)
+#.................................
+function eq_catalog(Mw, t_catalog, yr2sec)
+
+    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    ax = fig[:add_subplot](111)
+
+    ax[:scatter](t_catalog./yr2sec, Mw, s = 30, marker=".")
+    ax[:set_xlabel]("Time (yrs)")
+    ax[:set_ylabel]("Moment Magnitude (Mw)")
+    ax[:set_title]("Earthquake Catalogue")
+    show()
+
+    figname = string(dir, "/plots", name, "catalogue.png")
     fig[:savefig](figname, dpi = 300)
 end

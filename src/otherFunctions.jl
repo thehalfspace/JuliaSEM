@@ -1,19 +1,18 @@
 # Calculate XiLf used in computing the timestep
-function XiLfFunc(s::space_parameters, t::time_parameters, 
-                  eq::earthquake_parameters, muMax, cca, ccb, Seff)
+function XiLfFunc(P::parameters, muMax, cca, ccb, Seff)
 
-    hcell = s.LX/(s.FltNglob-1)
+    hcell = P.LX/(P.FltNglob-1)
     Ximax = 0.5
     Xithf = 1
 
-    Xith = Array{Float64}(s.FltNglob)
-    XiLf = Array{Float64}(s.FltNglob)
+    Xith:: Array{Float64} = zeros(P.FltNglob)
+    XiLf::Array{Float64} = zeros(P.FltNglob)
 
-    for j = 1:s.FltNglob
+    @inbounds for j = 1:P.FltNglob
 
         # Compute time restricting parameters
         expr1 = -(cca[j] - ccb[j])/cca[j]
-        expr2 = t.gamma_*muMax/hcell*eq.xLf[j]/(cca[j]*Seff[j])
+        expr2 = P.gamma_*muMax/hcell*P.xLf[j]/(cca[j]*Seff[j])
         ro = expr2 - expr1
 
         if (0.25*ro*ro - expr2) >= 0
@@ -24,9 +23,9 @@ function XiLfFunc(s::space_parameters, t::time_parameters,
 
         # For each node, compute slip that node cannot exceed in one timestep
         if Xithf*Xith[j] > Ximax
-            XiLf[j] = Ximax*eq.xLf[j]
+            XiLf[j] = Ximax*P.xLf[j]
         else
-            XiLf[j] = Xithf*Xith[j]*eq.xLf[j]
+            XiLf[j] = Xithf*Xith[j]*P.xLf[j]
         end
     end
        
@@ -36,27 +35,26 @@ end
 
 
 # K diagonal vector computation
-function KdiagFunc(s::space_parameters, iglob, W, H, Ht, FltNI)
+function KdiagFunc(P::parameters, iglob, W, H, Ht, FltNI)
 
-	nglob = s.FltNglob*(s.NelY*(s.NGLL-1) + 1)
+	nglob = P.FltNglob*(P.NelY*(P.NGLL-1) + 1)
 
     # Compute the diagonal of K
     Kdiag::Array{Float64} = zeros(nglob)
-    Klocdiag::Array{Float64,2} = zeros(s.NGLL, s.NGLL)
-    for et = 1:s.Nel
+    Klocdiag::Array{Float64,2} = zeros(P.NGLL, P.NGLL)
+    @inbounds for et = 1:P.Nel
         ig = iglob[:,:,et]
         wloc = W[:,:,et]
-        Klocdiag[:,:] = 0
+        Klocdiag[:,:] .= 0
 
-        for k =  1:s.NGLL
-            for j = 1:s.NGLL
-                Klocdiag[k,j] = Klocdiag[k,j] + 
-                                sum( s.coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
-                                + s.coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
+        for k =  1:P.NGLL
+            for j = 1:P.NGLL
+                Klocdiag[k,j] +=  sum( P.coefint1*H[k,:].*(wloc[:,j].*Ht[:,k])
+                                + P.coefint2*(wloc[k,:].*H[j,:]).*Ht[:,j] )
             end
         end
 
-        Kdiag[ig] .= Kdiag[ig] .+ Klocdiag[:,:]
+        Kdiag[ig] .+= Klocdiag[:,:]
     end
 
     return Kdiag[FltNI]
@@ -121,21 +119,21 @@ function IDS2(xLf, Vo, psi, psi1, dt, Vf, Vf1, IDstate = 2)
 end
 
 # Slip rates on fault for quasi-static regime
-function slrFunc(eq, NFBC, FltNglob, psi, psi1, Vf, Vf1, IDstate, tau1, tauo, Seff, cca, ccb, dt)
+function slrFunc(P, NFBC, FltNglob, psi, psi1, Vf, Vf1, IDstate, tau1, tauo, Seff, cca, ccb, dt)
 
 
-    tauAB::Array{Float64} = zeros(FltNglob)
+    tauAB = SharedArray{Float64}(FltNglob)
 
-    for j = NFBC: FltNglob-1 
+   @sync @distributed for j = NFBC: FltNglob-1 
 
-        psi1[j] = IDS(eq.xLf[j], eq.Vo[j], psi[j], dt, Vf[j], 1e-6, IDstate)
+        psi1[j] = IDS(P.xLf[j], P.Vo[j], psi[j], dt, Vf[j], 1e-6, IDstate)
 
         tauAB[j] = tau1[j] + tauo[j]
         fa = tauAB[j]/(Seff[j]*cca[j])
-        help = -(eq.fo[j] + ccb[j]*psi1[j])/cca[j]
+        help = -(P.fo[j] + ccb[j]*psi1[j])/cca[j]
         help1 = exp(help + fa)
         help2 = exp(help - fa)
-        Vf1[j] = eq.Vo[j]*(help1 - help2) 
+        Vf1[j] = P.Vo[j]*(help1 - help2) 
     end
 
     return psi1, Vf1

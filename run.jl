@@ -8,38 +8,49 @@
 # 4. Run the simulation from terminal. (julia run.jl)
 # 5. Plot results from the scripts folder
 
-# Name of the current simulation
-global name = "/FZ_12km"
 
-# Description
-description = "12km deep fault zone, width = 800m"
+#using Distributed
+#addprocs(4)
+
+#@everywhere using Distributed
+#@everywhere using JLD2
+@everywhere using Printf
+@everywhere using LinearAlgebra
+@everywhere using DelimitedFiles
+@everywhere using SharedArrays
+
+@everywhere include("src/parameters/testParameters.jl")	    #	Set Parameters
+@everywhere include("src/setup.jl")
+
+@everywhere P = setParameters(5e3)
+@everywhere S = setup(P)
+
+@everywhere include("src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
+@everywhere include("src/dtevol.jl")            # compute the next timestep
+@everywhere include("src/NRsearch.jl")          # Newton-rhapson search method to find roots
+
+@everywhere include("src/main.jl")
+
+O = main(P, S)
+
+# Name of the current simulation
+#global name = "/dump01"
 
 # Get the current directory for saving figures
-global dir = pwd()
+#global dir = pwd()
 
-# include the main function
-include(string(dir, "/src/main.jl"))
 
-using JLD
+#  simulation_time = @elapsed output = main(parameters(), setup(parameters()))
 
-s = space_parameters()
-tim = time_parameters()
-m = medium_properties()
-eq = earthquake_parameters()
-
-tic()
-FltX, delf5yr, delfsec, Stress, SlipVel, Slip, time_, cca, ccb = 
-                                                    @time main(s, tim, m, eq);
 
 println("\n")
-elapsed_time = toc()
 
-info("Simulation Complete!")
+@info("Simulation Complete!");
 
 # Directory to save the simulation results
-filename = string(dir, "/data", name, ".jld")
+#filename = string(dir, "/data", name, ".jld2");
 
-@save filename
+#@save filename output simulation_time name dir 
 
 # Create a new directory to save plots
-mkdir(string(dir, "/plots", name))
+#mkdir(string(dir, "/plots", name));

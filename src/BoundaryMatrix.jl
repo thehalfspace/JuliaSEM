@@ -4,7 +4,7 @@
 #
 ########################################################
 
-function BoundaryMatrix(s::space_parameters, m::medium_properties, wgll, iglob, side)
+function BoundaryMatrix(P::parameters, wgll, iglob, side)
 
 	# INPUT: 
 	#		wgll = GLL weights (see GetGLL)
@@ -15,45 +15,45 @@ function BoundaryMatrix(s::space_parameters, m::medium_properties, wgll, iglob, 
 
 
 	if side == 'L'
-		eB = collect(0:s.NelY-1)*s.NelX + 1
+		eB = collect(0:P.NelY-1)*P.NelX .+ 1
 		igll = 1
-		jgll = collect(1:s.NGLL)
-        jac1D = s.dy_deta
-        impedance = m.rho1*m.vs1
+		jgll = collect(1:P.NGLL)
+        jac1D = P.dy_deta
+        impedance = P.rho1*P.vs1
 
 	elseif side == 'R'
-		eB = collect(0:s.NelY-1)*s.NelX + s.NelX
+		eB = collect(0:P.NelY-1)*P.NelX .+ P.NelX
 		igll = NGLL
-		jgll = collect(1:s.NGLL)
-        jac1D = s.dy_deta
-        impedance = m.rho1*m.vs1
+		jgll = collect(1:P.NGLL)
+        jac1D = P.dy_deta
+        impedance = P.rho1*P.vs1
 
 	elseif side == 'T'
-		eB = (s.NelY-1)*s.NelX + collect(1:s.NelX)
-		igll = collect(1:s.NGLL)
-		jgll = s.NGLL
-        jac1D = s.dx_dxi
-        impedance = m.rho1*m.vs1
+		eB = (P.NelY-1)*P.NelX .+ collect(1:P.NelX)
+		igll = collect(1:P.NGLL)
+		jgll = P.NGLL
+        jac1D = P.dx_dxi
+        impedance = P.rho1*P.vs1
 
 	else 
-		eB = collect(1:s.NelX)
-		igll = collect(1:s.NGLL)
+		eB = collect(1:P.NelX)
+		igll = collect(1:P.NGLL)
 		jgll = 1
-        jac1D = s.dx_dxi
+        jac1D = P.dx_dxi
         impedance = 1
 	end
 
 	NelB = length(eB)
-	ng = NelB*(s.NGLL-1) + 1
+	ng = NelB*(P.NGLL-1) .+ 1
 	iB = zeros(Int32, ng)
 	B = zeros(ng)
-	jB = zeros(s.NGLL, NelB)
+	jB = zeros(P.NGLL, NelB)
 
 	for e=1:NelB
-		ip = (s.NGLL-1)*(e-1) + collect(1:s.NGLL)
+		ip = (P.NGLL-1)*(e-1) .+ collect(1:P.NGLL)
 		iB[ip] = iglob[igll, jgll, eB[e]]
 		jB[:,e] = ip
-		B[ip] = B[ip] + jac1D*wgll*impedance
+		B[ip] .+= jac1D*wgll*impedance
 	end
 
 	return B, iB
