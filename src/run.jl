@@ -13,31 +13,31 @@
 #addprocs(4)
 
 #@everywhere using Distributed
-#@everywhere using JLD2
+@everywhere using JLD2
 @everywhere using Printf
 @everywhere using LinearAlgebra
 @everywhere using DelimitedFiles
 @everywhere using SharedArrays
 
-@everywhere include("src/parameters/testParameters.jl")	    #	Set Parameters
-@everywhere include("src/setup.jl")
+@everywhere include("testParameters.jl")	    #	Set Parameters
+@everywhere include("setup.jl")
 
 @everywhere P = setParameters(5e3)
 @everywhere S = setup(P)
 
-@everywhere include("src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
-@everywhere include("src/dtevol.jl")            # compute the next timestep
-@everywhere include("src/NRsearch.jl")          # Newton-rhapson search method to find roots
+@everywhere include("PCG.jl")               # Preconditioned conjugate gradient to invert matrix
+@everywhere include("dtevol.jl")            # compute the next timestep
+@everywhere include("NRsearch.jl")          # Newton-rhapson search method to find roots
 
-@everywhere include("src/main.jl")
+@everywhere include("main.jl")
 
-O = main(P, S)
+simulation_time = @elapsed @time O = main(P, S)
 
 # Name of the current simulation
-#global name = "/dump01"
+#global name = "/testparallel"
 
 # Get the current directory for saving figures
-#global dir = pwd()
+#global dir = "" #pwd()
 
 
 #  simulation_time = @elapsed output = main(parameters(), setup(parameters()))
@@ -50,7 +50,7 @@ println("\n")
 # Directory to save the simulation results
 #filename = string(dir, "/data", name, ".jld2");
 
-#@save filename output simulation_time name dir 
+@save "~/Desktop/testparallel.jld2" output simulation_time 
 
 # Create a new directory to save plots
 #mkdir(string(dir, "/plots", name));

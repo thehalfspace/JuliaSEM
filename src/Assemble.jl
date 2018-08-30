@@ -1,8 +1,6 @@
 ###################################################
 #	ASSEMBLE THE MASS AND THE STIFFNESS MATRICES
 ###################################################
-
-
     
 function assemble(P::parameters, iglob, M, W)
 

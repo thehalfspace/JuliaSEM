@@ -17,7 +17,7 @@ using DelimitedFiles
 function GetGLL(ngll)
 
 	a = ngll
-	data = readdlm("src/gll_xwh/gll_$(lpad(a, 2, "0")).tab", header=false)
+	data = readdlm("gll_$(lpad(a, 2, "0")).tab", header=false)
 
 	x = data[1,:]
 	w = data[2,:]

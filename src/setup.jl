@@ -3,7 +3,7 @@ include("MeshBox.jl")		    # 	Build 2D mesh
 include("Assemble.jl")          #   Assemble mass and stiffness matrix
 include("BoundaryMatrix.jl")    #	Boundary matrices
 include("FindNearestNode.jl")   #	Nearest node for output
-include("initialConditions/defaultInitialConditions.jl")
+include("defaultInitialConditions.jl")
 include("otherFunctions.jl")    # some other functions to solve for friction
 
 struct input_variables
