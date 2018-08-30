@@ -6,4 +6,5 @@ Adapted from Kaneko et al. (2011), and J.P. Ampuero's [SEMLAB](https://www.mathw
 
 This project is incomplete, work in progress.
 
-I use the master branch to develop and work on features. To obtain the latest working version, please switch to branch "working".
+This branch is for running the program in clusters. Still working on parallelizing the code.
+
