@@ -19,7 +19,7 @@
 @everywhere using DelimitedFiles
 @everywhere using SharedArrays
 
-@everywhere include("testParameters.jl")	    #	Set Parameters
+@everywhere include("defaultParameters.jl")	    #	Set Parameters
 @everywhere include("setup.jl")
 
 @everywhere P = setParameters(5e3)
@@ -50,7 +50,7 @@ println("\n")
 # Directory to save the simulation results
 #filename = string(dir, "/data", name, ".jld2");
 
-@save "~/Desktop/testparallel.jld2" output simulation_time 
+@save "testparallel.jld2" O simulation_time 
 
 # Create a new directory to save plots
 #mkdir(string(dir, "/plots", name));
