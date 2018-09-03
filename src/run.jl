@@ -9,8 +9,8 @@
 # 5. Plot results from the scripts folder
 
 
-#using Distributed
-#addprocs(4)
+#  using Distributed
+#  addprocs(4)
 
 #@everywhere using Distributed
 @everywhere using JLD2
@@ -19,38 +19,24 @@
 @everywhere using DelimitedFiles
 @everywhere using SharedArrays
 
-@everywhere include("testParameters.jl")	    #	Set Parameters
-@everywhere include("setup.jl")
+@everywhere include("$(@__DIR__)/src/parameters/defaultParameters.jl")	    #	Set Parameters
+@everywhere include("$(@__DIR__)/src/setup.jl")
 
 @everywhere P = setParameters(5e3)
 @everywhere S = setup(P)
 
-@everywhere include("PCG.jl")               # Preconditioned conjugate gradient to invert matrix
-@everywhere include("dtevol.jl")            # compute the next timestep
-@everywhere include("NRsearch.jl")          # Newton-rhapson search method to find roots
+@everywhere include("$(@__DIR__)/src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
+@everywhere include("$(@__DIR__)/src/dtevol.jl")            # compute the next timestep
+@everywhere include("$(@__DIR__)/src/NRsearch.jl")          # Newton-rhapson search method to find roots
 
-@everywhere include("main.jl")
+@everywhere include("$(@__DIR__)/src/main.jl")
 
-simulation_time = @elapsed @time O = main(P, S)
+simulation_time = @elapsed O = @time main(P, S)
 
-# Name of the current simulation
-#global name = "/testparallel"
+# Save output to file
+using Serialization
+open("$(@__DIR__)/output/data01.out", "w") do f
+    serialize(f,O)
+    serialize(f, simulation_time)
+end
 
-# Get the current directory for saving figures
-#global dir = "" #pwd()
-
-
-#  simulation_time = @elapsed output = main(parameters(), setup(parameters()))
-
-
-println("\n")
-
-@info("Simulation Complete!");
-
-# Directory to save the simulation results
-#filename = string(dir, "/data", name, ".jld2");
-
-@save "~/Desktop/testparallel.jld2" output simulation_time 
-
-# Create a new directory to save plots
-#mkdir(string(dir, "/plots", name));
