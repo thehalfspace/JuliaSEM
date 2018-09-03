@@ -9,8 +9,8 @@
 # 5. Plot results from the scripts function
 
 
-using Distributed
-addprocs(4)
+#  using Distributed
+#  addprocs(4)
 
 #@everywhere using Distributed
 #@everywhere using JLD2
@@ -19,20 +19,26 @@ addprocs(4)
 @everywhere using DelimitedFiles
 @everywhere using SharedArrays
 
-@everywhere include("src/parameters/testParameters.jl")	    #	Set Parameters
-@everywhere include("src/setup.jl")
+@everywhere include("$(@__DIR__)/src/parameters/defaultParameters.jl")	    #	Set Parameters
+@everywhere include("$(@__DIR__)/src/setup.jl")
 
 @everywhere P = setParameters(5e3)
 @everywhere S = setup(P)
 
-@everywhere include("src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
-@everywhere include("src/dtevol.jl")            # compute the next timestep
-@everywhere include("src/NRsearch.jl")          # Newton-rhapson search method to find roots
+@everywhere include("$(@__DIR__)/src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
+@everywhere include("$(@__DIR__)/src/dtevol.jl")            # compute the next timestep
+@everywhere include("$(@__DIR__)/src/NRsearch.jl")          # Newton-rhapson search method to find roots
 
-@everywhere include("src/main.jl")
+@everywhere include("$(@__DIR__)/src/main.jl")
 
-O = main(P, S)
+simulation_time = @elapsed O = @time main(P, S)
 
+# Save output to file
+using Serialization
+open("$(@__DIR__)/output/data01.out", "w") do f
+    serialize(f,O)
+    serialize(f, simulation_time)
+end
 
 
 

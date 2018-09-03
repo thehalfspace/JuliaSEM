@@ -1,10 +1,10 @@
-include("GetGLL.jl")		    #	Polynomial interpolation
-include("MeshBox.jl")		    # 	Build 2D mesh
-include("Assemble.jl")          #   Assemble mass and stiffness matrix
-include("BoundaryMatrix.jl")    #	Boundary matrices
-include("FindNearestNode.jl")   #	Nearest node for output
-include("initialConditions/defaultInitialConditions.jl")
-include("otherFunctions.jl")    # some other functions to solve for friction
+include("$(@__DIR__)/GetGLL.jl")		    #	Polynomial interpolation
+include("$(@__DIR__)/MeshBox.jl")		    # 	Build 2D mesh
+include("$(@__DIR__)/Assemble.jl")          #   Assemble mass and stiffness matrix
+include("$(@__DIR__)/BoundaryMatrix.jl")    #	Boundary matrices
+include("$(@__DIR__)/FindNearestNode.jl")   #	Nearest node for output
+include("$(@__DIR__)/initialConditions/defaultInitialConditions.jl")
+include("$(@__DIR__)/otherFunctions.jl")    # some other functions to solve for friction
 
 struct input_variables
     

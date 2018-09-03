@@ -1,0 +1,12 @@
+#PBS -N test01
+#PBS -l pmem=8gb,nodes=4:ppn=4,walltime=100:00:00
+#PBS -A lsa_flux
+#PBS -q flux
+#PBS -M prith@umich.edu
+#PBS -e output/test01.e
+#PBS -o output/test01.o
+#PBS -m ea
+#PBS -V
+ulimit -s unlimited
+module load julia/1.0.0
+julia -p 16 JuliaSEM/run.jl
