@@ -40,33 +40,6 @@ open("$(@__DIR__)/output/data01.out", "w") do f
     serialize(f, simulation_time)
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Name of the current simulation
 #global name = "/dump01"
 
