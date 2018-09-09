@@ -22,7 +22,7 @@
 @everywhere include("$(@__DIR__)/src/parameters/defaultParameters.jl")	    #	Set Parameters
 @everywhere include("$(@__DIR__)/src/setup.jl")
 
-@everywhere P = setParameters(5e3)
+@everywhere P = setParameters(6e3)
 @everywhere S = setup(P)
 
 @everywhere include("$(@__DIR__)/src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
@@ -35,32 +35,11 @@ simulation_time = @elapsed O = @time main(P, S)
 
 # Save output to file
 using Serialization
-open("$(@__DIR__)/output/data01.out", "w") do f
+open("$(@__DIR__)/output/data02.out", "w") do f
     serialize(f,O)
     serialize(f, simulation_time)
 end
 
-# Name of the current simulation
-#global name = "/dump01"
-
-# Get the current directory for saving figures
-#global dir = pwd()
-
-
-#  simulation_time = @elapsed output = main(parameters(), setup(parameters()))
-
-
 println("\n")
 
 @info("Simulation Complete!");
-
-# Directory to save the simulation results
-#filename = string(dir, "/data", name, ".jld2");
-
-#@save filename output simulation_time name dir 
-
-# Create a new directory to save plots
-#mkdir(string(dir, "/plots", name));
-
-
-
