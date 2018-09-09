@@ -16,7 +16,7 @@ open("output/data02.out") do f
     sim_time = deserialize(f)
 end
 
-
+# Plot some results
 using Distributed
 
 include("src/parameters/defaultParameters.jl")
@@ -25,8 +25,6 @@ include("src/setup.jl")
 P = setParameters(6e3)
 S = setup(P)
 
-
-
 # Cumulative Slip Plot
 include("scripts/cumulative-slip.jl")
 include("scripts/plots.jl")
@@ -34,3 +32,11 @@ include("scripts/plots.jl")
 delfsec, delf5yr = cumSlip(Op.Slip, Op.SlipVel, Op.time_)
 
 cumSlipPlot(delfsec, delf5yr, S.FltX)
+
+
+# MFD plot
+include("scripts/earthquake-cycles.jl")
+
+Mw, t_catalog = moment_magnitude(P, Op.Slip, Op.SlipVel, Op.time_)
+
+MwPlot(Mw)

@@ -6,13 +6,6 @@
 using StatsBase
 using PyPlot
 
-#............................................
-# Compute maximum slip rate at each timestep
-#............................................
-function Vfmax(SlipVel)
-    return maximum(SlipVel, dims = 1)[:]
-end
-
 #.................................................
 # Compute the final Coseismic slip for each event
 #.................................................
@@ -55,7 +48,7 @@ end
 #       dimension along depth is the same as the rupture
 #       dimension perpendicular to the plane
 #..........................................................
-function moment_magnitude(s, m, Slip, SlipVel, time_)
+function moment_magnitude(P, Slip, SlipVel, time_)
 
     # Final coseismic slip of each earthquake
     delfafter, t_catalog = Coslip(Slip, SlipVel, time_)
@@ -73,14 +66,14 @@ function moment_magnitude(s, m, Slip, SlipVel, time_)
         # zdim = rupture along z dimension = depth rupture dimension
         area = 0; zdim = 0
 
-        for j = 1:s.FltNglob
+        for j = 1:P.FltNglob
             if delfafter[j,i] >= slip_thres
-                area = area + delfafter[j,i]*s.dxe
-                zdim = zdim + s.dxe
+                area = area + delfafter[j,i]*P.dxe
+                zdim = zdim + P.dxe
             end
         end
 
-        moment[i] = m.mu[1,1]*area*zdim
+        moment[i] = P.mu[1,1]*area*zdim
 
     end
 
