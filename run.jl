@@ -22,7 +22,7 @@
 @everywhere include("$(@__DIR__)/src/parameters/defaultParameters.jl")	    #	Set Parameters
 @everywhere include("$(@__DIR__)/src/setup.jl")
 
-@everywhere P = setParameters(6e3)
+@everywhere P = setParameters(8e3)
 @everywhere S = setup(P)
 
 @everywhere include("$(@__DIR__)/src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
@@ -33,11 +33,15 @@
 
 simulation_time = @elapsed O = @time main(P, S)
 
+description = "FZ:depth=8km, width=1km"
+
 # Save output to file
 using Serialization
 open("$(@__DIR__)/output/data02.out", "w") do f
     serialize(f,O)
     serialize(f, simulation_time)
+    serialize(f, P)
+    serialize(f, S)
 end
 
 println("\n")

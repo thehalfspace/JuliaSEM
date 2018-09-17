@@ -1,4 +1,5 @@
 /data/*
+/output/*
 /dump/*
 /.ipynb_checkpoints/*
 *.swp

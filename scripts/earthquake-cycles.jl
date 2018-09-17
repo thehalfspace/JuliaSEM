@@ -6,20 +6,50 @@
 using StatsBase
 using PyPlot
 
+#-------------------------------
+# Compute hypocenter locations
+#------------------------------
+function plotHypo(S, Slip, SlipVel, time_)
+
+    delfafter, tStart, hypo, vhypo = Coslip(S, Slip, SlipVel, time_)
+
+    # Plot hypocenter
+    hist = fit(Histogram, hypo./1e3, nbins = 20)
+
+    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    ax = fig[:add_subplot](111)
+
+    ax[:barh](hist.edges[1][1:end-1], hist.weights)
+    ax[:plot](collect(1:40), -12*ones(40), "--", label="Fault Zone Depth")
+    ax[:set_xlabel]("Number of Earthquakes")
+    ax[:set_ylabel]("Depth")
+    ax[:set_title]("Magnitude-frequency distribution")
+    ax[:legend](loc="upper right")
+    show()
+
+    #  figname = string(dir, "/plots", name, "/mfd.png")
+    #  ax[:savefig](figname, dpi = 300)
+
+end
+
 #.................................................
 # Compute the final Coseismic slip for each event
 #.................................................
-function Coslip(Slip, SlipVel, time_=zeros(1000000))
+function Coslip(S, Slip, SlipVel, time_=zeros(1000000))
 
-    Vfmax = maximum(SlipVel, dims = 1)[:]
+    Vfmax = maximum(SlipVel[1:716,:], dims = 1)[:]
 
-    delfafter::Array{Float64,2} = zeros(Slip)
-    t_catalog::Array{Float64} = zeros(Slip[:,1])
+    delfafter::Array{Float64,2} = zeros(size(Slip))
+    tStart::Array{Float64} = zeros(size(Slip[1,:]))
+    tEnd::Array{Float64} = zeros(size(Slip[1,:]))
+
+    hypo::Array{Float64} =  zeros(size(Slip[1,:]))   # Hypocenter
+    vhypo::Array{Float64} = zeros(size(Slip[1,:]))   # Velocity at hypocenter
 
     Vthres = 0.01 # event threshold
     slipstart = 0
     it = 1; it2 = 1
-    delfref = zeros(Slip[:,1])
+    delfref = zeros(size(Slip[:,1]))
 
     for i = 1:length(Slip[1,:])
 
@@ -27,19 +57,25 @@ function Coslip(Slip, SlipVel, time_=zeros(1000000))
         if Vfmax[i] > 1.01*Vthres && slipstart == 0
             delfref = Slip[:,i]
             slipstart = 1
-            t_catalog[it2] = time_[i]
+            tStart[it2] = time_[i]
+
+            vhypo[it2], indx = findmax(SlipVel[1:716,i])
+
+            hypo[it2] = S.FltX[indx]
+
             it2 = it2+1
         end
 
         # End of each event
         if Vfmax[i] < 0.99*Vthres && slipstart == 1
             delfafter[:,it] = Slip[:,i] - delfref
+            tEnd[it] = time_[i]
             slipstart = 0
             it = it + 1
         end
     end
 
-    return delfafter[:,1:it-1], t_catalog[1:it2-1]
+    return delfafter[:,1:it-1], tStart[1:it2-1], tEnd[1:it-1], vhypo[1:it2-1], hypo[1:it2-1]
 end
 
 #..........................................................
@@ -48,14 +84,16 @@ end
 #       dimension along depth is the same as the rupture
 #       dimension perpendicular to the plane
 #..........................................................
-function moment_magnitude(P, Slip, SlipVel, time_)
+function moment_magnitude(P, S, Slip, SlipVel, time_)
 
     # Final coseismic slip of each earthquake
-    delfafter, t_catalog = Coslip(Slip, SlipVel, time_)
+    delfafter, = Coslip(S, Slip, SlipVel, time_)
 
     iter = length(delfafter[1,:])
+    mu = P.rho1*P.vs1^2
+    seismic_moment = zeros(iter)
     
-    moment = zeros(iter)
+    dx = diff(S.FltX)
 
     for i = 1:iter
         
@@ -68,18 +106,17 @@ function moment_magnitude(P, Slip, SlipVel, time_)
 
         for j = 1:P.FltNglob
             if delfafter[j,i] >= slip_thres
-                area = area + delfafter[j,i]*P.dxe
-                zdim = zdim + P.dxe
+                area = area + delfafter[j,i]*dx[j-1]
+                zdim = zdim + dx[j-1]
             end
         end
-
-        moment[i] = P.mu[1,1]*area*zdim
+        seismic_moment[i] = mu*area*zdim
 
     end
+    seismic_moment = filter!(x->x!=0, seismic_moment)
+    Mw = (2/3)*log10.(seismic_moment.*1e7) .- 10.7
 
-    Mw = (2/3)*log10.(moment.*1e7) - 10.7
-
-    return Mw, t_catalog
+    return Mw
 end
 
 
@@ -96,16 +133,17 @@ function MwPlot(Mw)
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
 
-    ax[:plot](hist.edges[1][1:end-1], log10.(hist.weights), ".", label="Non-cumulative")
-    ax[:plot](hist.edges[1][1:end-1], log10.(cum), ".", label="Cumulative")
+    ax[:plot](hist.edges[1][1:end-1], hist.weights, ".", label="Non-cumulative")
+    ax[:plot](hist.edges[1][1:end-1], cum, ".", label="Cumulative")
     ax[:set_xlabel]("Moment Magnitude (Mw)")
-    ax[:set_ylabel]("Number of Earthquakes (log10)")
+    ax[:set_ylabel]("Number of Earthquakes")
+    ax[:set_yscale]("log")
     ax[:set_title]("Magnitude-frequency distribution")
     ax[:legend](loc="upper right")
     show()
 
-    figname = string(dir, "/plots", name, "/mfd.png")
-    ax[:savefig](figname, dpi = 300)
+    #  figname = string(dir, "/plots", name, "/mfd.png")
+    #  ax[:savefig](figname, dpi = 300)
 end
 
 
@@ -124,6 +162,6 @@ function eq_catalog(Mw, t_catalog, yr2sec)
     ax[:set_title]("Earthquake Catalogue")
     show()
 
-    figname = string(dir, "/plots", name, "catalogue.png")
-    fig[:savefig](figname, dpi = 300)
+    #  figname = string(dir, "/plots", name, "catalogue.png")
+    #  fig[:savefig](figname, dpi = 300)
 end

@@ -9,34 +9,107 @@ mutable struct results
     time_::Array{Float64}
 end
 
-using Serialization
-open("output/data02.out") do f
-    global Op, sim_time
-    Op = deserialize(f)
-    sim_time = deserialize(f)
+struct parameters
+    
+    Nsize::Int 
+    LX::Int
+    LY::Int
+    NelX::Int
+    NelY::Int
+
+    dxe::Float64
+    dye::Float64
+    Nel::Int
+    
+    P::Int    
+    NGLL::Int
+    FltNglob::Int
+
+    dx_dxi::Float64
+    dy_deta::Float64
+    jac::Float64
+    coefint1::Float64
+    coefint2::Float64
+
+    yr2sec::Int
+    Total_time::Int
+    CFL::Float64
+    IDstate::Int
+
+    dtincf::Float64
+    gamma_::Float64
+    tevneinc::Int
+    dtmax::Int
+
+    rho1::Float64
+    vs1::Float64
+
+    rho2::Float64
+    vs2::Float64
+
+    ETA::Float64
+
+    ThickX::Float64
+    ThickY::Float64
+
+    Vpl::Float64
+
+    fo::Array{Float64}
+    Vo::Array{Float64}
+    xLf::Array{Float64}
+
+    Vthres::Float64
+    Vevne::Float64
+
 end
 
-# Plot some results
-using Distributed
+struct input_variables
+    
+    iglob::Array{Int,3}
+    nglob::Int
+    x::Array{Float64}
+    y::Array{Float64}
 
-include("src/parameters/defaultParameters.jl")
-include("src/setup.jl")
+    xgll::Array{Float64}
+    wgll::Array{Float64}
+    H::Array{Float64,2}
+    Ht::Array{Float64,2}
 
-P = setParameters(6e3)
-S = setup(P)
+    W::Array{Float64,3}
+    M::Array{Float64}
+    MC::Array{Float64}
 
-# Cumulative Slip Plot
-include("scripts/cumulative-slip.jl")
-include("scripts/plots.jl")
+    BcLC::Array{Float64}
+    iBcL::Array{Int}
+    BcTC::Array{Float64}
+    iBcT::Array{Int}
 
-delfsec, delf5yr = cumSlip(Op.Slip, Op.SlipVel, Op.time_)
+    FltB::Array{Float64}
+    iFlt::Array{Int64}
+    FltZ::Array{Float64}
+    FltX::Array{Float64}
 
-cumSlipPlot(delfsec, delf5yr, S.FltX)
+    cca::Array{Float64}
+    ccb::Array{Float64}
+    Seff::Array{Float64}
+    tauo::Array{Float64}
 
+    Nel_ETA::Float64
+    XiLf::Array{Float64}
+    diagKnew::Array{Float64}
 
-# MFD plot
-include("scripts/earthquake-cycles.jl")
+    FltIglobBC::Array{Int}
+    FltNI::Array{Int}
 
-Mw, t_catalog = moment_magnitude(P, Op.Slip, Op.SlipVel, Op.time_)
+    dt0::Float64
 
-MwPlot(Mw)
+end
+
+using Serialization
+open("output/flux_sims/data03.out") do f
+    global O, sim_time, P, S
+    Op = deserialize(f)
+    sim_time = deserialize(f)
+    P = deserialize(f)
+    S = deserialize(f)
+end
