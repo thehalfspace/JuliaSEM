@@ -37,7 +37,7 @@ end
 #.................................................
 function Coslip(S, Slip, SlipVel, time_=zeros(1000000))
 
-    Vfmax = maximum(SlipVel[1:716,:], dims = 1)[:]
+    Vfmax = maximum(SlipVel, dims = 1)[:]
 
     delfafter::Array{Float64,2} = zeros(size(Slip))
     tStart::Array{Float64} = zeros(size(Slip[1,:]))
@@ -59,7 +59,7 @@ function Coslip(S, Slip, SlipVel, time_=zeros(1000000))
             slipstart = 1
             tStart[it2] = time_[i]
 
-            vhypo[it2], indx = findmax(SlipVel[1:716,i])
+            vhypo[it2], indx = findmax(SlipVel[:,i])
 
             hypo[it2] = S.FltX[indx]
 
@@ -125,7 +125,7 @@ end
 #...........
 function MwPlot(Mw)
 
-    hist = fit(Histogram, Mw, nbins = 10)
+    hist = fit(Histogram, Mw, nbins = 50)
 
     # Cumulative
     cum = cumsum(hist.weights[end:-1:1])[end:-1:1]
@@ -133,7 +133,7 @@ function MwPlot(Mw)
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
 
-    ax[:plot](hist.edges[1][1:end-1], hist.weights, ".", label="Non-cumulative")
+    #  ax[:plot](hist.edges[1][1:end-1], hist.weights, ".", label="Non-cumulative")
     ax[:plot](hist.edges[1][1:end-1], cum, ".", label="Cumulative")
     ax[:set_xlabel]("Moment Magnitude (Mw)")
     ax[:set_ylabel]("Number of Earthquakes")

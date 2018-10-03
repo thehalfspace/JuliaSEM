@@ -26,7 +26,7 @@ function assemble(P::parameters, iglob, M, W)
             ig = iglob[:,:,eo]
 
             # Properties of heterogeneous medium
-            if ex*P.dxe >= P.ThickX && ey*P.dye <= P.ThickY
+            if ex*P.dxe >= P.ThickX && (P.dye <= ey*P.dye <= P.ThickY)
                 rho[:,:] .= P.rho2
                 mu[:,:] .= P.rho2*P.vs2^2
             else

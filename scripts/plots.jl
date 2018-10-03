@@ -32,8 +32,8 @@ function fricPlot(cca, ccb, FltX)
     ax[:set_ylim]([-24, 0])
     show()
 
-    figname = string(dir, "/plots", name, "/fric.png")
-    fig[:savefig](figname, dpi = 300)
+    #  figname = string(dir, "/plots", name, "/fric.png")
+    #  fig[:savefig](figname, dpi = 300)
 
 end
 
@@ -51,8 +51,8 @@ function stressPlot(Stress, time_, FltX, yr2sec, loc1 = 8e3)
     ax[:set_title](string("Shear stress at ", loc1/1e3, "km depth"))   
     show()
 
-    figname = string(dir, "/plots", name, "/shear.png")
-    fig[:savefig](figname, dpi = 300)
+    #  figname = string(dir, "/plots", name, "/shear.png")
+    #  fig[:savefig](figname, dpi = 300)
 
 end
 
@@ -72,8 +72,8 @@ function slipvelPlot(SlipVel, time_, FltX, yr2sec, loc1 = 8e3)
     ax[:set_yscale]("log")
     show()
 
-    figname = string(dir, "/plots", name, "/sliprate.png")
-    fig[:savefig](figname, dpi = 300)
+    #  figname = string(dir, "/plots", name, "/sliprate.png")
+    #  fig[:savefig](figname, dpi = 300)
 
 end
 

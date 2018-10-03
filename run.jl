@@ -9,7 +9,7 @@
 # 5. Plot results from the scripts function
 
 
-#  using Distributed
+using Distributed
 #  addprocs(4)
 
 #@everywhere using Distributed
@@ -33,11 +33,11 @@
 
 simulation_time = @elapsed O = @time main(P, S)
 
-description = "FZ:depth=8km, width=1km"
+description = "small test" #"FZ:depth=8km, width=1km"
 
 # Save output to file
 using Serialization
-open("$(@__DIR__)/output/data02.out", "w") do f
+open("$(@__DIR__)/output/data07.out", "w") do f
     serialize(f,O)
     serialize(f, simulation_time)
     serialize(f, P)

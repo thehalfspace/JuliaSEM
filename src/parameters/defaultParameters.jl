@@ -84,8 +84,8 @@ function setParameters(FZdepth)
     LX::Int = 24e3*Nsize  # depth dimension of rectangular domain
     LY::Int = 15e3*Nsize # off fault dimenstion of rectangular domain
 
-    NelX::Int = 90*Nsize # no. of elements in x
-    NelY::Int = 60*Nsize # no. of elements in y
+    NelX::Int = 60*Nsize # no. of elements in x
+    NelY::Int = 40*Nsize # no. of elements in y
 
     dxe::Float64 = LX/NelX #	Size of one element along X
     dye::Float64 = LY/NelY #	Size of one element along Y
@@ -108,7 +108,7 @@ function setParameters(FZdepth)
 
     yr2sec::Int = 365*24*60*60
     
-    Total_time::Int = 1000*yr2sec     # Set the total time for simulation here
+    Total_time::Int = 300*yr2sec     # Set the total time for simulation here
 
     CFL::Float64 = 0.6	#	Courant stability number
      
@@ -118,7 +118,7 @@ function setParameters(FZdepth)
     dtincf::Float64 = 1.2
     gamma_::Float64 = pi/4
     tevneinc::Int = 1
-    dtmax::Int = 180 * 24 * 60*60		# 100 days
+    dtmax::Int = 5 * 24 * 60*60		# 5 days
 
 
     #...................
@@ -137,7 +137,7 @@ function setParameters(FZdepth)
 
     # Low velocity layer dimensions
     ThickX::Float64 = LX - ceil(FZdepth/dxe)*dxe # ~FZdepth m deep
-    ThickY::Float64 = ceil(0.5e3/dye)*dye   # ~ 0.75*2 km wide
+    ThickY::Float64 = ceil(5e3/dye)*dye   # ~ 0.5*2 km wide
 
     #.......................
     # EARTHQUAKE PARAMETERS

@@ -23,7 +23,7 @@ function BoundaryMatrix(P::parameters, wgll, iglob, side)
 
 	elseif side == 'R'
 		eB = collect(0:P.NelY-1)*P.NelX .+ P.NelX
-		igll = NGLL
+		igll = P.NGLL
 		jgll = collect(1:P.NGLL)
         jac1D = P.dy_deta
         impedance = P.rho1*P.vs1
