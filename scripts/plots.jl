@@ -113,7 +113,7 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Cumulative Slip for interseismic and dynamic events")
     ax[:set_ylim]([-24, 0])
-    ax[:set_xlim]([0, maximum(delfsec)])
+    ax[:set_xlim]([0, maximum(delfsec2)])
     show()
     
     #  figname = string(dir, "/plots", name, "/cumslip.png")

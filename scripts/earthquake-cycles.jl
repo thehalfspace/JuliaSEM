@@ -20,7 +20,7 @@ function plotHypo(S, Slip, SlipVel, time_)
     ax = fig[:add_subplot](111)
 
     ax[:barh](hist.edges[1][1:end-1], hist.weights)
-    ax[:plot](collect(1:40), -12*ones(40), "--", label="Fault Zone Depth")
+    ax[:plot](collect(1:40), -11*ones(40), "--", label="Fault Zone Depth")
     ax[:set_xlabel]("Number of Earthquakes")
     ax[:set_ylabel]("Depth")
     ax[:set_title]("Magnitude-frequency distribution")
@@ -35,7 +35,7 @@ end
 #.................................................
 # Compute the final Coseismic slip for each event
 #.................................................
-function Coslip(S, Slip, SlipVel, time_=zeros(1000000))
+function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
 
     Vfmax = maximum(SlipVel, dims = 1)[:]
 
@@ -43,6 +43,9 @@ function Coslip(S, Slip, SlipVel, time_=zeros(1000000))
     tStart::Array{Float64} = zeros(size(Slip[1,:]))
     tEnd::Array{Float64} = zeros(size(Slip[1,:]))
 
+    taubefore::Array{Float64,2} = zeros(size(Slip))
+    tauafter::Array{Float64,2} = zeros(size(Slip))
+    
     hypo::Array{Float64} =  zeros(size(Slip[1,:]))   # Hypocenter
     vhypo::Array{Float64} = zeros(size(Slip[1,:]))   # Velocity at hypocenter
 
@@ -54,11 +57,12 @@ function Coslip(S, Slip, SlipVel, time_=zeros(1000000))
     for i = 1:length(Slip[1,:])
 
         # Start of each event
-        if Vfmax[i] > 1.01*Vthres && slipstart == 0
+        if Vfmax[i] > 1.1*Vthres && slipstart == 0
             delfref = Slip[:,i]
             slipstart = 1
             tStart[it2] = time_[i]
-
+            
+            taubefore[:,it2] = Stress[:,i]
             vhypo[it2], indx = findmax(SlipVel[:,i])
 
             hypo[it2] = S.FltX[indx]
@@ -67,15 +71,16 @@ function Coslip(S, Slip, SlipVel, time_=zeros(1000000))
         end
 
         # End of each event
-        if Vfmax[i] < 0.99*Vthres && slipstart == 1
+        if Vfmax[i] < 0.9*Vthres && slipstart == 1
             delfafter[:,it] = Slip[:,i] - delfref
+            tauafter[:,it] = Stress[:,i]
             tEnd[it] = time_[i]
             slipstart = 0
             it = it + 1
         end
     end
 
-    return delfafter[:,1:it-1], tStart[1:it2-1], tEnd[1:it-1], vhypo[1:it2-1], hypo[1:it2-1]
+    return delfafter[:,1:it-1], (taubefore-tauafter)[:,1:it-1], tStart[1:it2-1], tEnd[1:it-1], vhypo[1:it2-1], hypo[1:it2-1]
 end
 
 #..........................................................
@@ -84,14 +89,16 @@ end
 #       dimension along depth is the same as the rupture
 #       dimension perpendicular to the plane
 #..........................................................
-function moment_magnitude(P, S, Slip, SlipVel, time_)
+function moment_magnitude(P, S, Slip, SlipVel, Stress, time_)
 
     # Final coseismic slip of each earthquake
-    delfafter, = Coslip(S, Slip, SlipVel, time_)
+    delfafter, stressdrops = Coslip(S, Slip, SlipVel, Stress, time_)
 
     iter = length(delfafter[1,:])
     mu = P.rho1*P.vs1^2
     seismic_moment = zeros(iter)
+    temp_sigma = 0
+    iter2 = 1 
     
     dx = diff(S.FltX)
 
@@ -102,15 +109,22 @@ function moment_magnitude(P, S, Slip, SlipVel, time_)
 
         # area = slip*(rupture dimension along depth)
         # zdim = rupture along z dimension = depth rupture dimension
-        area = 0; zdim = 0
+        area = 0; zdim = 0; temp_sigma = 0
 
         for j = 1:P.FltNglob
             if delfafter[j,i] >= slip_thres
                 area = area + delfafter[j,i]*dx[j-1]
                 zdim = zdim + dx[j-1]
+
+                # Avg. stress drops along rupture area
+                temp_sigma = temp_sigma + stressdrops[j,i]*dx[j-1]
             end
         end
-        seismic_moment[i] = mu*area*zdim
+        
+        if temp_sigma >0
+            seismic_moment[iter2] = mu*area*zdim
+            iter2 = iter2+1
+        end
 
     end
     seismic_moment = filter!(x->x!=0, seismic_moment)
