@@ -7,9 +7,8 @@ function FBC(P, S, NFBC, psi1, Vf1, tau1, psi2, Vf2, tau2, psi, Vf, FltVfree, dt
 
     tauNR = SharedArray{Float64}(P.FltNglob)
 
-   @sync @distributed for j = NFBC: P.FltNglob-1 
+   @sync @distributed for j = NFBC:P.FltNglob 
 
-        #j = jF - 1 + NFBC
         psi1[j] = IDS(P.xLf[j], P.Vo[j], psi[j], dt, Vf[j], 1e-5, P.IDstate)
 
         Vf1[j], tau1[j] = NRsearch(P.fo[j], P.Vo[j], S.cca[j], S.ccb[j], S.Seff[j],

@@ -11,6 +11,7 @@
 #	and J.P. Ampuero's SEMLAB       	
 #
 #   CHANGELOG:
+#       * 10-24-2018: Correct the free surface boundary condition
 #       * 08-27-2018: Remove the dependency on Parameters.jl
 #       * 08-26-2018: Using distributed for loop in PCG and NRsearch
 #       * 08-24-2018: Create a separate function for NRsearch loop: FBC()
