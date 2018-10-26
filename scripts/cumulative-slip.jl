@@ -10,7 +10,7 @@ function cumSlip(Slip, SlipVel, time_)
     tvsxinc = tvsx
 
     tevneinc = 1
-    Vevne = 0.01
+    Vevne = 0.001
 
     ntvsx = 0
     nevne = 0

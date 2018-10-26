@@ -9,20 +9,21 @@ using PyPlot
 #-------------------------------
 # Compute hypocenter locations
 #------------------------------
-function plotHypo(S, Slip, SlipVel, time_)
+function plotHypo(S, Slip, SlipVel, Stress, time_)
 
-    delfafter, tStart, hypo, vhypo = Coslip(S, Slip, SlipVel, time_)
+    delfafter, stressdrops, tStart, tEnd, vhypo, hypo = 
+                                        Coslip(S, Slip, SlipVel, Stress, time_)
 
     # Plot hypocenter
-    hist = fit(Histogram, hypo./1e3, nbins = 20)
+    hist = fit(Histogram, hypo./1e3, nbins = 40)
 
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
 
     ax[:barh](hist.edges[1][1:end-1], hist.weights)
-    ax[:plot](collect(1:40), -11*ones(40), "--", label="Fault Zone Depth")
+    ax[:plot](collect(1:40), -8*ones(40), "--", label="Fault Zone Depth")
     ax[:set_xlabel]("Number of Earthquakes")
-    ax[:set_ylabel]("Depth")
+    ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Magnitude-frequency distribution")
     ax[:legend](loc="upper right")
     show()
@@ -49,7 +50,7 @@ function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
     hypo::Array{Float64} =  zeros(size(Slip[1,:]))   # Hypocenter
     vhypo::Array{Float64} = zeros(size(Slip[1,:]))   # Velocity at hypocenter
 
-    Vthres = 0.01 # event threshold
+    Vthres = 0.03 # event threshold
     slipstart = 0
     it = 1; it2 = 1
     delfref = zeros(size(Slip[:,1]))
@@ -57,7 +58,7 @@ function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
     for i = 1:length(Slip[1,:])
 
         # Start of each event
-        if Vfmax[i] > 1.1*Vthres && slipstart == 0
+        if Vfmax[i] > 1.01*Vthres && slipstart == 0
             delfref = Slip[:,i]
             slipstart = 1
             tStart[it2] = time_[i]
@@ -71,7 +72,7 @@ function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
         end
 
         # End of each event
-        if Vfmax[i] < 0.9*Vthres && slipstart == 1
+        if Vfmax[i] < 0.99*Vthres && slipstart == 1
             delfafter[:,it] = Slip[:,i] - delfref
             tauafter[:,it] = Stress[:,i]
             tEnd[it] = time_[i]
@@ -99,6 +100,8 @@ function moment_magnitude(P, S, Slip, SlipVel, Stress, time_)
     seismic_moment = zeros(iter)
     temp_sigma = 0
     iter2 = 1 
+
+    del_sigma = zeros(iter)
     
     dx = diff(S.FltX)
 
@@ -121,16 +124,15 @@ function moment_magnitude(P, S, Slip, SlipVel, Stress, time_)
             end
         end
         
-        if temp_sigma >0
-            seismic_moment[iter2] = mu*area*zdim
-            iter2 = iter2+1
-        end
+        seismic_moment[i] = mu*area*zdim
+        del_sigma[i] = temp_sigma
+
 
     end
     seismic_moment = filter!(x->x!=0, seismic_moment)
     Mw = (2/3)*log10.(seismic_moment.*1e7) .- 10.7
 
-    return Mw
+    return Mw, del_sigma
 end
 
 
@@ -139,7 +141,7 @@ end
 #...........
 function MwPlot(Mw)
 
-    hist = fit(Histogram, Mw, nbins = 50)
+    hist = fit(Histogram, Mw, nbins = 20)
 
     # Cumulative
     cum = cumsum(hist.weights[end:-1:1])[end:-1:1]
@@ -170,7 +172,7 @@ function eq_catalog(Mw, t_catalog, yr2sec)
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
 
-    ax[:scatter](t_catalog./yr2sec, Mw, s = 30, marker=".")
+    ax[:scatter](t_catalog./yr2sec, Mw, s= 30, marker=".")
     ax[:set_xlabel]("Time (yrs)")
     ax[:set_ylabel]("Moment Magnitude (Mw)")
     ax[:set_title]("Earthquake Catalogue")

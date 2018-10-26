@@ -16,6 +16,16 @@ using PyPlot
 #PyPlot.matplotlib[:rc]("figure", titlesize = 18)
 #PyPlot.matplotlib[:rc]("figure", figsize = (6,4), dpi = 120)
 
+
+#  function 3DSliprates(S, SlipVel, time_)
+
+    #  # depth and time intervals
+    #  sdx = 10; sdt = 100
+
+    #  fig = PyPlot.figure(figsize=(6, 4.5), dpi=120)
+
+#  end
+
 # Plot friction parameters
 function fricPlot(cca, ccb, FltX)
     
@@ -108,12 +118,12 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     ax = fig[:add_subplot](111)
 
     ax[:plot](delf5yr, FltX/1e3, "xkcd:blue", lw=0.5)
-    ax[:plot](delfsec2, FltX[indx:end]/1e3, "xkcd:burnt orange", lw=0.5)
+    ax[:plot](delfsec, FltX/1e3, "xkcd:burnt orange", lw=0.5)
     ax[:set_xlabel]("Slip (m)")
     ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Cumulative Slip for interseismic and dynamic events")
-    ax[:set_ylim]([-24, 0])
-    ax[:set_xlim]([0, maximum(delfsec2)])
+    #  ax[:set_ylim]([-24, 0])
+    #  ax[:set_xlim]([0, maximum(delf5yr)])
     show()
     
     #  figname = string(dir, "/plots", name, "/cumslip.png")

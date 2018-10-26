@@ -117,7 +117,7 @@ function main(P::parameters, S::input_variables)
     v = v[:] .- 0.5*P.Vpl
     Vf = 2*v[S.iFlt]
     iFBC::Array{Int64} = findall(abs.(S.FltX) .> 24e3)
-    NFBC::Int64 = length(iFBC)
+    NFBC::Int64 = length(iFBC) + 1
     Vf[iFBC] .= 0
 
 

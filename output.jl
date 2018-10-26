@@ -106,7 +106,7 @@ struct input_variables
 end
 
 using Serialization
-open("output/flux_sims/narrowFZ01.out") do f
+open("output/flux_sims/wideFZ02.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)

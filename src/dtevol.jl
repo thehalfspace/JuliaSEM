@@ -10,7 +10,7 @@ function dtevol(P::parameters, dt, dtmin, XiLf, FaultNglob, NFBC, Vf, isolver)
         dtnx = P.dtmax
 
         # Adjust the timestep according to cell velocities and slip
-        for i = NFBC:FaultNglob - 1
+        for i = NFBC:FaultNglob 
 
             if abs(Vf[i])*P.dtmax > XiLf[i]
                 dtcell = XiLf[i]/abs(Vf[i])
