@@ -6,6 +6,8 @@
 using StatsBase
 using PyPlot
 
+PyPlot.matplotlib[:rc]("patch.force_edgecolor=true")
+
 #-------------------------------
 # Compute hypocenter locations
 #------------------------------
@@ -15,12 +17,12 @@ function plotHypo(S, Slip, SlipVel, Stress, time_)
                                         Coslip(S, Slip, SlipVel, Stress, time_)
 
     # Plot hypocenter
-    hist = fit(Histogram, hypo./1e3, nbins = 40)
+    hist = fit(Histogram, hypo./1e3, nbins = 10)
 
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
 
-    ax[:barh](hist.edges[1][1:end-1], hist.weights)
+    ax[:barh](hist.edges[1][1:end-1], hist.weights, 0.5)
     ax[:plot](collect(1:40), -8*ones(40), "--", label="Fault Zone Depth")
     ax[:set_xlabel]("Number of Earthquakes")
     ax[:set_ylabel]("Depth (km)")
@@ -28,6 +30,8 @@ function plotHypo(S, Slip, SlipVel, Stress, time_)
     ax[:legend](loc="upper right")
     show()
 
+    figname = "/Users/prith/JuliaSEM/plots/test11/hypocenter.png"
+    fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/mfd.png")
     #  ax[:savefig](figname, dpi = 300)
 
@@ -50,7 +54,7 @@ function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
     hypo::Array{Float64} =  zeros(size(Slip[1,:]))   # Hypocenter
     vhypo::Array{Float64} = zeros(size(Slip[1,:]))   # Velocity at hypocenter
 
-    Vthres = 0.03 # event threshold
+    Vthres = 0.01 # event threshold
     slipstart = 0
     it = 1; it2 = 1
     delfref = zeros(size(Slip[:,1]))
@@ -108,7 +112,7 @@ function moment_magnitude(P, S, Slip, SlipVel, Stress, time_)
     for i = 1:iter
         
         # slip threshold = 1% of maximum slip
-        slip_thres = 0.01*maximum(delfafter[:,i])
+        slip_thres = 0.10*maximum(delfafter[:,i])
 
         # area = slip*(rupture dimension along depth)
         # zdim = rupture along z dimension = depth rupture dimension
@@ -130,6 +134,7 @@ function moment_magnitude(P, S, Slip, SlipVel, Stress, time_)
 
     end
     seismic_moment = filter!(x->x!=0, seismic_moment)
+    del_sigma = filter!(x->x!=0, del_sigma)
     Mw = (2/3)*log10.(seismic_moment.*1e7) .- 10.7
 
     return Mw, del_sigma
@@ -158,6 +163,8 @@ function MwPlot(Mw)
     ax[:legend](loc="upper right")
     show()
 
+    figname = "/Users/prith/JuliaSEM/plots/test11/mfd.png"
+    fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/mfd.png")
     #  ax[:savefig](figname, dpi = 300)
 end
@@ -178,6 +185,8 @@ function eq_catalog(Mw, t_catalog, yr2sec)
     ax[:set_title]("Earthquake Catalogue")
     show()
 
+    figname = "/Users/prith/JuliaSEM/plots/test11/catalogue.png"
+    fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "catalogue.png")
     #  fig[:savefig](figname, dpi = 300)
 end
