@@ -129,7 +129,7 @@ function main(P::parameters, S::input_variables)
     it = 0
     t = 0
 
-    while it<30 #t < P.Total_time
+    while t < P.Total_time
         it = it + 1
         t = t + dt
 

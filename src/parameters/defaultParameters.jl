@@ -149,7 +149,7 @@ function setParameters(FZdepth)
     Vo::Array{Float64} 	= repeat([1e-6], FltNglob)		#	Reference velocity 'Vo'
     xLf::Array{Float64} = repeat([0.008], FltNglob)#	Dc (Lc) = 8 mm
 
-    Vthres::Float64 = 0.01
+    Vthres::Float64 = 0.001
     Vevne::Float64 = Vthres
 
 

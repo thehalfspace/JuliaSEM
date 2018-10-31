@@ -54,7 +54,7 @@ function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
     hypo::Array{Float64} =  zeros(size(Slip[1,:]))   # Hypocenter
     vhypo::Array{Float64} = zeros(size(Slip[1,:]))   # Velocity at hypocenter
 
-    Vthres = 0.01 # event threshold
+    Vthres = 0.001 # event threshold
     slipstart = 0
     it = 1; it2 = 1
     delfref = zeros(size(Slip[:,1]))
