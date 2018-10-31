@@ -293,6 +293,6 @@ function main(P::parameters, S::input_variables)
     output.SlipVel = output.SlipVel[:,1:it]
     output.Slip = output.Slip[:,1:it]
 
-    return output, FltVfree, psi1
+    return output
 
 end
