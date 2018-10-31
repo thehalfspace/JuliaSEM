@@ -129,7 +129,7 @@ function main(P::parameters, S::input_variables)
     it = 0
     t = 0
 
-    while t < P.Total_time
+    while it<30 #t < P.Total_time
         it = it + 1
         t = t + dt
 
@@ -153,7 +153,6 @@ function main(P::parameters, S::input_variables)
                 dnew .= d[S.FltNI]
 
                 # Solve d = K^-1F by PCG
-                #println("\nPCG:")
                 dnew = PCG(P, S.diagKnew, dnew, F, S.iFlt, S.FltNI,
                               S.H, S.Ht, S.iglob, S.nglob, S.W)
                 
@@ -167,14 +166,12 @@ function main(P::parameters, S::input_variables)
                 a .= 0
 
                 # Compute forcing (acceleration) for each element
-                #println("\nElement Computation:")
                 a = element_computation(P, S.iglob, d, S.H, S.Ht, S.W, a)
 
                 a[S.FltIglobBC] .= 0
                 tau1 .= -a[S.iFlt]./S.FltB
                 
                 # Function to calculate sliprate
-               # println("\nSlr function:")
                 psi1, Vf1 = slrFunc(P, NFBC, P.FltNglob, psi, psi1, Vf, Vf1, 
                                     P.IDstate, tau1, S.tauo, S.Seff, S.cca, S.ccb, dt)
 
@@ -296,6 +293,6 @@ function main(P::parameters, S::input_variables)
     output.SlipVel = output.SlipVel[:,1:it]
     output.Slip = output.Slip[:,1:it]
 
-    return output #results(Stress, SlipVel, Slip, time_)
+    return output, FltVfree, psi1
 
 end

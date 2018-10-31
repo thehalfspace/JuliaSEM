@@ -46,8 +46,8 @@ function SeffDepth(FltX)
     FltNglob = length(FltX)
 
     Seff::Array{Float64} = repeat([50e6], FltNglob)
-    sP1 = [3e6 0]
-    sP2 = [50e6 -2e3]
+    sP1 = [6e6 0]
+    sP2 = [50e6 -2.6e3]
     Seff_depth = findall(abs.(FltX) .<= abs(sP2[2]))
     Seff[Seff_depth] = Int1D(sP1, sP2, FltX[Seff_depth])
 
@@ -61,7 +61,7 @@ function tauDepth(FltX)
     FltNglob = length(FltX)
 
     tauo::Array{Float64} = repeat([22.5e6], FltNglob)
-    tP1 = [1e6 0]
+    tP1 = [0 0]
     tP2 = [30e6 -2e3]
     tP3 = [30e6 -12e3]
     tP4 = [22.5e6 -17e3]

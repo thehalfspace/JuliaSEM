@@ -37,7 +37,7 @@ description = "small test" #"FZ:depth=8km, width=1km"
 
 # Save output to file
 using Serialization
-open("$(@__DIR__)/output/test11.out", "w") do f
+open("$(@__DIR__)/output/test12.out", "w") do f
     serialize(f,O)
     serialize(f, simulation_time)
     serialize(f, P)
