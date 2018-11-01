@@ -84,8 +84,8 @@ function setParameters(FZdepth)
     LX::Int = 24e3*Nsize  # depth dimension of rectangular domain
     LY::Int = 15e3*Nsize # off fault dimenstion of rectangular domain
 
-    NelX::Int = 90*Nsize # no. of elements in x
-    NelY::Int = 60*Nsize # no. of elements in y
+    NelX::Int = 30*Nsize # no. of elements in x
+    NelY::Int = 20*Nsize # no. of elements in y
 
     dxe::Float64 = LX/NelX #	Size of one element along X
     dye::Float64 = LY/NelY #	Size of one element along Y

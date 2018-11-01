@@ -33,7 +33,8 @@ function fricDepth(FltX)
     a_b[fric_depth4] .= Int1D(fP4, fP5, FltX[fric_depth4])
     a_b[fric_depth5] .= 0.0047
 
-    cca = ccb + a_b
+    cca[fric_depth4] .= Int1D(fP4, fP5, FltX[fric_depth4]) .+ 0.0001
+    ccb = cca - a_b
 
     return cca, ccb
 end
