@@ -128,7 +128,7 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     ax[:set_xlim]([0, maximum(delf5yr)])
     show()
     
-    figname = "/Users/prith/JuliaSEM/plots/test11/cumslip.png"
+    figname = "/Users/prith/JuliaSEM/plots/test12/cumslip.png"
     fig[:savefig](figname, dpi = 300)
 
 end

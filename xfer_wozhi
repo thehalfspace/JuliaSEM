@@ -1,0 +1,3 @@
+#!/bin/bash
+
+scp prith@wozhi.earth.lsa.umich.edu:/opt/home/prith/JuliaSEM/data/$1.out /Users/prith/JuliaSEM/output/wozhi_sims/

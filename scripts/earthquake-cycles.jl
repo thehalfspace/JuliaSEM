@@ -54,7 +54,7 @@ function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
     hypo::Array{Float64} =  zeros(size(Slip[1,:]))   # Hypocenter
     vhypo::Array{Float64} = zeros(size(Slip[1,:]))   # Velocity at hypocenter
 
-    Vthres = 0.001 # event threshold
+    Vthres = 0.01 # event threshold
     slipstart = 0
     it = 1; it2 = 1
     delfref = zeros(size(Slip[:,1]))
@@ -112,7 +112,7 @@ function moment_magnitude(P, S, Slip, SlipVel, Stress, time_)
     for i = 1:iter
         
         # slip threshold = 1% of maximum slip
-        slip_thres = 0.10*maximum(delfafter[:,i])
+        slip_thres = 0.01*maximum(delfafter[:,i])
 
         # area = slip*(rupture dimension along depth)
         # zdim = rupture along z dimension = depth rupture dimension
