@@ -43,7 +43,8 @@ function fricPlot(cca, ccb, FltX)
     show()
 
     #  figname = string(dir, "/plots", name, "/fric.png")
-    #  fig[:savefig](figname, dpi = 300)
+    figname = "/Users/prith/JuliaSEM/plots/test1/friction.png"
+    fig[:savefig](figname, dpi = 300)
 
 end
 
@@ -102,7 +103,7 @@ function VfmaxPlot(SlipVel, time_, yr2sec)
     ax[:set_yscale]("log")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test11/Vfmax.png"
+    figname = "/Users/prith/JuliaSEM/plots/test1/Vfmax.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/Vfmax.png")
     #  fig[:savefig](figname, dpi = 300)
@@ -120,7 +121,7 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     ax = fig[:add_subplot](111)
 
     ax[:plot](delf5yr, FltX/1e3, "xkcd:blue", lw=0.5)
-    ax[:plot](delfsec2, FltX[indx:end]/1e3, "xkcd:burnt orange", lw=0.5)
+    ax[:plot](delfsec2, FltX[indx:end]/1e3, "xkcd:red", lw=0.5)
     ax[:set_xlabel]("Slip (m)")
     ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Cumulative Slip for interseismic and dynamic events")
@@ -128,7 +129,7 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     ax[:set_xlim]([0, maximum(delf5yr)])
     show()
     
-    figname = "/Users/prith/JuliaSEM/plots/test12/cumslip.png"
+    figname = "/Users/prith/JuliaSEM/plots/test1/cumslip.png"
     fig[:savefig](figname, dpi = 300)
 
 end

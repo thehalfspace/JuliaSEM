@@ -106,7 +106,7 @@ struct input_variables
 end
 
 using Serialization
-open("output/test12.out") do f
+open("output/wozhi_sims/test1.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)

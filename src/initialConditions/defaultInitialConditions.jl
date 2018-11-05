@@ -33,8 +33,8 @@ function fricDepth(FltX)
     a_b[fric_depth4] .= Int1D(fP4, fP5, FltX[fric_depth4])
     a_b[fric_depth5] .= 0.0047
 
-    cca[fric_depth4] .= Int1D(fP4, fP5, FltX[fric_depth4]) .+ 0.0001
-    ccb = cca - a_b
+    #  cca[fric_depth4] .= Int1D(fP4, fP5, FltX[fric_depth4]) .+ 0.0001
+    cca .= ccb .+ a_b
 
     return cca, ccb
 end
@@ -62,7 +62,7 @@ function tauDepth(FltX)
     FltNglob = length(FltX)
 
     tauo::Array{Float64} = repeat([22.5e6], FltNglob)
-    tP1 = [0 0]
+    tP1 = [1e6 0]
     tP2 = [30e6 -2e3]
     tP3 = [30e6 -12e3]
     tP4 = [22.5e6 -17e3]
