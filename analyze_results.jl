@@ -27,7 +27,7 @@ function del_sigmaPlot(Mw, del_sigma)
     #  ax[:set_yscale]("log")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test1/stressdrop.png"
+    figname = "/Users/prith/JuliaSEM/plots/test13/stressdrop2.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/Vfmax.png")
     #  fig[:savefig](figname, dpi = 300)

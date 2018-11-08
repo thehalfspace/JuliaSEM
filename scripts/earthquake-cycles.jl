@@ -30,7 +30,7 @@ function plotHypo(S, Slip, SlipVel, Stress, time_)
     ax[:legend](loc="upper right")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test1/hypocenter.png"
+    figname = "/Users/prith/JuliaSEM/plots/test13/hypocenter2.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/mfd.png")
     #  ax[:savefig](figname, dpi = 300)
@@ -54,7 +54,7 @@ function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
     hypo::Array{Float64} =  zeros(size(Slip[1,:]))   # Hypocenter
     vhypo::Array{Float64} = zeros(size(Slip[1,:]))   # Velocity at hypocenter
 
-    Vthres = 0.001 # event threshold
+    Vthres = 0.01 # event threshold
     slipstart = 0
     it = 1; it2 = 1
     delfref = zeros(size(Slip[:,1]))
@@ -163,7 +163,7 @@ function MwPlot(Mw)
     ax[:legend](loc="upper right")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test1/mfd.png"
+    figname = "/Users/prith/JuliaSEM/plots/test13/mfd2.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/mfd.png")
     #  ax[:savefig](figname, dpi = 300)
@@ -185,7 +185,7 @@ function eq_catalog(Mw, t_catalog, yr2sec)
     ax[:set_title]("Earthquake Catalogue")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test1/catalogue.png"
+    figname = "/Users/prith/JuliaSEM/plots/test13/catalogue2.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "catalogue.png")
     #  fig[:savefig](figname, dpi = 300)
