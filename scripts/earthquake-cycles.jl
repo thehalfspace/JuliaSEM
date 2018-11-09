@@ -30,7 +30,7 @@ function plotHypo(S, Slip, SlipVel, Stress, time_)
     ax[:legend](loc="upper right")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test13/hypocenter2.png"
+    figname = "/Users/prith/JuliaSEM/plots/test2/hypocenter2.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/mfd.png")
     #  ax[:savefig](figname, dpi = 300)
@@ -163,7 +163,7 @@ function MwPlot(Mw)
     ax[:legend](loc="upper right")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test13/mfd2.png"
+    figname = "/Users/prith/JuliaSEM/plots/test2/mfd2.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/mfd.png")
     #  ax[:savefig](figname, dpi = 300)
@@ -185,7 +185,7 @@ function eq_catalog(Mw, t_catalog, yr2sec)
     ax[:set_title]("Earthquake Catalogue")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test13/catalogue2.png"
+    figname = "/Users/prith/JuliaSEM/plots/test2/catalogue2.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "catalogue.png")
     #  fig[:savefig](figname, dpi = 300)

@@ -8,6 +8,17 @@ include("scripts/earthquake-cycles.jl")
 include("scripts/plots.jl")
 include("scripts/cumulative-slip.jl")
 
+# Deserialize the output
+using Serialization
+open("output/wozhi_sims/test2.out") do f
+    global O, sim_time, P, S
+    O = deserialize(f)
+    sim_time = deserialize(f)
+    P = deserialize(f)
+    S = deserialize(f)
+end
+
+
 delfsec, delf5yr = cumSlip(O.Slip, O.SlipVel, O.time_)
 
 delfafter, stressdrops, tStart, tEnd, vhypo, hypo = Coslip(S, O.Slip, O.SlipVel, O.Stress, O.time_)
