@@ -8,9 +8,12 @@ include("scripts/earthquake-cycles.jl")
 include("scripts/plots.jl")
 include("scripts/cumulative-slip.jl")
 
+# path to save files
+global path = "/Users/prithvithakur/JuliaSEM/plots/test1/"
+
 # Deserialize the output
 using Serialization
-open("output/wozhi_sims/test3.out") do f
+open("data/wozhi_sims/test2.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)
@@ -27,7 +30,6 @@ Mw, del_sigma = moment_magnitude(P, S, O.Slip, O.SlipVel, O.Stress, O.time_);
 
 function del_sigmaPlot(Mw, del_sigma)
 
-    
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
 
@@ -38,8 +40,21 @@ function del_sigmaPlot(Mw, del_sigma)
     #  ax[:set_yscale]("log")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test3/stressdrop.png"
+    figname = string(path, "stressdrop.png")
     fig[:savefig](figname, dpi = 300)
-    #  figname = string(dir, "/plots", name, "/Vfmax.png")
-    #  fig[:savefig](figname, dpi = 300)
+end
+
+function MwHypoPlot(Mw, hypo)
+
+    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    ax = fig[:add_subplot](111)
+
+    ax[:plot](Mw, hypo./1e3, ".")
+    ax[:set_xlabel]("Moment Magnitude (Mw)")
+    ax[:set_ylabel](" Depth (km)")
+    ax[:set_title]("Magnitude vs. Depth")
+    show()
+
+    figname = string(path, "hypo.png")
+    fig[:savefig](figname, dpi = 300)
 end

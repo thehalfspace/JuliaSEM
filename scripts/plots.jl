@@ -43,7 +43,7 @@ function fricPlot(cca, ccb, FltX)
     show()
 
     #  figname = string(dir, "/plots", name, "/fric.png")
-    figname = "/Users/prith/JuliaSEM/plots/test3/friction.png"
+    figname = string(path, "friction.png")
     fig[:savefig](figname, dpi = 300)
 
 end
@@ -103,7 +103,7 @@ function VfmaxPlot(SlipVel, time_, yr2sec)
     ax[:set_yscale]("log")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test3/Vfmax.png"
+    figname = string(path, "Vfmax.png")
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/Vfmax.png")
     #  fig[:savefig](figname, dpi = 300)
@@ -129,7 +129,7 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     ax[:set_xlim]([0, maximum(delf5yr)])
     show()
     
-    figname = "/Users/prith/JuliaSEM/plots/test3/cumslip.png"
+    figname = string(path, "cumslip.png")
     fig[:savefig](figname, dpi = 300)
 
 end

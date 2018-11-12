@@ -22,18 +22,17 @@ function plotHypo(S, Slip, SlipVel, Stress, time_)
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
 
-    ax[:barh](hist.edges[1][1:end-1], hist.weights, 0.5)
+    ax[:barh](hist.edges[1][1:end-1], hist.weights, 0.6)
     ax[:plot](collect(1:40), -8*ones(40), "--", label="Fault Zone Depth")
     ax[:set_xlabel]("Number of Earthquakes")
     ax[:set_ylabel]("Depth (km)")
-    ax[:set_title]("Magnitude-frequency distribution")
+    ax[:set_title]("Hypocenter Location")
+    ax[:set_ylim]([minimum(hypo./1e3) - 2, 0])
     ax[:legend](loc="upper right")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test3/hypocenter.png"
+    figname = string(path, "hypo.png")
     fig[:savefig](figname, dpi = 300)
-    #  figname = string(dir, "/plots", name, "/mfd.png")
-    #  ax[:savefig](figname, dpi = 300)
 
 end
 
@@ -54,7 +53,7 @@ function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
     hypo::Array{Float64} =  zeros(size(Slip[1,:]))   # Hypocenter
     vhypo::Array{Float64} = zeros(size(Slip[1,:]))   # Velocity at hypocenter
 
-    Vthres = 0.01 # event threshold
+    Vthres = 0.001 # event threshold
     slipstart = 0
     it = 1; it2 = 1
     delfref = zeros(size(Slip[:,1]))
@@ -163,10 +162,8 @@ function MwPlot(Mw)
     ax[:legend](loc="upper right")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test3/mfd.png"
+    figname = string(path, "mfd.png")
     fig[:savefig](figname, dpi = 300)
-    #  figname = string(dir, "/plots", name, "/mfd.png")
-    #  ax[:savefig](figname, dpi = 300)
 end
 
 
@@ -185,8 +182,6 @@ function eq_catalog(Mw, t_catalog, yr2sec)
     ax[:set_title]("Earthquake Catalogue")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test3/catalogue.png"
+    figname = string(path, "catalogue.png")
     fig[:savefig](figname, dpi = 300)
-    #  figname = string(dir, "/plots", name, "catalogue.png")
-    #  fig[:savefig](figname, dpi = 300)
 end
