@@ -10,7 +10,7 @@ include("scripts/cumulative-slip.jl")
 
 # Deserialize the output
 using Serialization
-open("output/wozhi_sims/test2.out") do f
+open("output/wozhi_sims/test3.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)
@@ -38,7 +38,7 @@ function del_sigmaPlot(Mw, del_sigma)
     #  ax[:set_yscale]("log")
     show()
 
-    figname = "/Users/prith/JuliaSEM/plots/test13/stressdrop2.png"
+    figname = "/Users/prith/JuliaSEM/plots/test3/stressdrop.png"
     fig[:savefig](figname, dpi = 300)
     #  figname = string(dir, "/plots", name, "/Vfmax.png")
     #  fig[:savefig](figname, dpi = 300)

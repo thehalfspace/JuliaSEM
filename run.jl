@@ -9,8 +9,8 @@
 # 5. Plot results from the scripts function
 
 
-using Distributed
-addprocs(4)
+#  using Distributed
+#  addprocs(4)
 
 #@everywhere using Distributed
 #@everywhere using JLD2
@@ -22,7 +22,7 @@ addprocs(4)
 @everywhere include("$(@__DIR__)/src/parameters/defaultParameters.jl")	    #	Set Parameters
 @everywhere include("$(@__DIR__)/src/setup.jl")
 
-@everywhere P = setParameters(8e3)
+@everywhere P = setParameters(0e3)
 @everywhere S = setup(P)
 
 @everywhere include("$(@__DIR__)/src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
@@ -33,11 +33,11 @@ addprocs(4)
 
 simulation_time = @elapsed O = @time main(P, S)
 
-description = "small test" #"FZ:depth=8km, width=1km"
+description = "homogeneous" #"FZ:depth=8km, width=1km"
 
 # Save output to file
 using Serialization
-open("$(@__DIR__)/output/test13.out", "w") do f
+open("$(@__DIR__)/output/test6.out", "w") do f
     serialize(f,O)
     serialize(f, simulation_time)
     serialize(f, P)

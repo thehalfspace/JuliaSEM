@@ -94,7 +94,7 @@ function setup(P::parameters)
     BcLC, iBcL = BoundaryMatrix(P, wgll, iglob, 'L')
 
     # Right Boundary = free surface: nothing to do
-    BcRC, iBcR = BoundaryMatrix(P, wgll, iglob, 'R')
+    #  BcRC, iBcR = BoundaryMatrix(P, wgll, iglob, 'R')
 
     # Top Boundary
     BcTC, iBcT = BoundaryMatrix(P, wgll, iglob, 'T')
@@ -103,7 +103,7 @@ function setup(P::parameters)
     Mq = M[:]
     M[iBcL] .= M[iBcL] .+ half_dt*BcLC
     M[iBcT] .= M[iBcT] .+ half_dt*BcTC
-    M[iBcR] .= M[iBcR] .+ half_dt*BcRC
+    #  M[iBcR] .= M[iBcR] .+ half_dt*BcRC
 
 
     # Dynamic fault at bottom boundary
