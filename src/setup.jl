@@ -1,6 +1,7 @@
 include("$(@__DIR__)/GetGLL.jl")		    #	Polynomial interpolation
 include("$(@__DIR__)/MeshBox.jl")		    # 	Build 2D mesh
-include("$(@__DIR__)/Assemble.jl")          #   Assemble mass and stiffness matrix
+#  include("$(@__DIR__)/Assemble.jl")          #   Assemble mass and stiffness matrix
+include("$(@__DIR__)/gaussianFZ/Assemble.jl")          #   Gaussian fault zone assemble
 include("$(@__DIR__)/BoundaryMatrix.jl")    #	Boundary matrices
 include("$(@__DIR__)/FindNearestNode.jl")   #	Nearest node for output
 include("$(@__DIR__)/initialConditions/defaultInitialConditions.jl")
@@ -76,7 +77,7 @@ function setup(P::parameters)
     MC::Array{Float64} = zeros(nglob)
 
     # Assemble mass and stiffness matrix
-    M, W, dt, muMax = assemble(P,iglob,M,W)
+    M, W, dt, muMax = assemble(P,iglob,M,W, x, y)
     
     # Time solver variables
     dt = P.CFL*dt
