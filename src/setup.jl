@@ -7,7 +7,6 @@ include("$(@__DIR__)/initialConditions/defaultInitialConditions.jl")
 include("$(@__DIR__)/otherFunctions.jl")    # some other functions to solve for friction
 
 struct input_variables
-    
     iglob::Array{Int,3}
     nglob::Int
     x::Array{Float64}
@@ -45,7 +44,6 @@ struct input_variables
     FltNI::Array{Int}
 
     dt0::Float64
-
 end
 
 function setup(P::parameters)

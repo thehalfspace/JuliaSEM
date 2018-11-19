@@ -31,7 +31,7 @@ function plotHypo(S, Slip, SlipVel, Stress, time_)
     ax[:legend](loc="upper right")
     show()
 
-    figname = string(path, "hypo.png")
+    figname = string(path, "hypo7000.png")
     fig[:savefig](figname, dpi = 300)
 
 end
@@ -40,7 +40,6 @@ end
 # Compute the final Coseismic slip for each event
 #.................................................
 function Coslip(S, Slip, SlipVel, Stress, time_=zeros(1000000))
-
     Vfmax = maximum(SlipVel, dims = 1)[:]
 
     delfafter::Array{Float64,2} = zeros(size(Slip))
@@ -94,7 +93,6 @@ end
 #       dimension perpendicular to the plane
 #..........................................................
 function moment_magnitude(P, S, Slip, SlipVel, Stress, time_)
-
     # Final coseismic slip of each earthquake
     delfafter, stressdrops = Coslip(S, Slip, SlipVel, Stress, time_)
 
@@ -154,7 +152,7 @@ function MwPlot(Mw)
     ax = fig[:add_subplot](111)
 
     #  ax[:plot](hist.edges[1][1:end-1], hist.weights, ".", label="Non-cumulative")
-    ax[:plot](hist.edges[1][1:end-1], cum, ".", label="Cumulative")
+    ax[:plot](hist.edges[1][1:end-1], cum, "k.", label="Cumulative")
     ax[:set_xlabel]("Moment Magnitude (Mw)")
     ax[:set_ylabel]("Number of Earthquakes")
     ax[:set_yscale]("log")
@@ -162,7 +160,7 @@ function MwPlot(Mw)
     ax[:legend](loc="upper right")
     show()
 
-    figname = string(path, "mfd.png")
+    figname = string(path, "mfd7000.png")
     fig[:savefig](figname, dpi = 300)
 end
 
