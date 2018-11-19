@@ -30,14 +30,14 @@ function test1(S, tStart, tEnd, SlipVel, n)
     ax = fig[:add_subplot](111)
     
     ax[:plot](sv, S.FltX/1e3, "k--", label="a", lw = 1)
-    ax[:set_xlabel]("Slip Rate (m/s)")
+    ax[:set_xlabel]("Shear Stress (MPa)")
     ax[:set_ylabel]("Depth (km)")
-    ax[:set_title]("0.5 km wide fault zone. Mw = 4")
+    ax[:set_title]("1.5 km wide fault zone. Mw = 4")
     #  ax[:set_xlim]([0, 0.02])
-    ax[:set_ylim]([-10, -4])
+    ax[:set_ylim]([-24, 0])
     show()
     
-    figname = string(path, "sliprateM4_500.png")
+    figname = string(path, "shearstressM4_1500.png")
     fig[:savefig](figname, dpi = 300)
 end
 

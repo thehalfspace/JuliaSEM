@@ -13,7 +13,7 @@ global path = "/Users/prith/JuliaSEM/plots/comparison/"
 
 # Deserialize the output
 using Serialization
-open("output/test13.out") do f
+open("output/wozhi_sims/test2.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)
