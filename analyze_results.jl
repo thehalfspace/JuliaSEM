@@ -9,11 +9,11 @@ include("scripts/plots.jl")
 include("scripts/cumulative-slip.jl")
 
 # path to save files
-global path = "/Users/prith/JuliaSEM/plots/comparison/"
+global path = "/Users/prith/JuliaSEM/plots/gaussian/"
 
 # Deserialize the output
 using Serialization
-open("output/wozhi_sims/test2.out") do f
+open("output/wozhi_sims/test3.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)
@@ -22,11 +22,11 @@ open("output/wozhi_sims/test2.out") do f
 end
 
 
-delfsec, delf5yr = cumSlip(O.Slip, O.SlipVel, O.time_)
+#  delfsec, delf5yr = cumSlip(O.Slip, O.SlipVel, O.time_)
 
-delfafter, stressdrops, tStart, tEnd, vhypo, hypo = Coslip(S, O.Slip, O.SlipVel, O.Stress, O.time_)
+#  delfafter, stressdrops, tStart, tEnd, vhypo, hypo = Coslip(S, O.Slip, O.SlipVel, O.Stress, O.time_)
 
-Mw, del_sigma = moment_magnitude(P, S, O.Slip, O.SlipVel, O.Stress, O.time_);
+#  Mw, del_sigma = moment_magnitude(P, S, O.Slip, O.SlipVel, O.Stress, O.time_);
 
 function del_sigmaPlot(Mw, del_sigma)
 

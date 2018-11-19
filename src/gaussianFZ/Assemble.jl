@@ -2,14 +2,18 @@
 #	ASSEMBLE THE MASS AND THE STIFFNESS MATRICES
 ###################################################
 
+# Gaussian function
+function gauss(x, mu, sigma)
+    return ((x .- mu)./(2*sigma^2)).^2
+end
+
 # Make rho and vs global instead of local
 function hetero(P::parameters, S::input_variables, iglob)
     
     rho = zeros(nglob)
     vs = zeros(nglob)
 
-
-
+    # Make a meshgrid out of global x, y coordinates
 end
     
 function assemble(P::parameters, iglob, M, W)

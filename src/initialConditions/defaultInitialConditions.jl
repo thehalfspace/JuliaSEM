@@ -48,7 +48,7 @@ function SeffDepth(FltX)
 
     Seff::Array{Float64} = repeat([50e6], FltNglob)
     sP1 = [6e6 0]
-    sP2 = [50e6 -2.6e3]
+    sP2 = [50e6 -2e3]
     Seff_depth = findall(abs.(FltX) .<= abs(sP2[2]))
     Seff[Seff_depth] = Int1D(sP1, sP2, FltX[Seff_depth])
 
