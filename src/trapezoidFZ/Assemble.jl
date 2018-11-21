@@ -2,31 +2,56 @@
 #	ASSEMBLE THE MASS AND THE STIFFNESS MATRICES
 ###################################################
 
+# Linear function: shape of trapezoid
+function line(x,y)
+    return (4*y - x - 12e3)
+end
 
-# Debug the setup
+# Set up trapezoidal rigidity
 function rigid(x,y)
-
     # Rigidity: host rock and fault zone
-    muhost = P.rho1*P.vs1^2
-    mufz = P.rho2*P.vs2^2
-
-    # Gaussian fault zone mean and std
-    meanx = 0
-    meany = 0
-    sigx = (P.LX - P.ThickX)/3
-    sigy = P.ThickY/3
-
-    mutotal = (mufz-muhost)*exp.(-(gauss(x, meanx, sigx) .+
-                        gauss(y, meany, sigy))) .+ muhost
+    rho2 = 0.6*P.rho1
+    vs2 = 0.6*P.vs1
+    rho3 = 0.8*P.rho1
+    vs3 = 0.8*P.rho1
     
-    return mutotal
+    rhoglob::Array{Float64} = zeros(length(x))
+    vsglob::Array{Float64} = zeros(length(x))
+
+    for i = 1:length(x)
+        if x[i] > -8e3
+            if line(x[i],y[i]) < 0
+                rhoglob[i] = rho3
+                vsglob[i] = vs3
+            else
+                rhoglob[i] = P.rho1
+                vsglob[i] = P.vs1
+            end
+        else
+            rhoglob[i] = P.rho1
+            vsglob[i] = P.vs1
+        end
+
+    end
+
+    for i = 1:length(x)
+        if y[i]<0.5e3
+            rhoglob[i] = rho2
+            vsglob[i] = vs2
+        end
+    end
+
+    
+    return rhoglob, vsglob
 end
     
 function assemble(P::parameters, iglob, M, W, x, y)
 
-
     xgll, wgll, H = GetGLL(P.NGLL)
     wgll2 = wgll*wgll';
+    
+    rhoglob, vsglob = rigid(x,y)
+    muglob = rhoglob.*(vsglob.^2)
 
     rho::Matrix{Float64} = zeros(P.NGLL, P.NGLL)
     mu::Matrix{Float64} = zeros(P.NGLL, P.NGLL)
@@ -38,28 +63,16 @@ function assemble(P::parameters, iglob, M, W, x, y)
     dt = Inf
 
     # Rigidity: host rock and fault zone
-    muhost = P.rho1*P.vs1^2
-    mufz = P.rho2*P.vs2^2
-
-    # Gaussian fault zone mean and std
-    meanx = -P.LX
-    meany = 0
-    sigx = (P.LX - P.ThickX)/3
-    sigy = P.ThickY/3
 
     for ey = 1:P.NelY
         for ex = 1:P.NelX
 
             eo = (ey-1)*P.NelX + ex
             ig = iglob[:,:,eo]
-
-            # Properties of heterogeneous medium
-            mu[:,:] = mufz*exp.(-(gauss(x[ig], meanx, sigx) .+
-                                  gauss(y[ig], meany, sigy))) .+ muhost
-
-            rho[:,:] = P.rho2*exp.(-(gauss(x[ig], meanx, sigx) .+
-                                  gauss(y[ig], meany, sigy))) .+ P.rho1
             
+            mu[:,:] = muglob[ig]
+            rho[:,:] = rhoglob[ig]
+
             if muMax < maximum(maximum(mu))
                 muMax = maximum(maximum(mu))
             end

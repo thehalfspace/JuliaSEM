@@ -25,8 +25,10 @@ function rigid(x,y)
     
     vsglob = (P.vs2-P.vs1)*exp.(-(gauss(x, meanx, sigx) .+
                         gauss(y, meany, sigy))) .+ P.vs1
+    rhoglob = (P.rho2-P.rho1)*exp.(-(gauss(x, meanx, sigx) .+
+                        gauss(y, meany, sigy))) .+ P.rho1
     
-    return muglob, vsglob
+    return muglob, vsglob, rhoglob
 end
     
 function assemble(P::parameters, iglob, M, W, x, y)
@@ -44,7 +46,7 @@ function assemble(P::parameters, iglob, M, W, x, y)
     muMax = 0
     dt = Inf
     
-    muglob, vsglob = rigid(x,y)
+    muglob, vsglob, rhoglob = rigid(x,y)
 
     #  # Rigidity: host rock and fault zone
     #  muhost = P.rho1*P.vs1^2
@@ -63,7 +65,7 @@ function assemble(P::parameters, iglob, M, W, x, y)
             ig = iglob[:,:,eo]
 
             mu[:,:] = muglob[ig]
-            vso[:,:] = vsglob[ig]
+            rho[:,:] = rhoglob[ig]
 
             if muMax < maximum(maximum(mu))
                 muMax = maximum(maximum(mu))
@@ -76,7 +78,7 @@ function assemble(P::parameters, iglob, M, W, x, y)
             W[:,:,eo] .= wgll2.*mu;
             
             # Set timestep
-            #  vso .= sqrt.(mu./rho)
+            vso .= sqrt.(mu./rho)
             
             if P.dxe<P.dye
                 vs .= max.(vso[1:P.NGLL-1,:], vso[2:P.NGLL,:])
