@@ -13,7 +13,7 @@ global path = "/Users/prith/JuliaSEM/plots/gaussian/"
 
 # Deserialize the output
 using Serialization
-open("output/gauss01.out") do f
+open("output/gauss02.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)
