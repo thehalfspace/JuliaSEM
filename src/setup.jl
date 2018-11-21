@@ -49,7 +49,6 @@ end
 
 function setup(P::parameters)
 
-
     #....................
     # 2D Mesh generation
     #....................
