@@ -1,7 +1,7 @@
 include("$(@__DIR__)/GetGLL.jl")		    #	Polynomial interpolation
 include("$(@__DIR__)/MeshBox.jl")		    # 	Build 2D mesh
-#  include("$(@__DIR__)/Assemble.jl")          #   Assemble mass and stiffness matrix
-include("$(@__DIR__)/gaussianFZ/Assemble.jl")          #   Gaussian fault zone assemble
+include("$(@__DIR__)/Assemble.jl")          #   Assemble mass and stiffness matrix
+#  include("$(@__DIR__)/gaussianFZ/Assemble.jl")          #   Gaussian fault zone assemble
 #  include("$(@__DIR__)/trapezoidFZ/Assemble.jl")          #   Gaussian fault zone assemble
 include("$(@__DIR__)/BoundaryMatrix.jl")    #	Boundary matrices
 include("$(@__DIR__)/FindNearestNode.jl")   #	Nearest node for output

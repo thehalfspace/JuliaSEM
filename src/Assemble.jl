@@ -4,7 +4,7 @@
 
 
     
-function assemble(P::parameters, iglob, M, W)
+function assemble(P::parameters, iglob, M, W, x, y)
 
 
     xgll, wgll, H = GetGLL(P.NGLL)

@@ -31,7 +31,7 @@ function plotHypo(S, Slip, SlipVel, Stress, time_)
     ax[:legend](loc="upper right")
     show()
 
-    figname = string(path, "hypo7000.png")
+    figname = string(path, "hypo.png")
     fig[:savefig](figname, dpi = 300)
 
 end
@@ -160,7 +160,7 @@ function MwPlot(Mw)
     ax[:legend](loc="upper right")
     show()
 
-    figname = string(path, "mfd7000.png")
+    figname = string(path, "mfd.png")
     fig[:savefig](figname, dpi = 300)
 end
 
