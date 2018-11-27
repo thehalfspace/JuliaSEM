@@ -4,7 +4,12 @@
 
 # Linear function: shape of trapezoid
 function line(x,y)
-    return (4*y - x - 12e3)
+    P1 = [0 3e3]
+    P2 = [-8e3 1.5e3]
+
+    f = (y - P2[2]) - ((P1[2]-P2[2])/(P1[1]-P2[1]))*(x - P2[1])
+
+    return f
 end
 
 # Set up trapezoidal rigidity
@@ -35,7 +40,7 @@ function rigid(x,y)
     end
 
     for i = 1:length(x)
-        if y[i]<0.5e3
+        if y[i]<0.25e3
             rhoglob[i] = rho2
             vsglob[i] = vs2
         end
