@@ -11,10 +11,10 @@ PyPlot.matplotlib[:rc]("patch.force_edgecolor=true")
 #-------------------------------
 # Compute hypocenter locations
 #------------------------------
-function plotHypo(S, Slip, SlipVel, Stress, time_)
+function plotHypo(hypo)  #S, Slip, SlipVel, Stress, time_)
 
-    delfafter, stressdrops, tStart, tEnd, vhypo, hypo = 
-                                        Coslip(S, Slip, SlipVel, Stress, time_)
+    #  delfafter, stressdrops, tStart, tEnd, vhypo, hypo = 
+                                        #  Coslip(S, Slip, SlipVel, Stress, time_)
 
     # Plot hypocenter
     hist = fit(Histogram, hypo./1e3, nbins = 10)
@@ -22,7 +22,7 @@ function plotHypo(S, Slip, SlipVel, Stress, time_)
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
 
-    ax[:barh](hist.edges[1][1:end-1], hist.weights, 0.6)
+    ax[:barh](hist.edges[1][1:end-1], hist.weights, 0.9)
     ax[:plot](collect(1:40), -8*ones(40), "--", label="Fault Zone Depth")
     ax[:set_xlabel]("Number of Earthquakes")
     ax[:set_ylabel]("Depth (km)")

@@ -117,19 +117,19 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
 
     delfsec2 = delfsec[indx:end, :]
 
-    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    fig = PyPlot.figure(figsize=(12,8), dpi = 120)
     ax = fig[:add_subplot](111)
 
-    ax[:plot](delf5yr, FltX/1e3, "xkcd:blue", lw=0.5)
-    ax[:plot](delfsec2, FltX[indx:end]/1e3, "xkcd:red", lw=0.5)
+    ax[:plot](delf5yr, FltX/1e3, color="royalblue", lw=0.8, alpha=1.0)
+    ax[:plot](delfsec2, FltX[indx:end]/1e3, "--", color="chocolate", lw=0.8, alpha=1.0)
     ax[:set_xlabel]("Slip (m)")
     ax[:set_ylabel]("Depth (km)")
-    ax[:set_title]("Cumulative Slip for interseismic and dynamic events")
+    ax[:set_title]("Cumulative Slip History")
     ax[:set_ylim]([-24, 0])
-    ax[:set_xlim]([0,maximum(delf5yr)])
+    #  ax[:set_xlim]([5,25])  #[0,maximum(delf5yr)])
     show()
     
-    figname = string(path, "cumslip500.png")
+    figname = string(path, "cumslip.png")
     fig[:savefig](figname, dpi = 300)
 
 end
