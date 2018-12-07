@@ -17,18 +17,18 @@ function plotHypo(hypo)  #S, Slip, SlipVel, Stress, time_)
                                         #  Coslip(S, Slip, SlipVel, Stress, time_)
 
     # Plot hypocenter
-    hist = fit(Histogram, hypo./1e3, nbins = 10)
+    hist = fit(Histogram, hypo./1e3, closed=:right, nbins=10)
 
-    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    fig = PyPlot.figure(figsize=(12,9))
     ax = fig[:add_subplot](111)
 
-    ax[:barh](hist.edges[1][1:end-1], hist.weights, 0.9)
-    ax[:plot](collect(1:40), -8*ones(40), "--", label="Fault Zone Depth")
+    ax[:barh](hist.edges[1][1:end-1], hist.weights)
+    #  ax[:plot](collect(1:80), -8*ones(80), "k--", label="Fault Zone Depth")
     ax[:set_xlabel]("Number of Earthquakes")
     ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Hypocenter Location")
-    ax[:set_ylim]([minimum(hypo./1e3) - 2, 0])
-    ax[:legend](loc="upper right")
+    ax[:set_ylim]([-20, 0])
+    #  ax[:legend](loc="upper right")
     show()
 
     figname = string(path, "hypo.png")
@@ -148,15 +148,16 @@ function MwPlot(Mw)
     # Cumulative
     cum = cumsum(hist.weights[end:-1:1])[end:-1:1]
 
-    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    fig = PyPlot.figure(figsize=(12,9))
     ax = fig[:add_subplot](111)
 
     #  ax[:plot](hist.edges[1][1:end-1], hist.weights, ".", label="Non-cumulative")
-    ax[:plot](hist.edges[1][1:end-1], cum, "k.", label="Cumulative")
+    ax[:plot](hist.edges[1][1:end-1], cum, "k.", markersize=20, label="Cumulative")
     ax[:set_xlabel]("Moment Magnitude (Mw)")
     ax[:set_ylabel]("Number of Earthquakes")
     ax[:set_yscale]("log")
     ax[:set_title]("Magnitude-frequency distribution")
+    ax[:set_xlim]([2, 7])
     ax[:legend](loc="upper right")
     show()
 
@@ -171,7 +172,7 @@ end
 #.................................
 function eq_catalog(Mw, t_catalog, yr2sec)
 
-    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    fig = PyPlot.figure(figsize=(12,9))
     ax = fig[:add_subplot](111)
 
     ax[:scatter](t_catalog./yr2sec, Mw, s= 30, marker=".")
