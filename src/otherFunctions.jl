@@ -1,5 +1,5 @@
 # Calculate XiLf used in computing the timestep
-function XiLfFunc(P::parameters, muMax, cca, ccb, Seff)
+function XiLfFunc(P::params, muMax, cca, ccb, Seff)
 
     hcell = P.LX/(P.FltNglob-1)
     Ximax = 0.5
@@ -10,7 +10,7 @@ function XiLfFunc(P::parameters, muMax, cca, ccb, Seff)
 
     @inbounds for j = 1:P.FltNglob
 
-        # Compute time restricting parameters
+        # Compute time restricting params
         expr1 = -(cca[j] - ccb[j])/cca[j]
         expr2 = P.gamma_*muMax/hcell*P.xLf[j]/(cca[j]*Seff[j])
         ro = expr2 - expr1
@@ -35,7 +35,7 @@ end
 
 
 # K diagonal vector computation
-function KdiagFunc(P::parameters, iglob, W, H, Ht, FltNI)
+function KdiagFunc(P::params, iglob, W, H, Ht, FltNI)
 
 	nglob = P.FltNglob*(P.NelY*(P.NGLL-1) + 1)
 

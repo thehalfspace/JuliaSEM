@@ -2,7 +2,7 @@
 #   Compute the timestep for next iteration
 ############################################
 
-function dtevol(P::parameters, dt, dtmin, XiLf, FaultNglob, NFBC, Vf, isolver)
+function dtevol(P::params, dt, dtmin, XiLf, FaultNglob, NFBC, Vf, isolver)
 
     if isolver == 1
 

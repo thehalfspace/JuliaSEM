@@ -1,10 +1,10 @@
+
 #######################################################################
 #	PARAMETER FILE: SET THE PHYSICAL PARAMETERS FOR THE SIMULATION
 #######################################################################
 
 
-struct parameters
-
+struct params
     # Domain size
     Nsize::Int 
 
@@ -72,11 +72,20 @@ struct parameters
     Vthres::Float64
     Vevne::Float64
 
+    function params(Nsize, LX, LY, NelX, NelY, dxe, dye, Nel, P, NGLL, 
+                      FltNglob, dx_dxi, dy_deta, jac, coefint1, coefint2, 
+                      yr2sec, Total_time, CFL, IDstate, dtincf, gamma_,
+                      tevneinc, dtmax, rho1, vs1, rho2, vs2, ETA, ThickX,
+                      ThickY, Vpl, fo, Vo, xLf, Vthres, Vevne)
+        new(Nsize, LX, LY, NelX, NelY, dxe, dye, Nel, P, NGLL, 
+                      FltNglob, dx_dxi, dy_deta, jac, coefint1, coefint2, 
+                      yr2sec, Total_time, CFL, IDstate, dtincf, gamma_,
+                      tevneinc, dtmax, rho1, vs1, rho2, vs2, ETA, ThickX,
+                      ThickY, Vpl, fo, Vo, xLf, Vthres, Vevne)
+    end
 end
 
-
-
-function setParameters(FZdepth::Float64)
+function setParams(FZdepth::Float64)
     
     # Domain size
     Nsize::Int = 2
@@ -133,8 +142,6 @@ function setParameters(FZdepth::Float64)
 
     ETA = 0
 
-
-
     # Low velocity layer dimensions
     ThickX::Float64 = LX - ceil(FZdepth/dxe)*dxe # ~FZdepth m deep
     ThickY::Float64 = ceil(0.25e3/dye)*dye   # ~ 0.25*2 km wide
@@ -152,8 +159,7 @@ function setParameters(FZdepth::Float64)
     Vthres::Float64 = 0.001
     Vevne::Float64 = Vthres
 
-
-    return parameters(Nsize, LX, LY, NelX, NelY, dxe, dye, Nel, P, NGLL, 
+    return params(Nsize, LX, LY, NelX, NelY, dxe, dye, Nel, P, NGLL, 
                       FltNglob, dx_dxi, dy_deta, jac, coefint1, coefint2, 
                       yr2sec, Total_time, CFL, IDstate, dtincf, gamma_,
                       tevneinc, dtmax, rho1, vs1, rho2, vs2, ETA, ThickX,

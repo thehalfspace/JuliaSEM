@@ -37,18 +37,22 @@ mutable struct results
     SlipVel::Array{Float64,2}
     Slip::Array{Float64,2}
     time_::Array{Float64}
+
+    function results(Stress, SlipVel, Slip, time_)
+        new(Stress, SlipVel, Slip, time_)
+    end
 end
 
 
-function main(P::parameters, S::input_variables)
+function main(P::params, S::input_variables)
 
-    wgll2 = S.wgll*S.wgll';
+    wgll2::Array{Float64,2} = S.wgll*S.wgll';
     
     # Time solver variables
-    dt = S.dt0
-    dtmin = dt
-    half_dt = 0.5*dtmin
-    half_dt_sq = 0.5*dtmin^2
+    dt::Float64 = S.dt0
+    dtmin::Float64 = dt
+    half_dt::Float64 = 0.5*dtmin
+    half_dt_sq::Float64 = 0.5*dtmin^2
 
     # dt modified slightly for damping
     if P.ETA != 0
@@ -110,9 +114,9 @@ function main(P::parameters, S::input_variables)
     output = results(zeros(P.FltNglob, 1000000), zeros(P.FltNglob, 1000000), 
                          zeros(P.FltNglob, 1000000), zeros(1000000))
     # Iterators
-    idelevne = 3
-    tevneb = 0
-    tevne = 0
+    idelevne::Int64 = 3
+    tevneb::Int64 = 0
+    tevne::Int64 = 0
 
     v = v[:] .- 0.5*P.Vpl
     Vf = 2*v[S.iFlt]
@@ -126,8 +130,8 @@ function main(P::parameters, S::input_variables)
     #....................
     # Start of time loop
     #....................
-    it = 0
-    t = 0
+    it::Int64 = 0
+    t::Float64 = 0
 
     while t < P.Total_time
         it = it + 1

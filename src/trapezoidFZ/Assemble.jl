@@ -50,7 +50,7 @@ function rigid(x,y)
     return rhoglob, vsglob
 end
     
-function assemble(P::parameters, iglob, M, W, x, y)
+function assemble(P::params, iglob, M, W, x, y)
 
     xgll, wgll, H = GetGLL(P.NGLL)
     wgll2 = wgll*wgll';

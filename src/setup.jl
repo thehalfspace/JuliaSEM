@@ -1,8 +1,8 @@
 include("$(@__DIR__)/GetGLL.jl")		    #	Polynomial interpolation
 include("$(@__DIR__)/MeshBox.jl")		    # 	Build 2D mesh
-#  include("$(@__DIR__)/Assemble.jl")          #   Assemble mass and stiffness matrix
+include("$(@__DIR__)/Assemble.jl")          #   Assemble mass and stiffness matrix
 #  include("$(@__DIR__)/gaussianFZ/Assemble.jl")          #   Gaussian fault zone assemble
-include("$(@__DIR__)/trapezoidFZ/Assemble.jl")          #   Gaussian fault zone assemble
+#  include("$(@__DIR__)/trapezoidFZ/Assemble.jl")          #   Gaussian fault zone assemble
 include("$(@__DIR__)/BoundaryMatrix.jl")    #	Boundary matrices
 include("$(@__DIR__)/FindNearestNode.jl")   #	Nearest node for output
 include("$(@__DIR__)/initialConditions/defaultInitialConditions.jl")
@@ -46,14 +46,17 @@ struct input_variables
     FltNI::Array{Int}
 
     dt0::Float64
+    
+    function input_variables(iglob,nglob, x, y, xgll, wgll, H, Ht, W, M, MC, BcLC ,iBcL ,BcTC , iBcT, FltB, iFlt ,FltZ ,FltX ,cca ,ccb ,Seff ,tauo ,Nel_ETA, XiLf, diagKnew, FltIglobBC ,FltNI, dt)
+        new(iglob,nglob, x, y, xgll, wgll, H, Ht, W, M, MC, BcLC ,iBcL ,BcTC , iBcT, FltB, iFlt ,FltZ ,FltX ,cca ,ccb ,Seff ,tauo ,Nel_ETA, XiLf, diagKnew, FltIglobBC ,FltNI, dt)
+    end
 end
 
-function setup(P::parameters)
-
+function setup(P::params)
     #....................
     # 2D Mesh generation
     #....................
-    iglob, x, y = MeshBox(P)
+    iglob::Array{Int64,3}, x::Array{Float64}, y::Array{Float64} = MeshBox(P)
     x = x .- P.LX
     nglob = length(x)
 
@@ -66,7 +69,6 @@ function setup(P::parameters)
     #.................
     # Initialization
     #.................
-
     # For internal forces
     W::Array{Float64,3} = zeros(P.NGLL, P.NGLL, P.Nel)
 
@@ -86,7 +88,7 @@ function setup(P::parameters)
     half_dt_sq = 0.5*dtmin^2
     
     #......................
-    # Boundary conditions : absorbing boundaries on 3 sides, fault boundary on one side
+    # Boundary conditions :
     #......................
 
     # Left boundary

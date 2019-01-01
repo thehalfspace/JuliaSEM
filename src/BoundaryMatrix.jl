@@ -4,7 +4,7 @@
 #
 ########################################################
 
-function BoundaryMatrix(P::parameters, wgll, iglob, side)
+function BoundaryMatrix(P::params, wgll, iglob, side)
 
 	# INPUT: 
 	#		wgll = GLL weights (see GetGLL)

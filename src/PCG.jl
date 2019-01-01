@@ -7,8 +7,7 @@
 
 #using JLD2
 
-function PCG(P::parameters, diagKnew, dnew, F, iFlt,
-             FltNI, H, Ht, iglob, nglob, W)
+function PCG(P::params, diagKnew::Array{Float64}, dnew::Array{Float64}, F::Array{Float64}, iFlt::Array{Float64}, FltNI::Array{Int64}, H::Array{Float64,2}, Ht::Array{Float64,2}, iglob::Array{Int64}, nglob::Int64, W::Array{Float64,3})
     
     a_local = SharedArray{Float64}(nglob)
     dd_local = zeros(nglob)
@@ -72,7 +71,7 @@ end
 
 
 # Sub function to be used inside PCG
-function element_computation(P::parameters, iglob, F_local, H, Ht, W, a_local)
+function element_computation(P::params, iglob, F_local, H, Ht, W, a_local)
     
     @sync @distributed for eo = 1:P.Nel
 
@@ -104,7 +103,7 @@ end
 end
 
 # Compute the displacement/forcing for each element
-function element_computation2(P::parameters, iglob, F_local, H, Ht, W, a_local)
+function element_computation2(P::params, iglob, F_local, H, Ht, W, a_local)
     
    @sync @distributed for eo = 1:P.Nel
 

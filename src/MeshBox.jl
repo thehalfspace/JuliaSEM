@@ -24,7 +24,7 @@
 ###############################################################################
 
 
-function MeshBox(P::parameters) 
+function MeshBox(P::params) 
 
 	XGLL = GetGLL(P.NGLL)[1]
 
