@@ -9,11 +9,11 @@ include("scripts/plots.jl")
 include("scripts/cumulative-slip.jl")
 
 # path to save files
-global path = "/Users/prith/JuliaSEM/plots/homodc04/"
+global path = "/Users/prith/JuliaSEM/plots/res3/"
 
 # Deserialize the output
 using Serialization
-open("output/wozhi_sims/homodc04.out") do f
+open("output/wozhi_sims/res3.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)
@@ -40,7 +40,7 @@ function del_sigmaPlot(Mw, del_sigma)
     #  ax[:set_yscale]("log")
     show()
 
-    figname = string(path, "stressdrop.png")
+    figname = string(path, "stressdrop.pdf")
     fig[:savefig](figname, dpi = 300)
 end
 
@@ -55,6 +55,6 @@ function MwHypoPlot(Mw, hypo)
     ax[:set_title]("Magnitude vs. Depth")
     show()
 
-    figname = string(path, "hypo.png")
+    figname = string(path, "hypo.pdf")
     fig[:savefig](figname, dpi = 300)
 end

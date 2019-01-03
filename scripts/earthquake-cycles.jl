@@ -31,7 +31,7 @@ function plotHypo(hypo)  #S, Slip, SlipVel, Stress, time_)
     #  ax[:legend](loc="upper right")
     show()
 
-    figname = string(path, "hypo.png")
+    figname = string(path, "hypo.pdf")
     fig[:savefig](figname, dpi = 300)
 
 end
@@ -161,7 +161,7 @@ function MwPlot(Mw)
     ax[:legend](loc="upper right")
     show()
 
-    figname = string(path, "mfd.png")
+    figname = string(path, "mfd.pdf")
     fig[:savefig](figname, dpi = 300)
 end
 
@@ -181,6 +181,6 @@ function eq_catalog(Mw, t_catalog, yr2sec)
     ax[:set_title]("Earthquake Catalogue")
     show()
 
-    figname = string(path, "catalogue.png")
+    figname = string(path, "catalogue.pdf")
     fig[:savefig](figname, dpi = 300)
 end

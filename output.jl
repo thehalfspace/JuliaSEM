@@ -3,10 +3,20 @@
 #################################
 
 mutable struct results
-    Stress::Array{Float64,2}
-    SlipVel::Array{Float64,2}
-    Slip::Array{Float64,2}
+    seismic_stress::Array{Float64,2}
+    seismic_slipvel::Array{Float64,2}
+    seismic_slip::Array{Float64,2}
+    is_stress::Array{Float64,2}
+    is_slipvel::Array{Float64,2}
+    is_slip::Array{Float64,2}
+    tStart::Array{Float64}
+    tEnd::Array{Float64}
+    taubefore::Array{Float64,2}
+    tauafter::Array{Float64,2}
+    delfafter::Array{Float64,2}
+    hypo::Array{Float64}
     time_::Array{Float64}
+    Vfmax::Array{Float64}
 end
 
 struct parameters

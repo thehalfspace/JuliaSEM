@@ -33,10 +33,20 @@
 
 # Output results
 mutable struct results
-    Stress::Array{Float64,2}
-    SlipVel::Array{Float64,2}
-    Slip::Array{Float64,2}
+    seismic_stress::Array{Float64,2}
+    seismic_slipvel::Array{Float64,2}
+    seismic_slip::Array{Float64,2}
+    is_stress::Array{Float64,2}
+    is_slipvel::Array{Float64,2}
+    is_slip::Array{Float64,2}
+    tStart::Array{Float64}
+    tEnd::Array{Float64}
+    taubefore::Array{Float64,2}
+    tauafter::Array{Float64,2}
+    delfafter::Array{Float64,2}
+    hypo::Array{Float64}
     time_::Array{Float64}
+    Vfmax::Array{Float64}
 end
 
 
@@ -107,12 +117,28 @@ function main(P::parameters, S::input_variables)
     dnew = SharedArray{Float64}(length(S.FltNI))
 
     # Preallocate variables with unknown size
-    output = results(zeros(P.FltNglob, 1000000), zeros(P.FltNglob, 1000000), 
-                         zeros(P.FltNglob, 1000000), zeros(1000000))
+    output = results(zeros(P.FltNglob, 10000), zeros(P.FltNglob, 10000), 
+                     zeros(P.FltNglob, 10000), zeros(P.FltNglob, 1000), 
+                     zeros(P.FltNglob, 1000), zeros(P.FltNglob, 1000),
+                     zeros(1000), zeros(1000), zeros(1000), zeros(1000),
+                     zeros(1000), zeros(1000), zeros(1000000), zeros(1000000))
+    
+    # Save output variables at certain timesteps: define those timesteps
+    tvsx::Float64 = 2*P.yr2sec  # 2 years for interseismic period
+    tvsxinc::Float64 = tvsx
+
+    tevneinc::Int64 = 1    # 1 second for seismic period
+    Vevne::Float64 = 0.001  # Velocity threshold for onset of earthquakes
+    delfref = zeros(P.FltNglob)
+
     # Iterators
     idelevne = 3
     tevneb = 0
     tevne = 0
+    ntvsx = 0
+    nevne = 0
+    slipstart = 0
+    it_s = 1; it_e = 0  # iterators for start and end of events
 
     v = v[:] .- 0.5*P.Vpl
     Vf = 2*v[S.iFlt]
@@ -259,10 +285,58 @@ function main(P::parameters, S::input_variables)
 
 
         #-----
-        # Output stress and slip before and after events
-        # Doing it in separate script
-        # Omitting lines 920-934
+        # Output the variables before and after events
         #-----
+        if Vfmax > 1.01*Vthres && slipstart == 0
+            delfref = 2*d[S.iFlt] .+ P.Vpl*t
+            slipstart = 1
+            output.tStart[it_s] = output.time_[it]
+            output.taubefore[it_s] = (tau +S.tauo)./1e6
+            vhypo, indx = findmax(2*v[S.iFlt] .+ P.Vpl)
+            output.hypo[it_s] = S.FltX[indx]
+            it_s = it_s + 1
+        end
+        if Vfmax < 0.99*Vthres && slipstart == 1
+            output.delfafter[:,it_e] = 2*d[S.iFlt] .+ P.Vpl*t .- delfref 
+            output.tauafter[:,it_e] = (tau + S.tauo)./1e6
+            output.tEnd[it_e] = output.time_[it]
+            slipstart = 0
+            it_e = it_e + 1
+        
+        #-----
+        # Output the variables certain timesteps: 2yr interseismic, 1 sec dynamic
+        #-----
+        if output.time_[it] > tvsx
+            ntvsx = ntvsx + 1
+            output.is_slip[:,ntvsx] = 2*d[S.iFlt] .+ P.Vpl*t
+            output.is_slipvel[:,ntvsx] = 2*v[S.iFlt] .+ P.Vpl
+            output.is_stress[:,ntvsx] = (tau + S.tauo)./1e6
+
+            tvsx = tvsx + tvsxinc
+        end
+
+        if Vfmax > Venve
+            if idelevne == 0
+                nevne = nevne + 1
+                idelevne = 1
+                tevneb = output.time_[it]
+                tevne = tevneinc
+
+                output.seismic_slip[:,nevne] = 2*d[S.iFlt] .+ P.Vpl*t
+                output.seismic_slipvel[:,nevne] = 2*v[S.iFlt] .+ P.Vpl
+                output.seismic_stress[:,nevne] = (tau + S.tauo)./1e6
+            end
+
+            if idelevne == 1 && (outout.time_[it] - tevneb) > tevne
+                nevne = nevne + 1
+                
+                output.seismic_slip[:,nevne] = 2*d[S.iFlt] .+ P.Vpl*t
+                output.seismic_slipvel[:,nevne] = 2*v[S.iFlt] .+ P.Vpl
+                output.seismic_stress[:,nevne] = (tau + S.tauo)./1e6
+
+                tevne = tevne + tevneinc
+            end
+        end
 
         # Output timestep info on screen
         if mod(it,500) == 0
@@ -275,12 +349,13 @@ function main(P::parameters, S::input_variables)
         else
             isolver = 2
         end
-
+        
+        output.Vfmax[it] = Vfmax 
 
         # Some variables for each timestep
-        output.Stress[:,it] = (tau + S.tauo)./1e6
-        output.SlipVel[:,it] = 2*v[S.iFlt] .+ P.Vpl
-        output.Slip[:,it] = 2*d[S.iFlt] .+ P.Vpl*t
+        #  output.Stress[:,it] = (tau + S.tauo)./1e6
+        #  output.SlipVel[:,it] = 2*v[S.iFlt] .+ P.Vpl
+        #  output.Slip[:,it] = 2*d[S.iFlt] .+ P.Vpl*t
         
         # Compute next timestep dt
         dt = dtevol(P, dt , dtmin, S.XiLf, P.FltNglob, NFBC, output.SlipVel[:,it], isolver)
@@ -288,10 +363,24 @@ function main(P::parameters, S::input_variables)
     end # end of time loop
     
     # Remove zeros from preallocated vectors
-    output.time_ = output.time_[1:it]
-    output.Stress = output.Stress[:,1:it]
-    output.SlipVel = output.SlipVel[:,1:it]
-    output.Slip = output.Slip[:,1:it]
+    output.seismic_stress   = output.seismic_stress[:,1:nevne]
+    output.seismic_slipvel  = output.seismic_slipvel[:,1:nevne]
+    output.seismic_slip     = output.seismic_slip[:,1:nevne]
+    output.is_stress        = output.is_stress[:,1:ntvsx]
+    output.is_slipvel       = output.is_slipvel[:,1:ntvsx]
+    output.is_slip          = output.is_slip[:,1:ntvsx]
+    output.tStart           = output.tStart[1:it_s]
+    output.tEnd             = output.tEnd[1:it_e]
+    output.taubefore        = output.taubefore[1:it_s]
+    output.tauafter         = output.tauafter[1:it_e]
+    output.delfafter        = output.delfafter[1:it_e]
+    output.hypo             = output.hypo[1:it_s]
+    output.time_            = output.time_[1:it]
+    output.Vfmax            = output.Vfmax[1:it]
+    #  output.time_ = output.time_[1:it]
+    #  output.Stress = output.Stress[:,1:it]
+    #  output.SlipVel = output.SlipVel[:,1:it]
+    #  output.Slip = output.Slip[:,1:it]
 
     return output
 

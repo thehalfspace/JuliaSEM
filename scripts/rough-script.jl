@@ -49,7 +49,7 @@ function test1(S, time_, start_indx, end_indx, SlipVel)
     ax[:set_ylim]([-24, 0])
     show()
     
-    figname = string(path, "stressM7.png")
+    figname = string(path, "stressM7.pdf")
     fig[:savefig](figname, dpi = 300)
 end
 
