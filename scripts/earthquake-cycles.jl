@@ -92,9 +92,9 @@ end
 #       dimension along depth is the same as the rupture
 #       dimension perpendicular to the plane
 #..........................................................
-function moment_magnitude(P, S, Slip, SlipVel, Stress, time_)
+function moment_magnitude(P, S, delfafter, stressdrops ,time_)
     # Final coseismic slip of each earthquake
-    delfafter, stressdrops = Coslip(S, Slip, SlipVel, Stress, time_)
+    #  delfafter, stressdrops = Coslip(S, Slip, SlipVel, Stress, time_)
 
     iter = length(delfafter[1,:])
     mu = P.rho1*P.vs1^2

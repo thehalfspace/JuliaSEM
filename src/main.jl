@@ -120,8 +120,9 @@ function main(P::parameters, S::input_variables)
     output = results(zeros(P.FltNglob, 10000), zeros(P.FltNglob, 10000), 
                      zeros(P.FltNglob, 10000), zeros(P.FltNglob, 1000), 
                      zeros(P.FltNglob, 1000), zeros(P.FltNglob, 1000),
-                     zeros(1000), zeros(1000), zeros(1000), zeros(1000),
-                     zeros(1000), zeros(1000), zeros(1000000), zeros(1000000))
+                     zeros(1000), zeros(1000), zeros(P.FltNglob, 1000), 
+                     zeros(P.FltNglob, 1000), zeros(P.FltNglob, 1000), 
+                     zeros(1000), zeros(1000000), zeros(1000000))
     
     # Save output variables at certain timesteps: define those timesteps
     tvsx::Float64 = 2*P.yr2sec  # 2 years for interseismic period
@@ -132,13 +133,13 @@ function main(P::parameters, S::input_variables)
     delfref = zeros(P.FltNglob)
 
     # Iterators
-    idelevne = 3
+    idelevne = 0
     tevneb = 0
     tevne = 0
     ntvsx = 0
     nevne = 0
     slipstart = 0
-    it_s = 1; it_e = 0  # iterators for start and end of events
+    it_s = 0; it_e = 0  # iterators for start and end of events
 
     v = v[:] .- 0.5*P.Vpl
     Vf = 2*v[S.iFlt]
@@ -287,22 +288,22 @@ function main(P::parameters, S::input_variables)
         #-----
         # Output the variables before and after events
         #-----
-        if Vfmax > 1.01*Vthres && slipstart == 0
+        if Vfmax > 1.01*P.Vthres && slipstart == 0
+            it_s = it_s + 1
             delfref = 2*d[S.iFlt] .+ P.Vpl*t
             slipstart = 1
             output.tStart[it_s] = output.time_[it]
-            output.taubefore[it_s] = (tau +S.tauo)./1e6
+            output.taubefore[:,it_s] = (tau +S.tauo)./1e6
             vhypo, indx = findmax(2*v[S.iFlt] .+ P.Vpl)
             output.hypo[it_s] = S.FltX[indx]
-            it_s = it_s + 1
         end
-        if Vfmax < 0.99*Vthres && slipstart == 1
+        if Vfmax < 0.99*P.Vthres && slipstart == 1
+            it_e = it_e + 1
             output.delfafter[:,it_e] = 2*d[S.iFlt] .+ P.Vpl*t .- delfref 
             output.tauafter[:,it_e] = (tau + S.tauo)./1e6
             output.tEnd[it_e] = output.time_[it]
             slipstart = 0
-            it_e = it_e + 1
-        
+        end 
         #-----
         # Output the variables certain timesteps: 2yr interseismic, 1 sec dynamic
         #-----
@@ -315,7 +316,7 @@ function main(P::parameters, S::input_variables)
             tvsx = tvsx + tvsxinc
         end
 
-        if Vfmax > Venve
+        if Vfmax > Vevne
             if idelevne == 0
                 nevne = nevne + 1
                 idelevne = 1
@@ -356,9 +357,11 @@ function main(P::parameters, S::input_variables)
         #  output.Stress[:,it] = (tau + S.tauo)./1e6
         #  output.SlipVel[:,it] = 2*v[S.iFlt] .+ P.Vpl
         #  output.Slip[:,it] = 2*d[S.iFlt] .+ P.Vpl*t
-        
+       
+        current_sliprate = 2*v[S.iFlt] .+ P.Vpl
+
         # Compute next timestep dt
-        dt = dtevol(P, dt , dtmin, S.XiLf, P.FltNglob, NFBC, output.SlipVel[:,it], isolver)
+        dt = dtevol(P, dt , dtmin, S.XiLf, P.FltNglob, NFBC, current_sliprate, isolver)
 
     end # end of time loop
     
@@ -371,9 +374,9 @@ function main(P::parameters, S::input_variables)
     output.is_slip          = output.is_slip[:,1:ntvsx]
     output.tStart           = output.tStart[1:it_s]
     output.tEnd             = output.tEnd[1:it_e]
-    output.taubefore        = output.taubefore[1:it_s]
-    output.tauafter         = output.tauafter[1:it_e]
-    output.delfafter        = output.delfafter[1:it_e]
+    output.taubefore        = output.taubefore[:,1:it_s]
+    output.tauafter         = output.tauafter[:,1:it_e]
+    output.delfafter        = output.delfafter[:,1:it_e]
     output.hypo             = output.hypo[1:it_s]
     output.time_            = output.time_[1:it]
     output.Vfmax            = output.Vfmax[1:it]
