@@ -328,7 +328,7 @@ function main(P::parameters, S::input_variables)
                 output.seismic_stress[:,nevne] = (tau + S.tauo)./1e6
             end
 
-            if idelevne == 1 && (outout.time_[it] - tevneb) > tevne
+            if idelevne == 1 && (output.time_[it] - tevneb) > tevne
                 nevne = nevne + 1
                 
                 output.seismic_slip[:,nevne] = 2*d[S.iFlt] .+ P.Vpl*t

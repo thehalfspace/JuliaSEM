@@ -2,18 +2,19 @@
 ### ANALYZE RESULTS FROM THE OUTPUT FILES
 ############################################
 
-include("output.jl")
+include("output_old.jl")
 
-include("scripts/earthquake-cycles.jl")
-include("scripts/plots.jl")
-include("scripts/cumulative-slip.jl")
+
+include("scripts_old/scripts/earthquake-cycles.jl")
+include("scripts_old/scripts/plots.jl")
+include("scripts_old/scripts/cumulative-slip.jl")
 
 # path to save files
-global path = "/Users/prith/JuliaSEM/plots/test22/"
+global path = "/Users/prith/JuliaSEM/plots/test21/"
 
 # Deserialize the output
 using Serialization
-open("output/flux_sims/test22.out") do f
+open("output/wozhi_sims/test21.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)
@@ -22,16 +23,11 @@ open("output/flux_sims/test22.out") do f
 end
 
 
-#  delfsec, delf5yr = cumSlip(O.Slip, O.SlipVel, O.time_)
-delfsec = O.seismic_slip
-delf5yr = O.is_slip
-delfafter = O.delfafter
-stressdrops = O.taubefore-O.tauafter
+delfsec, delf5yr = cumSlip(O.Slip, O.SlipVel, O.time_)
 
+delfafter, stressdrops, tStart, tEnd, vhypo, hypo = Coslip(S, O.Slip, O.SlipVel, O.Stress, O.time_)
 
-#  delfafter, stressdrops, tStart, tEnd, vhypo, hypo = Coslip(S, O.Slip, O.SlipVel, O.Stress, O.time_)
-
-Mw, del_sigma = moment_magnitude(P, S, delfafter, stressdrops, O.time_);
+Mw, del_sigma = moment_magnitude(P, S, O.Slip, O.SlipVel, O.Stress, O.time_);
 
 function del_sigmaPlot(Mw, del_sigma)
 
@@ -45,7 +41,7 @@ function del_sigmaPlot(Mw, del_sigma)
     #  ax[:set_yscale]("log")
     show()
 
-    figname = string(path, "stressdrop.pdf")
+    figname = string(path, "stressdrop.png")
     fig[:savefig](figname, dpi = 300)
 end
 
@@ -60,6 +56,6 @@ function MwHypoPlot(Mw, hypo)
     ax[:set_title]("Magnitude vs. Depth")
     show()
 
-    figname = string(path, "hypo.pdf")
+    figname = string(path, "hypo.png")
     fig[:savefig](figname, dpi = 300)
 end
