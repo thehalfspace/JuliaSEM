@@ -7,13 +7,13 @@ using PyPlot
 # Customize plot
 #PyPlot.matplotlib[:rc]("text", usetex = true)
 #PyPlot.matplotlib[:rc]("text.latex", preamble = "\\usepackage{amsmath}")
-#PyPlot.matplotlib[:rc]("font", size = 18)
-#PyPlot.matplotlib[:rc]("axes", labelsize = 15)
-#PyPlot.matplotlib[:rc]("axes", titlesize = 15)
+PyPlot.matplotlib[:rc]("font", size = 24)
+PyPlot.matplotlib[:rc]("axes", labelsize = 21)
+PyPlot.matplotlib[:rc]("axes", titlesize = 21)
 #PyPlot.matplotlib[:rc]("xtick", labelsize = 12)
 #PyPlot.matplotlib[:rc]("ytick", labelsize = 12)
-#PyPlot.matplotlib[:rc]("legend", fontsize = 18)
-#PyPlot.matplotlib[:rc]("figure", titlesize = 18)
+PyPlot.matplotlib[:rc]("legend", fontsize = 24)
+PyPlot.matplotlib[:rc]("figure", titlesize = 24)
 #PyPlot.matplotlib[:rc]("figure", figsize = (6,4), dpi = 120)
 
 
@@ -112,24 +112,34 @@ end
 
 # Plot cumulative slip
 function cumSlipPlot(delfsec, delf5yr, FltX)
+    
+    FZ = -8
 
     indx = findall(abs.(FltX) .<= 18e3)[1]
 
     delfsec2 = delfsec[indx:end, :]
 
-    fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
+    fig = PyPlot.figure(figsize=(12,8), dpi = 120)
     ax = fig[:add_subplot](111)
+    
+    # Shade the fault zone region
+    x_shade = LinRange(5,25,25)
+    y1 = repeat([0],25)
+    y2 = repeat([FZ],25)
+    y3 = repeat([-24],25)
 
-    ax[:plot](delf5yr, FltX/1e3, "xkcd:blue", lw=0.5)
-    ax[:plot](delfsec2, FltX[indx:end]/1e3, "xkcd:red", lw=0.5)
-    ax[:set_xlabel]("Slip (m)")
+    ax[:plot](delf5yr, FltX/1e3, color="royalblue", lw=1, alpha=1.0)
+    ax[:plot](delfsec2, FltX[indx:end]/1e3, "--", color="chocolate", lw=1, alpha=1.0)
+    #  ax[:fill_between](x_shade, y2, y1, color="chocolate", alpha=0.3)
+    ax[:fill_between](x_shade, y3, y1, color="chocolate", alpha=0.3)
+    ax[:set_xlabel]("Accumulated Slip (m)")
     ax[:set_ylabel]("Depth (km)")
-    ax[:set_title]("Cumulative Slip for interseismic and dynamic events")
-    #  ax[:set_ylim]([-24, 0])
-    #  ax[:set_xlim]([0,17.5]) #maximum(delf5yr)])
+    ax[:set_title]("Cumulative Slip History")
+    ax[:set_ylim]([-24, 0])
+    ax[:set_xlim]([5,25])  #[0,maximum(delf5yr)])
     show()
     
-    figname = string(path, "cumstress.png")
+    figname = string(path, "cumslip.pdf")
     fig[:savefig](figname, dpi = 300)
 
 end

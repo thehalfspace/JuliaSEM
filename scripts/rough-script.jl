@@ -22,8 +22,8 @@ end
 
 # Plot sliprates for each event with depth
 function test1(S, time_, start_indx, end_indx, SlipVel)
-    start_indx = Int(start_indx)
-    end_indx = Int(end_indx)
+    start_indx = Int.(start_indx)
+    end_indx = Int.(end_indx)
     sv = zeros(size(SlipVel))
     inv = 1       # time interval = 0.1 sec for plotting
     to = time_[start_indx]    # start time
