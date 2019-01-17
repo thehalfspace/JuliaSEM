@@ -4,7 +4,7 @@
 #################################
 
 using StatsBase
-#  using PyPlot
+using Statistics
 
 # Get index for each event
 function event_indx(tStart, tEnd, time_)
@@ -22,6 +22,30 @@ end
 
 # Plot shear stress at the start of each event
 start_indx, end_indx = event_indx(tStart, tEnd, O.time_)
+function stress_avg(Stress,time_, tStart)
+   
+    str = mean(Stress, dims=1)[:]
+    fig = PyPlot.figure(figsize=(12,8), dpi = 120)
+    ax = fig[:add_subplot](111)
+
+    ax[:plot](time_, str, "k-", lw = 1)
+    for i=1:length(tStart)
+        ax[:axvline](tStart[i], linestyle="--", color="black", alpha=0.4)
+    end
+
+    ax[:set_xlabel]("Time (yr)")
+    ax[:set_ylabel]("Average Shear Stress on Fault (MPa)")
+    ax[:set_title]("Average Shear Stress in Time")
+    ax[:set_xlim]([471.76,471.765])
+    ax[:set_ylim]([24,25])
+    show()
+
+    #  figname = string(dir, "/plots", name, "/fric.png")
+    figname = string(path, "stress_avg_zoom.pdf")
+    fig[:savefig](figname, dpi = 300)
+
+end
+
 si = Int.(start_indx)
 function stress_event(a1, a2, Stress,FltX)
    
@@ -42,6 +66,32 @@ function stress_event(a1, a2, Stress,FltX)
 
 end
 
+function stress_max(Stress,FltX, time_)
+   
+    str, strid = findmax(Stress, dims=1)
+    strid = strid[:]
+    y_axis = zeros(length(str))
+    for i in CartesianIndices(strid)
+        y_axis[i] = FltX[strid[i][1]]
+    end
+
+    fig = PyPlot.figure(figsize=(12,8), dpi = 120)
+    ax = fig[:add_subplot](111)
+
+    ax[:plot](time_, y_axis./1e3, "ko", markersize=3, lw = 1)
+    #  ax[:plot](collect(1:1000), -8*ones(1000), "k--", label="Fault Zone Depth")
+    ax[:set_xlabel]("Time (yr)")
+    ax[:set_ylabel]("Depth (km)")
+    ax[:set_title]("Shear stress peaks through time")
+    ax[:set_ylim]([-24, 0])
+    #  ax[:legend](loc="upper right")
+    show()
+
+    #  figname = string(dir, "/plots", name, "/fric.png")
+    figname = string(path, "stress_peak.pdf")
+    fig[:savefig](figname, dpi = 300)
+
+end
 
 # Animate the rupture events: stresses and sliprates
 using PyCall
