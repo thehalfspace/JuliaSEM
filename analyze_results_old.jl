@@ -10,11 +10,11 @@ include("scripts_old/scripts/plots.jl")
 include("scripts_old/scripts/cumulative-slip.jl")
 
 # path to save files
-global path = "/Users/prith/JuliaSEM/plots/homodc08/"
+global path = "/Users/prith/JuliaSEM/plots/test21/"
 
 # Deserialize the output
 using Serialization
-open("output/wozhi_sims/homodc8.out") do f
+open("output/wozhi_sims/test21.out") do f
     global O, sim_time, P, S
     O = deserialize(f)
     sim_time = deserialize(f)

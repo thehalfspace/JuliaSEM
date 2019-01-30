@@ -7,13 +7,13 @@ using PyPlot
 # Customize plot
 #PyPlot.matplotlib[:rc]("text", usetex = true)
 #PyPlot.matplotlib[:rc]("text.latex", preamble = "\\usepackage{amsmath}")
-PyPlot.matplotlib[:rc]("font", size = 24)
-PyPlot.matplotlib[:rc]("axes", labelsize = 21)
-PyPlot.matplotlib[:rc]("axes", titlesize = 21)
+#  PyPlot.matplotlib[:rc]("font", size = 24)
+#  PyPlot.matplotlib[:rc]("axes", labelsize = 21)
+#  PyPlot.matplotlib[:rc]("axes", titlesize = 21)
 #PyPlot.matplotlib[:rc]("xtick", labelsize = 12)
 #PyPlot.matplotlib[:rc]("ytick", labelsize = 12)
-PyPlot.matplotlib[:rc]("legend", fontsize = 15)
-PyPlot.matplotlib[:rc]("figure", titlesize = 24)
+#  PyPlot.matplotlib[:rc]("legend", fontsize = 15)
+#  PyPlot.matplotlib[:rc]("figure", titlesize = 24)
 #PyPlot.matplotlib[:rc]("figure", figsize = (6,4), dpi = 120)
 
 
