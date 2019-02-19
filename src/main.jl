@@ -117,12 +117,12 @@ function main(P::parameters, S::input_variables)
     dnew = SharedArray{Float64}(length(S.FltNI))
 
     # Preallocate variables with unknown size
-    output = results(zeros(P.FltNglob, 10000), zeros(P.FltNglob, 10000), 
-                     zeros(P.FltNglob, 10000), zeros(P.FltNglob, 1000), 
-                     zeros(P.FltNglob, 1000), zeros(P.FltNglob, 1000),
-                     zeros(1000), zeros(1000), zeros(P.FltNglob, 1000), 
-                     zeros(P.FltNglob, 1000), zeros(P.FltNglob, 1000), 
-                     zeros(1000), zeros(1000000), zeros(1000000))
+    output = results(zeros(P.FltNglob, 100000), zeros(P.FltNglob, 100000), 
+                     zeros(P.FltNglob, 100000), zeros(P.FltNglob, 10000), 
+                     zeros(P.FltNglob, 10000), zeros(P.FltNglob, 10000),
+                     zeros(1000), zeros(10000), zeros(P.FltNglob, 10000), 
+                     zeros(P.FltNglob, 10000), zeros(P.FltNglob, 10000), 
+                     zeros(10000), zeros(10000000), zeros(10000000))
     
     # Save output variables at certain timesteps: define those timesteps
     tvsx::Float64 = 2*P.yr2sec  # 2 years for interseismic period
@@ -172,7 +172,7 @@ function main(P::parameters, S::input_variables)
 
             @inbounds for p1 = 1:2
                 
-                # Compute the forcing term
+                # Compute the on-Fault displacement
                 F .= 0
                 F[S.iFlt] .= dPre[S.iFlt] .+ v[S.iFlt]*dt
 

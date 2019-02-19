@@ -22,7 +22,7 @@ addprocs(4)
 @everywhere include("$(@__DIR__)/src/parameters/defaultParameters.jl")	    #	Set Parameters
 @everywhere include("$(@__DIR__)/src/setup.jl")
 
-@everywhere P = setParameters(24e3)
+@everywhere P = setParameters(8e3)
 @everywhere S = setup(P)
 
 @everywhere include("$(@__DIR__)/src/PCG.jl")               # Preconditioned conjugate gradient to invert matrix
@@ -37,7 +37,7 @@ description = "gaussian fault zone" #"FZ:depth=8km, width=1km"
 
 # Save output to file
 using Serialization
-open("$(@__DIR__)/data/dump001.out", "w") do f
+open("$(@__DIR__)/data/res04.out", "w") do f
     serialize(f,O)
     serialize(f, simulation_time)
     serialize(f, P)

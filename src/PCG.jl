@@ -33,7 +33,7 @@ function PCG(P::parameters, diagKnew, dnew, F, iFlt,
     p_local[:] .= 0
     p_local[FltNI] = pnew
 
-    @inbounds for n = 1:4000
+    @inbounds for n = 1:8000
         anew[:] .= 0
         a_local[:] .= 0
         
@@ -56,7 +56,7 @@ function PCG(P::parameters, diagKnew, dnew, F, iFlt,
             break;
         end
 
-        if n == 4000 || norm(rnew)/norm(Fnew) > 1e10
+        if n == 8000 || norm(rnew)/norm(Fnew) > 1e10
             print(norm(rnew)/norm(Fnew))
             println("n = ", n)
 

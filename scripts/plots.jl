@@ -7,13 +7,13 @@ using PyPlot
 # Customize plot
 #PyPlot.matplotlib[:rc]("text", usetex = true)
 #PyPlot.matplotlib[:rc]("text.latex", preamble = "\\usepackage{amsmath}")
-PyPlot.matplotlib[:rc]("font", size = 24)
-PyPlot.matplotlib[:rc]("axes", labelsize = 21)
-PyPlot.matplotlib[:rc]("axes", titlesize = 21)
+#  PyPlot.matplotlib[:rc]("font", size = 24)
+#  PyPlot.matplotlib[:rc]("axes", labelsize = 21)
+#  PyPlot.matplotlib[:rc]("axes", titlesize = 21)
 #PyPlot.matplotlib[:rc]("xtick", labelsize = 12)
 #PyPlot.matplotlib[:rc]("ytick", labelsize = 12)
-PyPlot.matplotlib[:rc]("legend", fontsize = 24)
-PyPlot.matplotlib[:rc]("figure", titlesize = 24)
+#  PyPlot.matplotlib[:rc]("legend", fontsize = 24)
+#  PyPlot.matplotlib[:rc]("figure", titlesize = 24)
 #PyPlot.matplotlib[:rc]("figure", figsize = (6,4), dpi = 120)
 
 
@@ -89,9 +89,9 @@ function slipvelPlot(SlipVel, time_, FltX, yr2sec, loc1 = 8e3)
 end
 
 # Plot Vfmax
-function VfmaxPlot(SlipVel, time_, yr2sec)
+function VfmaxPlot(Vfmax, time_, yr2sec)
 
-    Vfmax = maximum(SlipVel, dims = 1)[:]
+    #  Vfmax = maximum(SlipVel, dims = 1)[:]
     
     fig = PyPlot.figure(figsize=(6,4.5), dpi = 120)
     ax = fig[:add_subplot](111)
