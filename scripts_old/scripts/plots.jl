@@ -119,7 +119,7 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
 
     delfsec2 = delfsec[indx:end, :]
 
-    fig = PyPlot.figure(figsize=(12,8), dpi = 120)
+    fig = PyPlot.figure()
     ax = fig[:add_subplot](111)
     
     # Shade the fault zone region
@@ -129,17 +129,17 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     y3 = repeat([-24],25)
 
     ax[:plot](delf5yr, FltX/1e3, color="royalblue", lw=1, alpha=1.0)
-    ax[:plot](delfsec2, FltX[indx:end]/1e3, "--", color="chocolate", lw=1, alpha=1.0)
+    #  ax[:plot](delfsec2, FltX[indx:end]/1e3, "--", color="chocolate", lw=1, alpha=1.0)
     #  ax[:fill_between](x_shade, y2, y1, color="chocolate", alpha=0.3)
-    ax[:fill_between](x_shade, y3, y1, color="chocolate", alpha=0.3)
+    #  ax[:fill_between](x_shade, y3, y1, color="chocolate", alpha=0.3)
     ax[:set_xlabel]("Accumulated Slip (m)")
     ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Cumulative Slip History")
     ax[:set_ylim]([-24, 0])
-    ax[:set_xlim]([5,25])  #[0,maximum(delf5yr)])
+    ax[:set_xlim]([5,10])  #[0,maximum(delf5yr)])
     show()
     
-    figname = string(path, "cumslip.pdf")
+    figname = string(path, "cumslip_demo2.pdf")
     fig[:savefig](figname, dpi = 300)
 
 end
