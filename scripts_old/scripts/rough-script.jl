@@ -189,6 +189,36 @@ function test1(S, tStart, tEnd, SlipVel, n)
     ax[:set_ylim]([-24, 0])
     show()
     
-    figname = string(path, "shearstressM4_1500.png")
+    figname = string(path, "sliprate.png")
     fig[:savefig](figname, dpi = 300)
 end
+
+
+# Plot spatiotemporal slip rate history
+function spatiotemporal(O, FltX, start_indx, end_indx)
+    idx1 = Int.(start_indx)
+    idx2 = Int.(end_indx)
+    C = log10.(abs.(O.SlipVel[:,idx1:idx2]))
+    S = log10.(abs.(O.Stress[:,idx1:idx2]))
+
+    xx = O.time_[idx1:idx2] .- O.time_[idx1]
+    yy = -1*FltX./1e3
+
+    fig = PyPlot.figure()
+    ax = fig[:add_subplot](111)
+    
+    ax[:imshow](C, extent=[xx[1],xx[end],0,17], aspect=1)
+    ax[:set_xlabel]("Time (sec)")
+    ax[:set_ylabel]("Depth (km)")
+    ax[:set_title]("Log10(Sliprate (m/s))")
+    #  ax[:set_xlim]([0, 2])
+    #  ax[:set_xscale]("log")
+    ax[:set_ylim]([17, 0])
+    #  ax[:invert_yaxis]()
+    show()
+    
+    figname = string(path, "spatiotemporal_sliprate2.png")
+    fig[:savefig](figname, dpi = 300)
+
+end
+

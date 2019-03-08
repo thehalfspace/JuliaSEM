@@ -161,7 +161,7 @@ function MwPlot(Mw)
     ax[:set_yscale]("log")
     ax[:set_title]("Magnitude-frequency distribution")
     ax[:set_xlim]([2, 7])
-    ax[:set_ylim]([7, 1e3])
+    ax[:set_ylim]([4, 1e3])
     ax[:legend](loc="upper right")
     show()
 
