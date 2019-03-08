@@ -49,20 +49,20 @@ end
 si = Int.(start_indx)
 function stress_event(a1, a2, Stress,FltX)
    
-    str = Stress[:, a1:a2]
+    str = Stress[:, a1:60:a2]
     fig = PyPlot.figure(figsize=(12,8), dpi = 120)
     ax = fig[:add_subplot](111)
 
-    ax[:plot](Stress[:,si], FltX./1e3, "ko--", lw = 1)
-    ax[:set_xlabel]("Shear Stress (MPa)")
+    ax[:plot](str, FltX./1e3, "-", lw = 1)
+    ax[:set_xlabel]("Slip Velocity (m/s)")
     ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Shear stress at the start of each event")
     ax[:set_ylim]([-24, 0])
     show()
 
     #  figname = string(dir, "/plots", name, "/fric.png")
-    figname = string(path, "stress_event.pdf")
-    fig[:savefig](figname, dpi = 300)
+    figname = string(path, "sliprate_event.pdf")
+    #  fig[:savefig](figname, dpi = 300)
 
 end
 
@@ -175,16 +175,17 @@ end
 function test1(S, tStart, tEnd, SlipVel, n)
     tStart = Int.(tStart)
     tEnd = Int.(tEnd)
-    sv = SlipVel[:,tStart+1000:100:tStart+36085]
+    sv = SlipVel[:,tStart:n:tEnd]
     
-    fig = PyPlot.figure(figsize=(8,6))
+    fig = PyPlot.figure()
     ax = fig[:add_subplot](111)
     
-    ax[:plot](sv, S.FltX/1e3, "ko--", label="a", lw = 1)
-    ax[:set_xlabel]("Sliprate at the start of event")
+    ax[:plot](sv, S.FltX/1e3, "-", label="a", lw = 1)
+    ax[:set_xlabel]("Co-seismic Sliprate")
     ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Sliprate")
-    #  ax[:set_xlim]([0, 0.02])
+    ax[:set_xlim]([0, 2])
+    #  ax[:set_xscale]("log")
     ax[:set_ylim]([-24, 0])
     show()
     

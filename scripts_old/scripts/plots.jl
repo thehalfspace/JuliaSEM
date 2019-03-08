@@ -143,3 +143,21 @@ function cumSlipPlot(delfsec, delf5yr, FltX)
     fig[:savefig](figname, dpi = 300)
 
 end
+
+function stress_slip(O, FltX, start_id, end_id, depth=8e3)
+    id = findmin(FltX .< -depth)[2]
+    
+    fig = PyPlot.figure(figsize=(12,8))
+    ax = fig[:add_subplot](111)
+
+    ax[:plot](O.Slip[id, start_id:end_id], O.Stress[id, start_id:end_id], "k.")
+    ax[:set_xlabel]("Cumulative Slip (m)")
+    ax[:set_ylabel]("Shear Stress (MPa)")
+    ax[:set_title]("Slip vs. frictional stress")
+    show()
+
+    figname = string(path, "sliptraction.png")
+    fig[:savefig](figname, dpi=300)
+
+end
+

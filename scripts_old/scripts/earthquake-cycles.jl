@@ -19,7 +19,7 @@ function plotHypo(hypo)  #S, Slip, SlipVel, Stress, time_)
     # Plot hypocenter
     hist = fit(Histogram, hypo./1e3, closed=:right, nbins=10)
 
-    fig = PyPlot.figure(figsize=(12,9))
+    fig = PyPlot.figure()
     ax = fig[:add_subplot](111)
 
     ax[:barh](hist.edges[1][1:end-1], hist.weights)
@@ -28,6 +28,7 @@ function plotHypo(hypo)  #S, Slip, SlipVel, Stress, time_)
     ax[:set_ylabel]("Depth (km)")
     ax[:set_title]("Hypocenter Location")
     ax[:set_ylim]([-20, 0])
+    ax[:set_xlim]([0, 200])
     #  ax[:legend](loc="upper right")
     show()
 
@@ -148,16 +149,19 @@ function MwPlot(Mw)
     # Cumulative
     cum = cumsum(hist.weights[end:-1:1])[end:-1:1]
 
-    fig = PyPlot.figure(figsize=(12,9))
+    fig = PyPlot.figure()
     ax = fig[:add_subplot](111)
 
+    edges = hist.edges[1][1:end-1] .+ hist.edges[1][2:end]
+
     #  ax[:plot](hist.edges[1][1:end-1], hist.weights, ".", label="Non-cumulative")
-    ax[:plot](hist.edges[1][1:end-1], cum, "k.", markersize=20, label="Cumulative")
+    ax[:plot](edges./2, cum, "k.", markersize=8, label="Cumulative")
     ax[:set_xlabel]("Moment Magnitude (Mw)")
     ax[:set_ylabel]("Number of Earthquakes")
     ax[:set_yscale]("log")
     ax[:set_title]("Magnitude-frequency distribution")
     ax[:set_xlim]([2, 7])
+    ax[:set_ylim]([7, 1e3])
     ax[:legend](loc="upper right")
     show()
 
