@@ -1,3 +1,5 @@
+This project is out of data, I am maintaining a newer version [here](https://github.com/thehalfspace/eqcycle). 
+
 Spectral element method for earthquake cycle simulations with dynamic treatment of inertial effects.
 
 Written in Julia 1.0. Syntax is very similar to Matlab but it is much faster.
