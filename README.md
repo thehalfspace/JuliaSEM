@@ -1,4 +1,4 @@
-This project is out of data, I am maintaining a newer version [here](https://github.com/thehalfspace/eqcycle). 
+This project is out of date, I am maintaining a newer version [here](https://github.com/thehalfspace/eqcycle). 
 
 Spectral element method for earthquake cycle simulations with dynamic treatment of inertial effects.
 
